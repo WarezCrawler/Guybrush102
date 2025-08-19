@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef/comps/li[@Class="CompProperties_GravshipThruster"]/statOffsets/GravshipRange[text()="44"]</xpath>
+        <value>
+          <GravshipRange>90</GravshipRange>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef/comps/li[@Class="CompProperties_GravshipThruster"]/statOffsets/GravshipRange[text()="32"]</xpath>
+        <value>
+          <GravshipRange>64</GravshipRange>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef/comps/li[@Class="CompProperties_GravshipThruster"]/statOffsets/GravshipRange[text()="22"]</xpath>
+        <value>
+          <GravshipRange>50</GravshipRange>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef/comps/li[@Class="CompProperties_GravshipThruster"]/statOffsets/GravshipRange[text()="16"]</xpath>
+        <value>
+          <GravshipRange>40</GravshipRange>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef/comps/li[@Class="CompProperties_GravshipThruster"]/statOffsets/GravshipRange[text()="10"]</xpath>
+        <value>
+          <GravshipRange>16</GravshipRange>
+        </value>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

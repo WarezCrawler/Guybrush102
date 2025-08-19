@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>GTI Infinite Turrets</name>
+	<author>WarezCrawler</author>  
+	<packageId>GTI.InfiniteTurrets</packageId>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<description>
+GTI Infinite Turrets is a simple dynamic mod, that removes any need of refueling turrets.
+
+Why this mod? I just wanted a mod that also works with any modded turrets that implement the vanilla turret configs. No hard coded xml files.
+	</description>
+</ModMetaData>

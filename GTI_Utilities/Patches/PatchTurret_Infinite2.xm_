@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+
+      <!-- Remove refuelable component from MiniTurret -->
+      <li Class="PatchOperationRemove">
+        <success>Always</success>
+        <xpath>Defs/ThingDef[defName="Turret_MiniTurret"]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
+      </li>
+
+      <!-- Set consumeFuelPerShot to 0 -->
+      <li Class="PatchOperationReplace">
+        <success>Always</success>
+        <xpath>Defs/ThingDef[defName="Turret_MiniTurret"]/verbs/li/consumeFuelPerShot</xpath>
+        <value>
+          <consumeFuelPerShot>0</consumeFuelPerShot>
+        </value>
+      </li>
+
+      <!-- Optional: Set fuelCapacity to 0 -->
+      <li Class="PatchOperationReplace">
+        <success>Always</success>
+        <xpath>Defs/ThingDef[defName="Turret_MiniTurret"]/comps/li/fuelCapacity</xpath>
+        <value>
+          <fuelCapacity>0</fuelCapacity>
+        </value>
+      </li>
+
+      <!-- Optional: Set fuelConsumptionRate to 0 -->
+      <li Class="PatchOperationReplace">
+        <success>Always</success>
+        <xpath>Defs/ThingDef[defName="Turret_MiniTurret"]/comps/li/fuelConsumptionRate</xpath>
+        <value>
+          <fuelConsumptionRate>0</fuelConsumptionRate>
+        </value>
+      </li>
+
+    </operations>
+  </Operation>
+</Patch>

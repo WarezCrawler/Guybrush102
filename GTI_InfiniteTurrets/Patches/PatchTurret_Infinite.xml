@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+    
+	<!-- Remove CompProperties_Refuelable from all buildings inheriting BuildingBase -->
+	<li Class="PatchOperationRemove">
+		<success>Always</success>
+		<xpath>Defs/ThingDef[statBases/ShootingAccuracyTurret]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
+	</li>
+
+	<!-- Set consumeFuelPerShot to 0 for all BaseWeaponTurret definitions -->
+	<li Class="PatchOperationReplace">
+		<success>Always</success>
+		<xpath>Defs/ThingDef[@ParentName="BaseWeaponTurret"]/verbs/li/consumeFuelPerShot</xpath>
+	<value>
+		<consumeFuelPerShot>0</consumeFuelPerShot>
+	</value>
+	</li>
+
+	<!-- Mortar Barrel remove refuelable node -->
+	<li Class="PatchOperationRemove">
+		<success>Always</success>
+		<xpath>Defs/ThingDef/comps/li[@Class="CompProperties_Refuelable" and fuelIsMortarBarrel="true"]</xpath>
+	</li>
+	<!-- Mortar Barrel set consumption to zero -->
+	<li Class="PatchOperationReplace">
+		<success>Always</success>
+		<xpath>Defs/ThingDef[@ParentName="BaseArtilleryWeapon"]/verbs/li/consumeFuelPerShot</xpath>
+	<value>
+		<consumeFuelPerShot>0</consumeFuelPerShot>
+	</value>
+	</li>
+
+
+      <!-- Add more operations below as needed -->
+
+    </operations>
+  </Operation>
+</Patch>
