@@ -1,0 +1,498 @@
+Mono path[0] = 'T:/SteamLibrary/steamapps/common/RimWorld/RimWorldWin64_Data/Managed'
+Mono config path = 'T:/SteamLibrary/steamapps/common/RimWorld/MonoBleedingEdge/etc'
+[PhysX] Initialized MultithreadedTaskDispatcher with 16 workers.
+Initialize engine version: 2022.3.35f1 (011206c7a712)
+[Subsystems] Discovering subsystems at path T:/SteamLibrary/steamapps/common/RimWorld/RimWorldWin64_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3080 (ID=0x2216)
+    Vendor:   NVIDIA
+    VRAM:     10053 MB
+    Driver:   32.0.15.7688
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  3.378 seconds
+- Finished resetting the current domain, in  0.001 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+[PhysX] Initialized MultithreadedTaskDispatcher with 16 workers.
+UnloadTime: 0.660300 ms
+Command line arguments: -savedatafolder=C:\Users\websh\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios
+RimWorld 1.6.4543 rev1058
+Save data folder overridden to C:\Users\websh\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios
+Mod ModularWeapons2 - Modularize Toolkit dependency (kaitorisenkou.ModularWeapons2) needs to have <downloadUrl> and/or <steamWorkshopUrl> specified.
+Fallback handler could not load library T:/SteamLibrary/steamapps/common/RimWorld/RimWorldWin64_Data/MonoBleedingEdge/data-000001829EFCD020.dll
+Fallback handler could not load library T:/SteamLibrary/steamapps/common/RimWorld/RimWorldWin64_Data/MonoBleedingEdge/data-000001829F0EE1D0.dll
+[HugsLib] version 12.0.1
+[HugsLib] early-initializing AllowTool
+[MadSkills]: settings initialized, multiplier is 0, tiered, daily XP threshold is 4000, saturated XP multiplier is 0.2, Great Memory trait is not altered.
+[MadSkills]: settings initialized, multiplier is 0, tiered, daily XP threshold is 4000, saturated XP multiplier is 0.2, Great Memory trait is not altered.
+[MadSkills]: settings initialized, multiplier is 0, tiered, daily XP threshold is 4000, saturated XP multiplier is 0.2, Great Memory trait is not altered.
+Initialized OmniCoreDrill patches
+DubsMintMenus v1.3.1086
+[RimHUD v1.17.5] Initialized
+[Visible Wealth] Loaded.
+Initializing LightsOut [2025.8.10.12]
+Fallback handler could not load library T:/SteamLibrary/steamapps/common/RimWorld/RimWorldWin64_Data/MonoBleedingEdge/data-00000182A74DA010.dll
+[1.6]Graphics Setter - Loaded
+Transport Food Policy Manager Mod Loaded
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite - Start of stack trace]
+Verse.PatchOperationAdd(xpath="Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators"): Failed to find a node with the given xpath
+[End of stack trace]
+Source file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+Parsed 0.15 as int.
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Base_Empire_Standard"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Empire_Caravan_TraderGeneral"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+[Mini Gravships Lite] Patch operation Verse.PatchOperationAdd(Defs/TraderKindDef[defName="Orbital_Empire"]/stockGenerators) failed
+file: T:\SteamLibrary\steamapps\workshop\content\294100\3538850569\1.6\Patches\Gravship\Gravship_Patches_Trader_Craftable_Shields.xml
+Applying Settings
+[MadSkills]: restored behavior of Great Memory trait.
+Key binding conflict: MainTab_kNumbersOverviewTab and OpenMapSearch are both bound to Z.
+Key binding conflict: OpenMapSearch and MainTab_kNumbersOverviewTab are both bound to Z.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2023507013\Textures\UI\CSG\help.dds': Cannot load compressed texture with non multiple of 4 dimensions of 122x122 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2023507013\Textures\UI\Widgets\Note.dds': Cannot load compressed texture with non multiple of 4 dimensions of 225x225 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2562491370\Textures\Building\Production\DeepCoreDrill.dds': Cannot load compressed texture with non multiple of 4 dimensions of 171x170 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 96x149 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 96x149 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 149x96 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 149x96 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 149x96 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1949064302\Textures\Things\Building\Production\TableBasicProsthetics_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 149x96 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1446523594\Textures\Mint\UI\az.dds': Cannot load compressed texture with non multiple of 4 dimensions of 25x25 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1446523594\Textures\Mint\UI\discord.dds': Cannot load compressed texture with non multiple of 4 dimensions of 60x45 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1446523594\Textures\Mint\UI\Support.dds': Cannot load compressed texture with non multiple of 4 dimensions of 60x45 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1662119905\1.6\Textures\MMinimap\UI\discord.dds': Cannot load compressed texture with non multiple of 4 dimensions of 60x45 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1662119905\1.6\Textures\MMinimap\UI\DotPredator.dds': Cannot load compressed texture with non multiple of 4 dimensions of 35x36 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1662119905\1.6\Textures\MMinimap\UI\DotTip.dds': Cannot load compressed texture with non multiple of 4 dimensions of 21x21 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\1662119905\1.6\Textures\MMinimap\UI\Support.dds': Cannot load compressed texture with non multiple of 4 dimensions of 60x45 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ArrowDown.dds': Cannot load compressed texture with non multiple of 4 dimensions of 20x10 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonCloseSmall.dds': Cannot load compressed texture with non multiple of 4 dimensions of 9x9 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonEdit.dds': Cannot load compressed texture with non multiple of 4 dimensions of 18x18 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonGenderFemale.dds': Cannot load compressed texture with non multiple of 4 dimensions of 18x24 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonRandom.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonRandomLarge.dds': Cannot load compressed texture with non multiple of 4 dimensions of 33x28 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\ButtonReset.dds': Cannot load compressed texture with non multiple of 4 dimensions of 23x21 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\Checkbox.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\CheckboxPartiallySelected.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\CheckboxSelected.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\Checkmark.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\CheckmarkForcedSelection.dds': Cannot load compressed texture with non multiple of 4 dimensions of 22x22 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\DerivedRelationship.dds': Cannot load compressed texture with non multiple of 4 dimensions of 18x18 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\DottedLine.dds': Cannot load compressed texture with non multiple of 4 dimensions of 342x2 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\DropdownIndicator.dds': Cannot load compressed texture with non multiple of 4 dimensions of 11x8 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\MaximizeDown.dds': Cannot load compressed texture with non multiple of 4 dimensions of 18x18 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\735106432\Common\Textures\EdB\PrepareCarefully\MaximizeUp.dds': Cannot load compressed texture with non multiple of 4 dimensions of 18x18 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\preferMelee.dds': Cannot load compressed texture with non multiple of 4 dimensions of 32x21 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\preferRanged.dds': Cannot load compressed texture with non multiple of 4 dimensions of 32x21 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\preferSkilled.dds': Cannot load compressed texture with non multiple of 4 dimensions of 32x21 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\speedBiasSliderNegative.dds': Cannot load compressed texture with non multiple of 4 dimensions of 120x54 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\speedBiasSliderPositive.dds': Cannot load compressed texture with non multiple of 4 dimensions of 240x54 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\weaponType_offhandcompat.dds': Cannot load compressed texture with non multiple of 4 dimensions of 14x14 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\weaponType_shieldcompat.dds': Cannot load compressed texture with non multiple of 4 dimensions of 14x14 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\tuts\autopickup.dds': Cannot load compressed texture with non multiple of 4 dimensions of 377x96 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\tuts\havePunch.dds': Cannot load compressed texture with non multiple of 4 dimensions of 377x96 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\tuts\rememberDropped.dds': Cannot load compressed texture with non multiple of 4 dimensions of 377x96 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\927155256\v1.6\Textures\tuts\rememberPrimary.dds': Cannot load compressed texture with non multiple of 4 dimensions of 377x96 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3453549086\Textures\UI\Icons\Various\reset.dds': Cannot load compressed texture with non multiple of 4 dimensions of 151x151 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2665630471\1.6\Textures\EmptyShieldBar.dds': Cannot load compressed texture with non multiple of 4 dimensions of 74x8 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2665630471\1.6\Textures\FullShieldBar.dds': Cannot load compressed texture with non multiple of 4 dimensions of 74x8 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3525851843\Textures\TransportDrone_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 320x193 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3526354009\1.6\Textures\TDReplaceStuffIcon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 58x58 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3526354009\Textures\ReplaceStuffFrame\1x4.dds': Cannot load compressed texture with non multiple of 4 dimensions of 128x511 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3526354009\Textures\ReplaceStuffFrame\4x1.dds': Cannot load compressed texture with non multiple of 4 dimensions of 511x128 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\IndustrialProps\Lockers\Lockers_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 334x334 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\IndustrialProps\Lockers\Lockers_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 334x334 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\IndustrialProps\Lockers\Lockers_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 334x334 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\PowerProps\AdvancedRotor\AdvancedRotor_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 205x205 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\PowerProps\AdvancedRotor\AdvancedRotor_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 205x205 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\PowerProps\Rotor\Rotor_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 205x205 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2102143149\Textures\Things\Building\PowerProps\Rotor\Rotor_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 205x205 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Barrel\Barrel.dds': Cannot load compressed texture with non multiple of 4 dimensions of 211x211 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Barrel\BarrelLayer.dds': Cannot load compressed texture with non multiple of 4 dimensions of 211x211 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Barrel\BarrelLayer2.dds': Cannot load compressed texture with non multiple of 4 dimensions of 211x211 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Fridge\FridgeOverlay_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Fridge\Fridge_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Fridge\Fridge_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Fridge\Fridge_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\IndustrialShelf\IndustrialShelf_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\IndustrialShelf\IndustrialShelf_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\IndustrialShelf\ShelfLayer_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\IndustrialShelf\ShelfLayer_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeMetalCrate\LargeMetalCrate.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeMetalCrate\LargeMetalCrateOuter.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeMetalCrate\LargeMetalCrateOuter2.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeMetalCrate\LargeMetalCrate_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeWoodCrate\LargeWoodCrate.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeWoodCrate\LargeWoodCrateLayer.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\LargeWoodCrate\LargeWoodCrateLayer2.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Locker\LockerLayer_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Locker\Locker_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Locker\Locker_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\Locker\Locker_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\MedicalCabinet\MedCabinetLayer_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\MedicalCabinet\MedicalCabinet_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\MedicalCabinet\MedicalCabinet_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\MedicalCabinet\MedicalCabinet_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\MedicalCabinet\wdasdsaddsa.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\WeaponRack\WeaponRack_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\WeaponRack\WeaponRack_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3237638097\Textures\NewTextures\WeaponRack\WeaponRack_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 480x481 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2007061826\Textures\GUI\VGPLogo.dds': Cannot load compressed texture with non multiple of 4 dimensions of 161x160 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3513840161\Textures\Cupro\Null.dds': Cannot load compressed texture with non multiple of 4 dimensions of 1x1 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Frames\RPG_Frame.dds': Cannot load compressed texture with non multiple of 4 dimensions of 75x75 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Frames\RPG_Frame_2.dds': Cannot load compressed texture with non multiple of 4 dimensions of 75x75 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Icons\Sandy_ArmorBlunt_Icon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 24x27 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Icons\Sandy_ArmorHarmony_Icon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 24x27 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Icons\Sandy_ArmorHeat_Icon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 24x27 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2478833213\Textures\UI\Icons\Sandy_ArmorSharp_Icon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 24x27 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2026595894\Textures\Transparent.dds': Cannot load compressed texture with non multiple of 4 dimensions of 1x1 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\935982361\Textures\LeftArrow.dds': Cannot load compressed texture with non multiple of 4 dimensions of 375x874 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\935982361\Textures\RightArrow.dds': Cannot load compressed texture with non multiple of 4 dimensions of 375x874 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3530150218\Textures\Things\Building\Security\PocketAnnihilatorGun_Ico.dds': Cannot load compressed texture with non multiple of 4 dimensions of 285x285 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2007107588\Textures\DropSpotMiscIcon.dds': Cannot load compressed texture with non multiple of 4 dimensions of 290x290 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\MorbidTable1x1_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 192x191 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\RusticTable1x1_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 194x192 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\RusticTable1x1_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 192x194 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\SpikecoreTable1x1_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 190x192 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\SpikecoreTable1x1_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 192x190 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\TechistTable1x1_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 192x203 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\BuildingStyles\TotemicTable1x1_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 197x192 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3239465764\Textures\Things\Building\Furniture\Table1x1_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 194x192 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\2x2CargoHold\2x2CargoHold_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldSym_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHold_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\RefCargoHoldSym_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\RefCargoHold_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\MassCargoHold\MassCargoHold_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\MassCargoHold\MassCargoHold_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\MassCargoHold\MassCargoHold_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\MassCargoHold\MassCargoHold_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\MassCargoHold\MassCargoHold_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 512x518 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_UI.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\SqCargoHold\SqCargoHold_westm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 251x251 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\CargoHold_westm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldA\RefCargoHold_westm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\CargoHoldSym_westm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_east.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_eastm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_north.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_northm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_south.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_southm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 256x470 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_west.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\3536708812\Textures\CargoHold\CargoHoldB\RefCargoHoldSym_westm.dds': Cannot load compressed texture with non multiple of 4 dimensions of 462x257 and format DXT1
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2810681278\Textures\ColorPicker\ColorCog.dds': Cannot load compressed texture with non multiple of 4 dimensions of 50x50 and format BC7
+Loading from png instead.
+DDS loading failed for 'T:\SteamLibrary\steamapps\workshop\content\294100\2810681278\Textures\ColorPicker\ColorHue.dds': Cannot load compressed texture with non multiple of 4 dimensions of 50x50 and format BC7
+Loading from png instead.
+Mod GTI Utilities - Custom Patches did not load any content. Following load folders were used:
+  - T:\SteamLibrary\steamapps\common\RimWorld\Mods\GTI_Utilities
+Quarry:: Total 6 quarryable terrain found, processed: Sandstone, Granite, Limestone, Slate, Marble, Vacstone
+Translation data for language English has 10 errors. Generate translation report for more info.
+[XML Extensions] Initialized 3 SettingsMenuDef(s) and found 0 unused key(s) from 0 mod(s)
+[XML Extensions] 907 total patch operations run in 1222ms, 13 failed
+[XML Extensions] Emitted 3 mod class(es)
+[No Gravship Launch Cooldown] Gravship LaunchCooldownFromQualityCurve successfully overridden.
+[Filter Manager v1.11] Initialized
+<color=orange>[LightsOut - Debug]</color> should Modded Glowers specify a target mod?
+<color=orange>[LightsOut - Debug]</color> applying mod compatibility patch: Modded Glowers
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch ShouldBeLitNow for modded glowers
+<color=orange>[LightsOut - Debug]</color>        patching "PipeSystem - CompGlowerOnProcess" to count as a glower
+<color=orange>[LightsOut - Debug]</color>        patching "VEF.Maps - TerrainComp_Glower" to count as a glower
+<color=orange>[LightsOut - Debug]</color>        failed to patch "VEF.Graphics - CompGlower_DirtyMapMesh" to count as a glower; it does not define any known ShouldBeLitNow properties
+<color=orange>[LightsOut - Debug]</color>        patching "VEF.Buildings - CompGlowerExtended" to count as a glower
+<color=orange>[LightsOut - Debug]</color>        patching "RimFridge - CompToggleGlower" to count as a glower
+<color=orange>[LightsOut - Debug]</color> applying mod compatibility patch: Biotech
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch for mech recharger power draw
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch for mech gestator power draw
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch for gene assembly related things
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch for biotech growth vat support
+<color=orange>[LightsOut - Debug]</color>     component applied: Patches for band node support
+<color=orange>[LightsOut - Debug]</color>     component applied: Patches for gene extractors compatibility
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch for subcore scanners
+<color=orange>[LightsOut - Debug]</color>     component applied: Patch waste atomiser
+ExpandedRoofing: generating dynamic defs
+[TrueTerrainColors v1.12.22] Loaded cached true colors for 485 terrain defs from file.
+TradingControl :: 23.3.24.2782  - #0 - Starting Harmony Patch...
+TradingControl :: 23.3.24.2782  - #1 - Setting up Dismiss options.
+TradingControl :: 23.3.24.2782  - #2 - Patching Toils (Job Manager)
+TradingControl :: 23.3.24.2782  - #3 - Patching Orbital Drop Sites
+TradingControl :: 23.3.24.2782  - ## - Harmony Patches Applied
+TradingControl :: 23.3.24.2782  - ## - No further Patches detected..
+Enabled WorkTypeDef's: Firefighter - , Patient - , Doctor - Medicine, PatientBedRest - , BasicWorker - , Warden - Social, Handling - Animals, Cooking - Cooking, Hunting - Shooting|Animals, Construction - Construction, Growing - Plants, Mining - Mining, PlantCutting - Plants, Smithing - Crafting, Tailoring - Crafting, Art - Artistic, Crafting - Crafting, Hauling - , Cleaning - , Research - Intellectual, Childcare - Social, HaulingUrgent - , FinishingOff - Melee, Rearm - , QuarryMining - Mining
+[XmlPatchHelper] version 1.6.1124
+Land On Anything: Loaded
+Land On Anything: Patching Complete
+Type Building_CBattery probably needs a StaticConstructorOnStartup attribute, because it has a field BatteryBarFilledMat of type Material. All assets must be loaded in the main thread.
+Unloading 5 Unused Serialized files (Serialized files now loaded: 5)
+MVCF successfully applied 0 patches
+[Uuugggg.rimworld.Replace_Stuff.main] Patches on methods annotated as Obsolete were detected by HugsLib: Verse.AI.TouchPathEndModeUtility.IsCornerTouchAllowed
+Unloading 94 unused Assets to reduce memory usage. Loaded Objects now: 30114.
+Total: 150.509700 ms (FindLiveObjects: 1.336500 ms CreateObjectMapping: 1.225800 ms MarkObjects: 147.584700 ms  DeleteObjects: 0.362500 ms)
+
+[AllowTool] Applied compatibility patch for "Pick Up And Haul"
+[HugsLib] initializing BetaTraps, MaterialFilter, zzLib, zzShield
+[MaterialFilter] Init
+[MaterialFilter] Skipping duplicate Obsidian
+[MaterialFilter] specialThingFilterDefs generated
+[OgreStack]: Modify Stack Sizes Complete
+[SkipMenu] Error found in logs, Auto Save Load Disabled
