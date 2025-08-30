@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Medical Cabinet</li>
+      <li>Adaptive Storage Framework</li>
+    </mods>
+    <match Class="PatchOperationSequence">
+      <operations>
+
+        <!-- Replace category for Dead_MedicalCabinet -->
+        <li Class="PatchOperationReplace">
+          <xpath>Defs/ThingDef[defName="Dead_MedicalCabinet"]/thingCategories</xpath>
+          <value>
+            <thingCategories>
+              <li>ASFstorage</li>
+            </thingCategories>
+          </value>
+        </li>
+
+        <!-- Replace category for Dead_SimpleMedicalCabinet -->
+        <li Class="PatchOperationReplace">
+          <xpath>Defs/ThingDef[defName="Dead_SimpleMedicalCabinet"]/thingCategories</xpath>
+          <value>
+            <thingCategories>
+              <li>ASFstorage</li>
+            </thingCategories>
+          </value>
+        </li>
+
+      </operations>
+    </match>
+
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs</xpath>
+      <value>
+        <log>GTI Utilities: Skipping Dead_MedicalCabinet patch: Adaptive Storage Framework not found.</log>
+      </value>
+    </nomatch>
+
+  </Operation>
+
+</Patch>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationSequence">
+		<operations>
+			<li Class="PatchOperationReplace">
+				<xpath>Defs/ThingDef[defName="Dead_MedicalCabinet"]/thingCategories</xpath>
+				<value>
+					<thingCategories>
+						<li>ASFstorage</li>
+					</thingCategories>
+				</value>
+			</li>
+		
+			<li Class="PatchOperationReplace">
+				<xpath>Defs/ThingDef[defName="Dead_SimpleMedicalCabinet"]/thingCategories</xpath>
+				<value>
+					<thingCategories>
+						<li>ASFstorage</li>
+					</thingCategories>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+</Patch>
