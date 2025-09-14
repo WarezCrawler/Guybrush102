@@ -7,6 +7,10 @@
 				<success>Always</success>
 				<xpath>Defs/ThingDef[statBases/ShootingAccuracyTurret]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
 			</li>
+			<li Class="PatchOperationRemove">	<!--Patch for Bean's Turret Pack -->
+				<success>Always</success>
+				<xpath>Defs/ThingDef[thingClass="Building_TurretGun"]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
+			</li>
 			<!-- Set consumeFuelPerShot to 0 for all BaseWeaponTurret definitions -->
 			<li Class="PatchOperationReplace">
 				<success>Always</success>
