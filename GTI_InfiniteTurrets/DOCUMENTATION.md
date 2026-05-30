@@ -16,9 +16,12 @@ structure.
 
 ## How it works
 
-All logic is in [`Patches/PatchTurret_Infinite.xml`](Patches/PatchTurret_Infinite.xml). It currently uses
-the **consumption-only** approach — a single `PatchOperationReplace` that sets `consumeFuelPerShot` to `0`
-on every weapon def that has it:
+All logic is in [`Patches/PatchTurret_Infinite.xml`](Patches/PatchTurret_Infinite.xml), two
+`PatchOperationReplace` operations.
+
+### 1. Infinite ammo — `consumeFuelPerShot → 0`
+
+Sets `consumeFuelPerShot` to `0` on every weapon def that has it:
 
 ```xml
 <xpath>Defs/ThingDef/verbs/li/consumeFuelPerShot</xpath>
@@ -29,6 +32,19 @@ Every vanilla turret spawns full (`initialFuelPercent=1`) and only depletes its 
 ammo, with **no exclusions** and **no removed components**. In vanilla 1.6, `consumeFuelPerShot` appears
 *only* in `Buildings_Security_Turrets.xml` (turrets, mortar, rocketswarm), so the broad xpath is safe and
 also covers modded turrets such as **Bean's Turret Pack**.
+
+### 2. Rocketswarm cooldown — cut to one third
+
+Reduces the rocketswarm launcher's post-fire cooldown:
+
+```xml
+<xpath>Defs/ThingDef/comps/li[compClass="CompInteractableRocketswarmLauncher"]/cooldownTicks</xpath>
+```
+
+Vanilla `cooldownTicks` is `7500` (2500 ticks = 1 in-game hour → 3 hours); this sets it to `2500`
+(1 hour). It's keyed on `compClass` rather than the building's defName, so it also covers any modded
+rocketswarm-style turret. **Caveat:** PatchOperations can't do arithmetic, so `2500` is a flat value
+(one third of vanilla `7500`), *not* a literal "÷3" of whatever a modded def declares.
 
 ### Why this approach (and not removing the refuelable comp)
 
@@ -41,12 +57,11 @@ the comp for its activation/reload logic. Removing the comp null-derefs during d
 as nothing. Keeping the comp and just zeroing consumption sidesteps this entirely — the rocketswarm stays
 visible *and* gets infinite rockets.
 
-> **Status: this is currently a test build.** The open question is whether keeping the refuelable comp is
-> purely cosmetic (turrets just show a permanently-full bar) or whether it changes behavior — e.g. a turret
-> demanding a fresh barrel/refuel after being uninstalled and re-installed. See the in-file comment block
-> for the test checklist. If the comp turns out to be "more than cosmetic," the fallback is to go back to
-> removing it, but keyed structurally on `thingClass!="Building_TurretRocket"` (robust against modded
-> rocket turrets) rather than a hardcoded `defName`.
+> **Confirmed in-game.** Keeping the refuelable comp turned out to be purely cosmetic for standard turrets:
+> they show a permanently-full bar and survive uninstall/reinstall without demanding a refuel, and the
+> rocketswarm launcher stays visible and re-fires normally. If a future case ever shows the comp is
+> "more than cosmetic," the fallback is to remove it but keyed structurally on
+> `thingClass!="Building_TurretRocket"` (robust against modded rocket turrets) rather than a hardcoded `defName`.
 
 ## Compatibility notes (verified against vanilla 1.6)
 

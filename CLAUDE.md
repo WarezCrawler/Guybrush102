@@ -64,27 +64,24 @@ DLC packageIds: `Ludeon.RimWorld.Royalty`, `Ludeon.RimWorld.Ideology`, `Ludeon.R
 
 ## Pitfalls / gotchas (learned the hard way)
 
-### ⚠️ Never put `--` inside an XML comment
-The XML spec forbids `--` anywhere between `<!--` and `-->`. RimWorld's XML loader is strict: a single
-double-dash makes the **whole file fail to parse**, and in a heavily-modded setup that can cascade far
-beyond a skipped patch — a null patch asset triggers a `NullReferenceException` in
-`ModContentPack.LoadPatches()`, which makes RimWorld **reset the mods config and abort the load** ("Could
-not recover from errors loading play data. Giving up."). The game then sits at the menu spamming per-frame
-NREs from unrelated mods (VEF, ScreenshotTaker), which *looks* like another mod is the culprit but is just
-the fallout. (This actually happened — see the InfiniteTurrets patch history.)
+### ⚠️ Never put `--` (two ASCII hyphens) inside an XML comment
+The XML spec forbids `--` between `<!--` and `-->`, and RimWorld's loader is strict: one stray `--` makes
+the **entire file fail to parse**. On a heavy modlist this cascades — the null patch asset NREs in
+`ModContentPack.LoadPatches()`, RimWorld resets the mods config and aborts the load, then the menu spams
+per-frame NREs from *unrelated* mods. It looks like someone else's mod broke, but it didn't. (Happened once.)
 
-When writing comments in any `.xml` Defs/Patches file:
-- **Do not** use `----` separator lines, `<!-- ... -->` arrows like `-->`, or "decrement"/em-dash `--`.
-- Use `=====` or `~~~~~` for separators, and write "to"/"->" as words or a single `-`.
-- **Always validate after editing** an XML file, e.g. in PowerShell:
+- Offender is **two ASCII hyphens only**. Safe in comments: a single `-`, the arrow `->`, em-dashes (`—`).
+  Unsafe: `--`, `----` separator rules. Use `====` for separators instead.
+- Validate after editing any `.xml`:
   ```powershell
-  try { [xml](Get-Content path\to\file.xml -Raw); 'VALID' } catch { "INVALID: $($_.Exception.Message)" }
+  try { [xml](Get-Content path\file.xml -Raw); 'VALID' } catch { "INVALID: $($_.Exception.Message)" }
   ```
 
 ### After a failed load, check the log
 RimWorld log: `%USERPROFILE%\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Player.log`.
 The **first** error usually identifies the trigger; later errors are often downstream of a mod-config reset.
-A trailing `[ALLOC_*]` memory dump means the process terminated.
+A trailing `[ALLOC_*]` memory dump means the process terminated. There is no build/test step for these mods —
+verification = launch RimWorld and read `Player.log`.
 
 ## Git
 
