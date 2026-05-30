@@ -5,7 +5,7 @@
 	<ResearchProjectDef>
 		<defName>ItemReplication</defName>
 		<label>replication</label>
-		<description>learn the concept of how to replicate items.</description>
+		<description>The foundational GTI breakthrough: persuading matter to politely copy itself. Equal parts transporter theory, voodoo, and a SCUMM script nobody on the team fully understands. Unlocks the basic principles of replication. Look behind you - a three-headed monkey!</description>
 		<baseCost>5000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
@@ -20,7 +20,7 @@
 	<ResearchProjectDef>
 		<defName>ResourceReplicator</defName>
 		<label>resource replicator</label>
-		<description>Allows you to replicate resources.</description>
+		<description>Blueprints for the GTI Resource Replicator. Make it so, and never swing a pickaxe again. Steel, plasteel, components - if it built your colony, it can now build itself, twice over.</description>
 		<baseCost>1500</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -38,7 +38,7 @@
 	<ResearchProjectDef>
 		<defName>OrganicReplicator</defName>
 		<label>organic replicator</label>
-		<description>Allows you to replicate organic material.</description>
+		<description>Blueprints for the GTI Organic Replicator. "Tea, Earl Grey, hot" - or a lavish dinner, if you've earned it. Brings food, crops and meals out of the pattern buffer, and quietly turns every mystery meat into honest beef.</description>
 		<baseCost>1500</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -56,7 +56,7 @@
 	<ResearchProjectDef>
 		<defName>MedicinalReplicator</defName>
 		<label>medicinal replicator</label>
-		<description>Allows you to replicate medicinal items and drugs.</description>
+		<description>Blueprints for the GTI Medicinal Replicator. Healing, pharmaceuticals, and a suspicious quantity of root beer, all conjured from a stored pattern. The GTI motto applies: "It probably won't kill you, and look behind you!"</description>
 		<baseCost>1500</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
