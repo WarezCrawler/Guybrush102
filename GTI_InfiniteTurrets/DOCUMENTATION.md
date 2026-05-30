@@ -16,40 +16,51 @@ structure.
 
 ## How it works
 
-All logic is in [`Patches/PatchTurret_Infinite.xml`](Patches/PatchTurret_Infinite.xml), a single
-`PatchOperationSequence` with five operations:
+All logic is in [`Patches/PatchTurret_Infinite.xml`](Patches/PatchTurret_Infinite.xml). It currently uses
+the **consumption-only** approach — a single `PatchOperationReplace` that sets `consumeFuelPerShot` to `0`
+on every weapon def that has it:
 
-1. **Remove `CompProperties_Refuelable` from turret buildings** — targets any `ThingDef` that has a
-   `statBases/ShootingAccuracyTurret` stat (the reliable signature of a turret building), excluding
-   `Turret_RocketswarmLauncher`.
-2. **Remove `CompProperties_Refuelable` from `Building_TurretGun` defs** — a second pass keyed on
-   `thingClass="Building_TurretGun"`, added specifically to also catch **Bean's Turret Pack** turrets.
-   Again excludes `Turret_RocketswarmLauncher`.
-3. **Zero `consumeFuelPerShot`** on every gun def parented to `BaseWeaponTurret` (the weapon half of a
-   turret, e.g. `Gun_MiniTurret`), excluding the rocketswarm launcher.
-4. **Remove the mortar-barrel `CompProperties_Refuelable`** — the refuelable comp flagged with
-   `fuelIsMortarBarrel="true"`.
-5. **Zero `consumeFuelPerShot`** on every weapon parented to `BaseArtilleryWeapon` (mortars).
+```xml
+<xpath>Defs/ThingDef/verbs/li/consumeFuelPerShot</xpath>
+```
 
-### Why `Turret_RocketswarmLauncher` is excluded
-The rocketswarm launcher is a special one-shot/charge-based turret; leaving its refuelable comp intact keeps
-its intended limited-ammo behavior instead of making it fire infinitely.
+Every vanilla turret spawns full (`initialFuelPercent=1`) and only depletes its barrel/rockets via
+`consumeFuelPerShot`. Zeroing it means the fuel/barrel/rocket count never drains → effectively infinite
+ammo, with **no exclusions** and **no removed components**. In vanilla 1.6, `consumeFuelPerShot` appears
+*only* in `Buildings_Security_Turrets.xml` (turrets, mortar, rocketswarm), so the broad xpath is safe and
+also covers modded turrets such as **Bean's Turret Pack**.
+
+### Why this approach (and not removing the refuelable comp)
+
+The previous version *removed* `CompProperties_Refuelable` from turret buildings. That worked for standard
+turrets (whose `Building_TurretGun` treats the comp as optional "barrel durability" upkeep) but made the
+**rocketswarm launcher invisible**. The rocketswarm uses `thingClass="Building_TurretRocket"` and its
+top sprite is fuel-state-driven: `Gun_RocketswarmLauncher` defines an empty top (`TurretRocketEmpty_Top`)
+and a `turretTopLoadedGraphic` (`TurretRocketFull_Top`), and `CompInteractableRocketswarmLauncher` reads
+the comp for its activation/reload logic. Removing the comp null-derefs during draw → the turret renders
+as nothing. Keeping the comp and just zeroing consumption sidesteps this entirely — the rocketswarm stays
+visible *and* gets infinite rockets.
+
+> **Status: this is currently a test build.** The open question is whether keeping the refuelable comp is
+> purely cosmetic (turrets just show a permanently-full bar) or whether it changes behavior — e.g. a turret
+> demanding a fresh barrel/refuel after being uninstalled and re-installed. See the in-file comment block
+> for the test checklist. If the comp turns out to be "more than cosmetic," the fallback is to go back to
+> removing it, but keyed structurally on `thingClass!="Building_TurretRocket"` (robust against modded
+> rocket turrets) rather than a hardcoded `defName`.
 
 ## Compatibility notes (verified against vanilla 1.6)
 
-All patch targets still exist in `Data/Core/Defs/ThingDefs_Buildings/Buildings_Security_Turrets.xml`:
-`ShootingAccuracyTurret`, `CompProperties_Refuelable`, `consumeFuelPerShot`, `fuelIsMortarBarrel`, and the
-abstract parents `BaseWeaponTurret` / `BaseArtilleryWeapon`. The mod is fully 1.6-compatible.
-
-Because the operations use `<success>Always</success>`, the patch never errors even if a given xpath matches
-nothing — safe to run regardless of which other turret mods are active.
+`consumeFuelPerShot` still exists on the turret/mortar/rocketswarm weapon defs in
+`Data/Core/Defs/ThingDefs_Buildings/Buildings_Security_Turrets.xml`, and is the only place it appears in
+vanilla. The operation uses `<success>Always</success>`, so the patch never errors even if the xpath
+matches nothing — safe alongside any other turret mods.
 
 ## Files
 
 | File | Status | Purpose |
 |------|--------|---------|
-| `Patches/PatchTurret_Infinite.xml` | **Active** | The main infinite-turret patch (see above) |
-| `Patches/PatchTurret_Infinite2.xm_` | Disabled | Older `Turret_MiniTurret`-specific patch; now redundant because operation #1 covers MiniTurret generically. Kept for reference. |
+| `Patches/PatchTurret_Infinite.xml` | **Active** | The infinite-turret patch (consumption-only approach, see above) |
+| `Patches/PatchTurret_Infinite2.xm_` | Disabled | Older `Turret_MiniTurret`-specific patch; redundant now. Kept for reference. |
 
 ## Maintenance
 

@@ -62,6 +62,30 @@ DLC packageIds: `Ludeon.RimWorld.Royalty`, `Ludeon.RimWorld.Ideology`, `Ludeon.R
 `Ludeon.RimWorld.Anomaly`, `Ludeon.RimWorld.Odyssey`. For cross-mod patches use `PatchOperationFindMod`
 (by mod name) instead, as the Utilities patches do.
 
+## Pitfalls / gotchas (learned the hard way)
+
+### ⚠️ Never put `--` inside an XML comment
+The XML spec forbids `--` anywhere between `<!--` and `-->`. RimWorld's XML loader is strict: a single
+double-dash makes the **whole file fail to parse**, and in a heavily-modded setup that can cascade far
+beyond a skipped patch — a null patch asset triggers a `NullReferenceException` in
+`ModContentPack.LoadPatches()`, which makes RimWorld **reset the mods config and abort the load** ("Could
+not recover from errors loading play data. Giving up."). The game then sits at the menu spamming per-frame
+NREs from unrelated mods (VEF, ScreenshotTaker), which *looks* like another mod is the culprit but is just
+the fallout. (This actually happened — see the InfiniteTurrets patch history.)
+
+When writing comments in any `.xml` Defs/Patches file:
+- **Do not** use `----` separator lines, `<!-- ... -->` arrows like `-->`, or "decrement"/em-dash `--`.
+- Use `=====` or `~~~~~` for separators, and write "to"/"->" as words or a single `-`.
+- **Always validate after editing** an XML file, e.g. in PowerShell:
+  ```powershell
+  try { [xml](Get-Content path\to\file.xml -Raw); 'VALID' } catch { "INVALID: $($_.Exception.Message)" }
+  ```
+
+### After a failed load, check the log
+RimWorld log: `%USERPROFILE%\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Player.log`.
+The **first** error usually identifies the trigger; later errors are often downstream of a mod-config reset.
+A trailing `[ALLOC_*]` memory dump means the process terminated.
+
 ## Git
 
 - Active development happens on dated branches (e.g. `Dev_20260530`); PRs merge into `main`.
@@ -75,3 +99,4 @@ DLC packageIds: `Ludeon.RimWorld.Royalty`, `Ludeon.RimWorld.Ideology`, `Ludeon.R
 4. For each referenced def name (ingredients, products, parents, comps, ITabs), verify it exists in an
    **installed** DLC — guard DLC-only refs with `MayRequire`.
 5. Bump the `Version:` line in the About description if the mod tracks one (Replicator does).
+6. **Validate every `.xml` file you edited** (see the `--`-in-comments pitfall above) before declaring done.
