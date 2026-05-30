@@ -43,10 +43,10 @@ Rustic Fox - CoDev, Mod Maintaining during RW1.1-1.2
 Wasda - Work on the inital missing items patch
 Ins0mniac - Update to 1.3, and missing items patch integration
 Comrade_Alexey - Update to 1.4 and 1.5
-LeonusDH - Added Russian Translation
 
-Version: 1.8.6.9
+Version: 1.8.6.10
 Changelog:
+1.8.6.10 - Removed the Russian translation; this fork now ships English only.
 1.8.6.9 - Guarded neurotrainer recipes with MayRequire="Ludeon.RimWorld.Royalty" so they only load when Royalty is installed (no more load errors without the DLC). Renamed the 1.6 recipe file to match the version folder.
 </description>
 </ModMetaData>

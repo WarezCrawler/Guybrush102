@@ -55,7 +55,6 @@ Uses RimWorld's multi-version layout. With no `LoadFolders.xml`, on a 1.6 game R
 | `Defs/` (root) | Shared buildings, research, work giver, and the **base resource/organic/medicinal recipes** |
 | `1.0/` … `1.5/` | Recipe sets for those older game versions (not loaded on 1.6) |
 | `1.6/Defs/RecipeDefs/v1.6_Recipes_ResourceReplication.xml` | The 12 **neurotrainer** replication recipes (Royalty) |
-| `1.0/Languages/Russian/` | Russian translations (DefInjected) for the base content |
 
 > The root recipe file also defines an unused abstract `TechReplicatorBase` (and a `TechReplicator`
 > recipeUser that has no matching building). It is an inert template — no concrete recipe inherits from it,
