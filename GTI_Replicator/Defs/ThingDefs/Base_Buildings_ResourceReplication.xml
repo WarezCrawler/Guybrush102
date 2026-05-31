@@ -19,7 +19,7 @@
 	<ThingDef ParentName="RRBase">
 		<defName>ResourceReplicator</defName>
 		<label>resource replicator</label>
-		<description>A work station for duplicating resources</description>
+		<description>A Guybrush Threepwood Industries matter replicator for raw materials. Point it at a chunk of steel and, through patented GTI science (it involves a pattern buffer, a dilithium hum, and a worrying amount of grog), out come two. Strictly forbidden from replicating live monkeys, three-headed or otherwise.</description>
 		<thingClass>Building_WorkTable</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Production/Replicator</texPath>
@@ -80,7 +80,7 @@
 	<ThingDef ParentName="RRBase">
 		<defName>OrganicReplicator</defName>
 		<label>organic replicator</label>
-		<description>A work station for duplicating organic material</description>
+		<description>GTI's organic matter replicator. Reconstitutes food, crops and meals straight from a stored pattern - much like a starship food synthesizer, only with less "Tea, Earl Grey, hot" and more questionable meat handling. Everything edible comes out as beef. It's simply safer that way, and the legal department insists.</description>
 		<thingClass>Building_WorkTable</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Production/OrganicReplicator</texPath>
@@ -141,7 +141,7 @@
 	<ThingDef ParentName="RRBase">
 		<defName>MedicinalReplicator</defName>
 		<label>medicinal replicator</label>
-		<description>A work station for duplicating drugs and medicine.</description>
+		<description>The GTI pharmaceutical replicator. Duplicates medicine and recreational chemistry with equal enthusiasm, from herbal mush to glowing ultratech ampoules. Now also dispensing root beer that is almost, but not quite, entirely unlike the real thing. Do not operate while insult-swordfighting.</description>
 		<thingClass>Building_WorkTable</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Production/MedicinalReplicator</texPath>

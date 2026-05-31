@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
-	<Operation Class="PatchOperationSequence">
-		<operations>
-			<!-- Remove CompProperties_Refuelable from all buildings inheriting BuildingBase -->
-			<li Class="PatchOperationRemove">
-				<success>Always</success>
-				<xpath>Defs/ThingDef[statBases/ShootingAccuracyTurret and defName!="Turret_RocketswarmLauncher"]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
-			</li>
-			<li Class="PatchOperationRemove">	<!--Patch for Bean's Turret Pack -->
-				<success>Always</success>
-				<xpath>Defs/ThingDef[thingClass="Building_TurretGun" and defName!="Turret_RocketswarmLauncher"]/comps/li[@Class="CompProperties_Refuelable"]</xpath>
-			</li>
-			<!-- Set consumeFuelPerShot to 0 for all BaseWeaponTurret definitions -->
-			<li Class="PatchOperationReplace">
-				<success>Always</success>
-				<xpath>Defs/ThingDef[@ParentName="BaseWeaponTurret" and defName!="Turret_RocketswarmLauncher"]/verbs/li/consumeFuelPerShot</xpath>
-				<value>
-					<consumeFuelPerShot>0</consumeFuelPerShot>
-				</value>
-			</li>
-			<!-- Mortar Barrel remove refuelable node -->
-			<li Class="PatchOperationRemove">
-				<success>Always</success>
-				<xpath>Defs/ThingDef/comps/li[@Class="CompProperties_Refuelable" and fuelIsMortarBarrel="true"]</xpath>
-			</li>
-			<!-- Mortar Barrel set consumption to zero -->
-			<li Class="PatchOperationReplace">
-				<success>Always</success>
-				<xpath>Defs/ThingDef[@ParentName="BaseArtilleryWeapon"]/verbs/li/consumeFuelPerShot</xpath>
-				<value>
-					<consumeFuelPerShot>0</consumeFuelPerShot>
-				</value>
-			</li>
-			<!-- Add more operations below as needed -->
-		</operations>
+
+	<!-- ============================================================================
+	     GTI Infinite Turrets - consumption-only approach
+
+	     Goal: every turret/mortar/rocket launcher has infinite ammo.
+
+	     Approach: instead of REMOVING CompProperties_Refuelable (which broke the
+	     rocketswarm launcher; its top sprite + Building_TurretRocket activation are
+	     driven by that comp, so removing it null-derefs during draw, invisible turret),
+	     we leave all comps intact and simply zero out per-shot consumption.
+
+	     Why this is enough: every vanilla turret spawns full (initialFuelPercent=1) and
+	     only depletes via consumeFuelPerShot. Set that to 0 and the barrel/rockets never
+	     drain, so ammo is effectively infinite, with no exclusions and nothing going
+	     invisible. (Confirmed in-game: rocketswarm stays visible and re-fires; standard
+	     turrets keep a permanently-full bar and survive uninstall/reinstall fine.)
+
+	     In vanilla 1.6 ONLY turret/mortar/rocketswarm weapon defs use consumeFuelPerShot
+	     (verified: Data/Core/.../Buildings_Security_Turrets.xml is the only file that
+	     contains it), so the broad xpath below is safe and also catches modded turrets.
+	     ============================================================================ -->
+
+	<!-- Infinite ammo: never consume fuel/barrel/rockets per shot. -->
+	<Operation Class="PatchOperationReplace">
+		<success>Always</success>
+		<xpath>Defs/ThingDef/verbs/li/consumeFuelPerShot</xpath>
+		<value>
+			<consumeFuelPerShot>0</consumeFuelPerShot>
+		</value>
 	</Operation>
+
+	<!-- Rocketswarm launcher: cut the post-fire cooldown to one third.
+	     Vanilla cooldownTicks is 7500 (2500 ticks = 1 in-game hour, so 3 hours);
+	     one third is 2500 ticks = 1 hour. Targeted by compClass rather than defName so
+	     it also applies to any modded rocketswarm-launcher-style turret.
+	     NOTE: PatchOperations cannot do arithmetic, so this is a flat value (one third of
+	     the vanilla 7500), not a literal "x / 3" of whatever a modded def declares. -->
+	<Operation Class="PatchOperationReplace">
+		<success>Always</success>
+		<xpath>Defs/ThingDef/comps/li[compClass="CompInteractableRocketswarmLauncher"]/cooldownTicks</xpath>
+		<value>
+			<cooldownTicks>2500</cooldownTicks>
+		</value>
+	</Operation>
+
 </Patch>

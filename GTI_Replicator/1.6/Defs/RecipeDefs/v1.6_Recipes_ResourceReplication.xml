@@ -3,10 +3,10 @@
 
 <!-- Medicinal Replicator Recipes -->
 
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRShootingNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Shooting)</label>
-		<description>Replicates 1 shooting neurotrainer into 2.</description>
+		<description>1 shooting neurotrainer into 2. Download 'aim' straight into a brain.</description>
 		<jobString>Replicating shooting neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -27,10 +27,10 @@
 			<Neurotrainer_Shooting>2</Neurotrainer_Shooting>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRMeleeNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Melee)</label>
-		<description>Replicates 1 melee neurotrainer into 2.</description>
+		<description>1 melee neurotrainer into 2. Insult swordfighting not included; the reflexes are.</description>
 		<jobString>Replicating melee neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -51,10 +51,10 @@
 			<Neurotrainer_Melee>2</Neurotrainer_Melee>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRConstructionNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Construction)</label>
-		<description>Replicates 1 construction neurotrainer into 2.</description>
+		<description>1 construction neurotrainer into 2. Instant carpentry, no apprenticeship, no splinters.</description>
 		<jobString>Replicating construction neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -75,10 +75,10 @@
 			<Neurotrainer_Construction>2</Neurotrainer_Construction>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRMiningNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Mining)</label>
-		<description>Replicates 1 mining neurotrainer into 2.</description>
+		<description>1 mining neurotrainer into 2. Teaches a brain which end of the pick to swing.</description>
 		<jobString>Replicating mining neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -99,10 +99,10 @@
 			<Neurotrainer_Mining>2</Neurotrainer_Mining>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRCookingNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Cooking)</label>
-		<description>Replicates 1 cooking neurotrainer into 2.</description>
+		<description>1 cooking neurotrainer into 2. From food poisoning to fine dining, beamed right in.</description>
 		<jobString>Replicating coooking neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -123,10 +123,10 @@
 			<Neurotrainer_Cooking>2</Neurotrainer_Cooking>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRPlantsNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Plants)</label>
-		<description>Replicates 1 plants neurotrainer into 2.</description>
+		<description>1 plants neurotrainer into 2. A green thumb in a bottle.</description>
 		<jobString>Replicating plants neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -147,10 +147,10 @@
 			<Neurotrainer_Plants>2</Neurotrainer_Plants>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRAnimalsNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Animals)</label>
-		<description>Replicates 1 animals neurotrainer into 2.</description>
+		<description>1 animals neurotrainer into 2. Whisper to beasts like a pro. Still won't tame a three-headed monkey.</description>
 		<jobString>Replicating animals neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -171,10 +171,10 @@
 			<Neurotrainer_Animals>2</Neurotrainer_Animals>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRCraftingNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Crafting)</label>
-		<description>Replicates 1 crafting neurotrainer into 2.</description>
+		<description>1 crafting neurotrainer into 2. Mastery, downloaded. The rubber chicken remains beyond science.</description>
 		<jobString>Replicating crafting neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -195,10 +195,10 @@
 			<Neurotrainer_Crafting>2</Neurotrainer_Crafting>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRArtisticNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Artistic)</label>
-		<description>Replicates 1 artistic neurotrainer into 2.</description>
+		<description>1 artistic neurotrainer into 2. Instant talent; results may still resemble a three-headed monkey.</description>
 		<jobString>Replicating artistic neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -219,10 +219,10 @@
 			<Neurotrainer_Artistic>2</Neurotrainer_Artistic>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRMedicineNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Medicine)</label>
-		<description>Replicates 1 medicine neurotrainer into 2.</description>
+		<description>1 medicine neurotrainer into 2. Field-promote a colonist to ship's doctor.</description>
 		<jobString>Replicating medicine neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -243,10 +243,10 @@
 			<Neurotrainer_Medicine>2</Neurotrainer_Medicine>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRSocialNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Social)</label>
-		<description>Replicates 1 social neurotrainer into 2.</description>
+		<description>1 social neurotrainer into 2. Charm, charisma, and a Mighty Pirate's gift of gab.</description>
 		<jobString>Replicating social neurotrainer.</jobString>
 		<ingredients>
             <li>
@@ -267,10 +267,10 @@
 			<Neurotrainer_Social>2</Neurotrainer_Social>
 		</products>
 	</RecipeDef>
-	<RecipeDef ParentName="MedicinalReplicatorBase">
+	<RecipeDef ParentName="MedicinalReplicatorBase" MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>12_RF_MRIntellectualNeurotrainer</defName>
 		<label>Replicate Neurotrainer (Intellectual)</label>
-		<description>Replicates 1 intellectual neurotrainer into 2.</description>
+		<description>1 intellectual neurotrainer into 2. Big brain, beamed in. Highly logical, Captain.</description>
 		<jobString>Replicating intellectual neurotrainer.</jobString>
 		<ingredients>
             <li>
