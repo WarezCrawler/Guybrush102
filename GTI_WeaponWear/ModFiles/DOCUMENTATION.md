@@ -169,6 +169,61 @@ Synergy with the 1-HP safeguard: a weapon worn down to 1 HP is below the thresho
 undrafted pawn will fix it automatically; the safeguard only blocks *using* a 1-HP weapon, not
 repairing it.
 
+## Mod settings — sliders and the formulas they feed
+
+The four settings sliders (`GTI_WeaponWearSettings`, shown in *Options → Mod Settings → GTI Weapon
+Wear*) each plug into exactly one formula:
+
+| Setting (field) | Range / default | Used in |
+|---|---|---|
+| **Wear rate** (`tearMultiplier`) | 0–2, default 1 | wear chance (below) |
+| **Quality influence** (`qualityInfluence`) | 0–2, default 1 | quality multiplier (below) |
+| **Repair material cost** (`repairFraction`) | 0–1, default 0.25 | repair cost (below) |
+| **Auto-repair below** (`equippedRepairThreshold`) | 0–1, default 0.5 | auto-repair trigger (below) |
+
+**Wear chance** — rolled once per weapon use (a fired shot or a melee swing); on success the weapon
+loses 1 HP (floored at 1, so use alone never destroys it). `WeaponWear.WearChance`:
+
+    wearChance = 0.10 × tearMultiplier × qualityMultiplier
+
+- `0.10` is `WeaponWear.BaseChancePerUse` (10% for a normal weapon at defaults).
+- If `tearMultiplier ≤ 0` the chance is 0 (wear off). Result is clamped to ≥ 0.
+
+**Quality multiplier** — how quality bends the wear chance. `WeaponWear.QualityWearMultiplier`:
+
+    qualityMultiplier = max( 0, 1 + (qualityFactor − 1) × qualityInfluence )
+
+- `qualityFactor` is a **fixed constant looked up from the weapon's quality category**
+  (`WeaponWear.QualityBaseFactor`) — it is *not* a setting. It is the raw wear multiplier a quality
+  would impose on its own (i.e. the value of `qualityMultiplier` when `qualityInfluence = 1`).
+  Values below 1 slow wear, above 1 speed it up:
+
+  | Quality | Awful | Poor | Normal | Good | Excellent | Masterwork | Legendary |
+  |---|---|---|---|---|---|---|---|
+  | `qualityFactor` | 1.4 | 1.2 | 1.0 | 0.8 | 0.6 | 0.4 | 0.2 |
+
+- `qualityInfluence` (the setting) then scales how far `qualityFactor` is allowed to pull the
+  multiplier away from 1.0: at `0` the multiplier is 1 for every quality (quality ignored), at `1`
+  it equals `qualityFactor`, at `2` the deviation from 1.0 doubles. A weapon with no quality
+  category uses `qualityFactor = 1` (no effect).
+
+**Repair material cost** — per material, computed from the item's own original resources.
+`WeaponRepairCost.Compute`:
+
+    perMaterial = max( 1, ceil( originalCount × repairFraction × (missingHP / maxHP) ) )
+
+- `originalCount` = `costStuffCount` × the item's stuff (stuff items) plus the def's `costList`,
+  with `ComponentIndustrial` / `ComponentSpacer` excluded.
+- `missingHP / maxHP` is the current damage fraction, so cost scales from ~0 (pristine) up to
+  `repairFraction` of the full build cost (fully broken).
+
+**Auto-repair trigger** — when an undrafted pawn's equipped weapon is repaired automatically.
+`JobGiver_RepairEquippedWeapon`:
+
+    auto-repair fires when   (HitPoints / MaxHitPoints) < equippedRepairThreshold
+
+- `equippedRepairThreshold = 0` disables the feature entirely (no scan).
+
 ## Source / build / deploy
 
 Everything originates from the dev repo and is deployed by the C# build:

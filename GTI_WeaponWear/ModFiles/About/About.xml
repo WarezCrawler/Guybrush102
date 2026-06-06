@@ -17,10 +17,31 @@
 		<li>brrainz.harmony</li>
 	</loadAfter>
 	<description>
-GTI Weapon Wear (work in progress).
+Weapons in vanilla RimWorld never wear out from use. This mod changes that: weapons slowly take damage as they are fired and swung, and it adds easy ways to keep all your gear repaired so a worn weapon is never a dead end.
 
-Scaffolding build: combines a small C# assembly with XML and Harmony patches. For now it only tags weapons with a "GTI ranged weapon" / "GTI melee weapon" line (in the Max Hit Points stat breakdown and on the weapon's inspect panel), to verify the build and load pipeline. The actual weapon-degradation-on-use mechanic comes later.
+WEAPONS WEAR OUT AS YOU USE THEM
+- Every shot fired and every melee swing has a small chance to knock a point of condition off the weapon. Most uses do nothing; it adds up gradually over a lot of fighting.
+- Better quality weapons last longer. A legendary rifle wears far slower than an awful one.
+- A weapon will not destroy itself from normal use. Once worn down to almost nothing, the pawn stops using it so you get a chance to fix it.
 
-Requires Harmony. Safe to add to or remove from a save.
+REPAIR YOUR GEAR
+Add the matching repair bill and your crafters will fix damaged items at the bench that fits them:
+- Weapons at the machining table
+- Armor at the smithy
+- Clothing at the tailoring bench
+- Utility gear (shield belts, packs, etc.) at the fabrication bench
+
+Repairs happen gradually and the item keeps its exact quality, material, and name. A repair costs a fraction of what the item was originally made from (steel for a steel gun, cloth for a shirt), scaled by how damaged it is. Components are never needed.
+
+AUTOMATIC WEAPON UPKEEP (NO MICROMANAGEMENT)
+Just like colonists automatically replace worn-out clothes, your pawns will automatically repair the weapon they are carrying when it drops below a condition you set. There is nothing to enable per pawn, no work type required, and it pauses while a pawn is drafted. Need it fixed right now? Select a pawn, right-click a machining table, and choose "Repair (weapon) now" for an immediate repair.
+
+ALWAYS KNOW WHAT A REPAIR NEEDS
+Select a damaged item and its info shows exactly which materials a repair needs and how many you have. If a pawn cannot repair its weapon because you are out of the material, you get a quick heads-up message.
+
+FULLY TUNABLE
+Four sliders in the mod options: weapon wear rate (0 turns wear off), how much quality matters, repair material cost, and the auto-repair condition (0 turns it off).
+
+Requires Harmony. Safe to add to a save. Removing it mid-save leaves any already-worn weapons at their current condition.
 	</description>
 </ModMetaData>

@@ -62,6 +62,29 @@ Because repair costs depend on the item, the mod tells you what's required:
 - If a pawn wants to auto-repair their weapon but you're out of the material, you'll get a quick
   **heads-up message** in the corner naming the pawn and what's missing.
 
+## Mod options
+
+Everything is tunable in **Options → Mod Settings → GTI Weapon Wear**. There are four sliders, split
+into two groups:
+
+**Weapon wear**
+
+- **Wear rate** (default `1x`) — how fast weapons take damage from being used.
+  `0` = off (weapons never wear), `1` = default, `2` = wears twice as fast. The menu also shows the
+  live per-use chance at your current setting.
+- **Quality influence** (default `1x`) — how much a weapon's quality changes its wear rate.
+  `0` = quality ignored (everything wears the same), `1` = default, `2` = quality matters twice as
+  much. Higher values make great weapons last even longer and bad ones wear out even faster.
+
+**Repairs**
+
+- **Repair material cost** (default `25%`) — what a *full* repair costs, as a share of the materials
+  the item was originally built from (components never needed). The real cost scales with damage, so
+  a lightly worn item is cheap to top up.
+- **Auto-repair equipped weapons below** (default `50%`) — the condition at which pawns start fixing
+  their own carried weapon in their spare time. Set to `0` to turn auto-repair off. No per-pawn
+  setup, no work type to enable, and it pauses while a pawn is drafted.
+
 ## In short
 
 Weapons degrade with use (tunable, quality-aware, never self-destructing), everything is repairable
