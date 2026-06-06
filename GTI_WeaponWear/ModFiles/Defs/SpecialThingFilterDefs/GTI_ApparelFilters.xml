@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<!-- ============================================================== -->
+	<!-- Route apparel to the right repair bench. Each filter MATCHES    -->
+	<!-- the apparel a given recipe should REJECT; the recipe disallows  -->
+	<!-- it (vanilla "disallow the unwanted subset" pattern).            -->
+	<!--   armor recipe (smithy)       disallows GTI_ApparelNotArmor       -->
+	<!--   clothing recipe (tailor)    disallows GTI_ApparelNotCloth       -->
+	<!--   utility recipe (fabricator) disallows GTI_ApparelNotUtility     -->
+	<!-- Classification is by ApparelClassifier (Belt layer => utility,    -->
+	<!-- else craft bench, then material).                                 -->
+	<!-- ============================================================== -->
+
+	<SpecialThingFilterDef>
+		<defName>GTI_ApparelNotArmor</defName>
+		<label>non-armor apparel</label>
+		<description>Apparel that is not armor.</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiApparelNotArmor</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotArmorApparel</workerClass>
+	</SpecialThingFilterDef>
+
+	<SpecialThingFilterDef>
+		<defName>GTI_ApparelNotCloth</defName>
+		<label>non-clothing apparel</label>
+		<description>Apparel that is not clothing.</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiApparelNotCloth</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotClothApparel</workerClass>
+	</SpecialThingFilterDef>
+
+	<SpecialThingFilterDef>
+		<defName>GTI_ApparelNotUtility</defName>
+		<label>non-utility apparel</label>
+		<description>Apparel that is not utility gear (belt-slot items).</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiApparelNotUtility</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotUtilityApparel</workerClass>
+	</SpecialThingFilterDef>
+
+</Defs>

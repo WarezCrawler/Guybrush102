@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>GTI_WeaponWear</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <!-- Project lives inside the Guybrush102 git repo, which auto-enables -->
+    <!-- SourceLink; that fails writing sourcelink.json on this drive. Off. -->
+    <EnableSourceLink>false</EnableSourceLink>
+    <DeterministicSourcePaths>false</DeterministicSourcePaths>
+  </PropertyGroup>
+
+  <!-- ModFiles\ is the deployable mod payload (About / Patches / docs), not C#. -->
+  <!-- Keep it out of compilation; it is copied verbatim by the Deploy target.   -->
+  <ItemGroup>
+    <Compile Remove="ModFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>T:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>T:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <!-- Harmony is provided at runtime by the brrainz.harmony mod; do NOT ship our own copy. -->
+    <Reference Include="0Harmony">
+      <HintPath>T:\SteamLibrary\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Deploy the WHOLE mod (payload + built DLL) into the live mod folder. -->
+  <PropertyGroup>
+    <ModDeployDir>T:\SteamLibrary\steamapps\common\RimWorld\Mods\GTI_WeaponWear</ModDeployDir>
+  </PropertyGroup>
+
+  <Target Name="Deploy" AfterTargets="Build">
+    <ItemGroup>
+      <ModPayload Include="$(MSBuildProjectDirectory)\ModFiles\**\*" />
+    </ItemGroup>
+    <!-- Clean the previous deploy so renamed/removed files never linger. -->
+    <RemoveDir Directories="$(ModDeployDir)" />
+    <!-- Copy the mod payload (About / Patches / docs), preserving structure. -->
+    <Copy SourceFiles="@(ModPayload)"
+          DestinationFiles="@(ModPayload->'$(ModDeployDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <!-- Copy the freshly built assembly. -->
+    <MakeDir Directories="$(ModDeployDir)\Assemblies" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModDeployDir)\Assemblies" />
+    <!-- Enumerate exactly what was deployed (visible at default 'minimal' verbosity). -->
+    <Message Importance="high" Text="=== GTI Weapon Wear deployed to $(ModDeployDir) ===" />
+    <Message Importance="high" Text="  payload -> ModFiles\%(ModPayload.RecursiveDir)%(ModPayload.Filename)%(ModPayload.Extension)" />
+    <Message Importance="high" Text="  assembly -> Assemblies\$(TargetFileName)" />
+  </Target>
+</Project>
