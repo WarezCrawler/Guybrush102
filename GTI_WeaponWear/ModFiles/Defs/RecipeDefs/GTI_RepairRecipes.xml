@@ -2,109 +2,44 @@
 <Defs>
 
 	<!-- ============================================================== -->
-	<!-- GTI Weapon Wear  weapon repair (starter balance)               -->
-	<!-- All repair bills live at the Machining table. The weapon is an  -->
-	<!-- ingredient (count 1) but is NOT consumed: RecipeWorker_RepairWeapon -->
-	<!-- restores its HitPoints in place. Products are empty.            -->
+	<!-- GTI Weapon Wear  weapon repair                                 -->
+	<!-- A single bill at the Machining table repairs any damaged weapon. -->
+	<!-- The weapon is a count:1 ingredient that is NOT consumed         -->
+	<!-- (repaired in place; quality/material preserved). Materials are   -->
+	<!-- NOT listed here: WorkGiver_RepairWeapon computes them from the   -->
+	<!-- weapon's own original cost (a fraction, scaled by damage,        -->
+	<!-- components excluded) and hauls them dynamically. The incremental -->
+	<!-- repair + proportional consumption happen in JobDriver_RepairWeapon. -->
 	<!--                                                                 -->
-	<!--   wooden weapons -> 5 wood                                      -->
-	<!--   metal weapons  -> 5 steel                                     -->
-	<!--   stone weapons  -> not repairable                              -->
-	<!--                                                                 -->
-	<!-- Default HP filter is 0~99% so only damaged weapons are picked.  -->
+	<!-- workerClass is the marker WorkGiver_RepairWeapon / the Harmony   -->
+	<!-- safeguard use to recognise repair bills (and an atomic fallback).-->
+	<!-- Default HP filter 0~99% so only damaged weapons are picked.      -->
 	<!-- ============================================================== -->
 
 	<RecipeDef>
-		<defName>GTI_RepairWeapon_Wood</defName>
-		<label>repair wooden weapon</label>
-		<description>Repair a damaged wooden weapon using a little wood. Quality and material are preserved.</description>
-		<jobString>Repairing wooden weapon.</jobString>
-		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
-		<effectWorking>Smith</effectWorking>
-		<soundWorking>Recipe_Machining</soundWorking>
-		<workAmount>800</workAmount>
-		<workSkill>Crafting</workSkill>
-		<allowMixingIngredients>false</allowMixingIngredients>
-		<ingredients>
-			<li>
-				<filter>
-					<categories>
-						<li>Weapons</li>
-					</categories>
-					<specialFiltersToDisallow>
-						<li>GTI_WeaponNotWood</li>
-					</specialFiltersToDisallow>
-				</filter>
-				<count>1</count>
-			</li>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>WoodLog</li>
-					</thingDefs>
-				</filter>
-				<count>5</count>
-			</li>
-		</ingredients>
-		<fixedIngredientFilter>
-			<categories>
-				<li>Weapons</li>
-			</categories>
-			<thingDefs>
-				<li>WoodLog</li>
-			</thingDefs>
-			<specialFiltersToDisallow>
-				<li>GTI_WeaponNotWood</li>
-			</specialFiltersToDisallow>
-			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
-		</fixedIngredientFilter>
-		<recipeUsers>
-			<li>TableMachining</li>
-		</recipeUsers>
-	</RecipeDef>
-
-	<RecipeDef>
-		<defName>GTI_RepairWeapon_Steel</defName>
+		<defName>GTI_RepairWeapon</defName>
 		<label>repair weapon</label>
-		<description>Repair a damaged metal weapon (including guns) using a little steel. Quality and material are preserved.</description>
+		<description>Repair a damaged weapon at the machining table. Uses a fraction (~25%) of the weapon's own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
 		<jobString>Repairing weapon.</jobString>
 		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
 		<effectWorking>Smith</effectWorking>
 		<soundWorking>Recipe_Machining</soundWorking>
 		<workAmount>800</workAmount>
 		<workSkill>Crafting</workSkill>
-		<allowMixingIngredients>false</allowMixingIngredients>
 		<ingredients>
 			<li>
 				<filter>
 					<categories>
 						<li>Weapons</li>
 					</categories>
-					<specialFiltersToDisallow>
-						<li>GTI_WeaponNotMetal</li>
-					</specialFiltersToDisallow>
 				</filter>
 				<count>1</count>
-			</li>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>Steel</li>
-					</thingDefs>
-				</filter>
-				<count>5</count>
 			</li>
 		</ingredients>
 		<fixedIngredientFilter>
 			<categories>
 				<li>Weapons</li>
 			</categories>
-			<thingDefs>
-				<li>Steel</li>
-			</thingDefs>
-			<specialFiltersToDisallow>
-				<li>GTI_WeaponNotMetal</li>
-			</specialFiltersToDisallow>
 			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
 		</fixedIngredientFilter>
 		<recipeUsers>

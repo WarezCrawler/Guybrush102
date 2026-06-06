@@ -112,6 +112,11 @@ namespace GTI_WeaponWear
                     return;
                 }
                 job.bill?.Notify_DoBillStarted(pawn);
+
+                // The materials hauled here were already computed (fraction of the
+                // weapon's own cost, scaled by damage) by WorkGiver_RepairWeapon, so we
+                // simply consume exactly what was staged, spread proportionally across
+                // the repair.
                 progress = new RepairProgress(
                     pawn,
                     table.IngredientStackCells,
@@ -172,7 +177,10 @@ namespace GTI_WeaponWear
             {
                 foreach (Thing t in pawn.Map.thingGrid.ThingsListAt(cell))
                 {
-                    if (t == null || t.def.IsWeapon)
+                    // IngredientStackCells are the bench's OWN cells, so this list also
+                    // contains the bench building and the weapon being repaired. Only
+                    // count loose resource items as consumable materials.
+                    if (t == null || t.def.category != ThingCategory.Item || t.def.IsWeapon)
                     {
                         continue;
                     }

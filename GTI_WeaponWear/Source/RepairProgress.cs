@@ -42,8 +42,12 @@ namespace GTI_WeaponWear
             repaired += amount;
             float progress = repaired / toRepair;
 
+            // Only ever look at loose resource items. The ingredient cells are the
+            // bench's own cells, so the raw list also contains the bench building and
+            // the weapon — neither must ever be consumed.
             List<Thing> staged = cells
                 .SelectMany(c => pawn.Map.thingGrid.ThingsListAt(c))
+                .Where(t => t != null && t.def.category == ThingCategory.Item && !t.def.IsWeapon)
                 .ToList();
 
             bool ok = true;

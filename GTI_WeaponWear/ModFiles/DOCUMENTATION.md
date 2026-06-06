@@ -14,37 +14,44 @@ exact same Thing survives (quality, material, biocode, name, art preserved). Rec
 empty `<products/>`.
 
 Repair is **incremental**: a custom WorkGiver + JobDriver raises the weapon's HitPoints one
-point at a time and consumes the wood/steel **proportionally** as it goes. Interrupting the
-job leaves the weapon partially repaired, having spent only the materials for the HP actually
-restored. (The recipe `workerClass` `RecipeWorker_RepairWeapon` remains as an atomic fallback
-and as the marker the WorkGiver uses to recognise repair bills.)
+point at a time and consumes materials **proportionally** as it goes. Interrupting the job
+leaves the weapon partially repaired, having spent only the materials for the HP actually
+restored.
 
-- `WorkGiver_RepairWeapon : WorkGiver_DoBill` — `GTI_RepairWeaponMachining` (workType
-  Smithing, priority 80 > vanilla `DoBillsMachiningTable` 75). Reuses vanilla ingredient
-  finding; swaps repair bills to the `GTI_RepairWeapon` job, passes normal bills through.
-- `JobDriver_RepairWeapon` — hauls weapon + materials to the bench, then a work toil does
-  `HitPoints++` every ~25 work-ticks (scaled by work speed) until full; `RepairProgress`
-  consumes materials proportionally from the bench's ingredient cells.
+**Material cost = the weapon's own original resources.** A single `repair weapon` bill
+handles any damaged weapon; the cost is computed per weapon from its crafting cost:
 
-Material split (starter balance, rebalance later):
+    per material = ceil( originalCount × 0.25 × (missingHP / maxHP) ), min 1
 
-| Weapon material | Recipe | Cost |
-|---|---|---|
-| Wooden (stuff = Woody, or wood-cost guns/bows) | `repair wooden weapon` | 5 wood |
-| Metal (metal stuff, all guns) | `repair weapon` | 5 steel |
-| Stone (stuff = Stony) | — | not repairable |
+- Sources: `costStuffCount` × the weapon's actual material (stuff weapons) plus the def's
+  `costList`, with `ComponentIndustrial` / `ComponentSpacer` always excluded.
+- So a steel gun costs steel, a plasteel sword costs plasteel, a wood bow costs wood; a fully
+  broken weapon costs ~25% of its build cost, a lightly damaged one far less.
+- (Modded components aren't auto-excluded yet — only the two vanilla component defs.)
 
-How the split works: two custom `SpecialThingFilter`s (`GTI_WeaponNotWood`,
-`GTI_WeaponNotMetal`) each match the weapons a recipe should *reject*; the recipe disallows
-its filter (the vanilla "disallow the unwanted subset" pattern). `WeaponMaterial.Classify`
-is the single source of truth. The default ingredient HP filter is `0~99%`, so only damaged
-weapons are picked up.
+Code:
+- `WeaponRepairCost.Compute` — the cost formula above.
+- `WorkGiver_RepairWeapon : WorkGiver_DoBill` (`GTI_RepairWeaponMachining`, workType Smithing,
+  priority 80). Reuses vanilla to find the weapon, then computes + finds the materials on the
+  map and appends them to the job's ingredient queue. Returns no job if materials aren't
+  reachable. Passes normal crafting bills through.
+- `Patch_WorkGiverDoBill_SkipRepair` — Harmony postfix so **vanilla** machining givers never
+  run the (material-less) repair recipe for free; only our giver does.
+- `JobDriver_RepairWeapon` — hauls weapon + computed materials to the bench, `HitPoints++`
+  every ~25 work-ticks (scaled by work speed) until full; `RepairProgress` consumes the hauled
+  materials proportionally. The recipe `workerClass` `RecipeWorker_RepairWeapon` is the marker
+  the WorkGiver/patch use and an atomic in-place fallback.
+
+Default ingredient HP filter is `0~99%`, so only damaged weapons are picked up. All weapons
+(including stone) are now repairable with their own material.
 
 ### How to test repair
 1. Have a Machining table; damage a weapon (combat, or dev-mode "lower HP").
-2. Add a bill: **repair wooden weapon** (wood) or **repair weapon** (steel).
-3. A crafter hauls the weapon + materials, works, and the weapon returns to full HP with the
-   same quality/material. Stone weapons should NOT appear as repairable.
+2. Add the **repair weapon** bill.
+3. A crafter hauls the weapon + the right materials, repairs it gradually to full HP with the
+   same quality/material, consuming roughly 25%×damage of its original resources.
+4. Note: the bill UI does not list a material requirement (materials are computed
+   dynamically); a repair won't start unless the needed material is available on the map.
 
 ## Step 1 — scaffolding (kept as a load indicator)
 
