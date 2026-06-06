@@ -62,16 +62,18 @@ namespace GTI_WeaponWear
         }
 
         // Sum the loose resource items currently staged in the bench's ingredient cells,
-        // grouped by def. Excludes the bench itself and any weapon/apparel being repaired.
-        // Used by both repair JobDrivers to seed RepairProgress.
-        public static List<ThingDefCountClass> GatherStagedMaterials(Map map, Building_WorkTable table)
+        // grouped by def. Excludes the bench itself and the specific item being repaired
+        // (identified by reference, NOT by def — wood is itself a weapon def, so a def-based
+        // weapon/apparel filter would wrongly drop wood materials). Used by both repair
+        // JobDrivers to seed RepairProgress.
+        public static List<ThingDefCountClass> GatherStagedMaterials(Map map, Building_WorkTable table, Thing repairedItem)
         {
             Dictionary<ThingDef, int> counts = new Dictionary<ThingDef, int>();
             foreach (IntVec3 cell in table.IngredientStackCells)
             {
                 foreach (Thing t in map.thingGrid.ThingsListAt(cell))
                 {
-                    if (t == null || t.def.category != ThingCategory.Item || t.def.IsWeapon || t.def.IsApparel)
+                    if (t == null || t == repairedItem || t.def.category != ThingCategory.Item)
                     {
                         continue;
                     }

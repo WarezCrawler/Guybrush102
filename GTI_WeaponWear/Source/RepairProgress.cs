@@ -24,14 +24,16 @@ namespace GTI_WeaponWear
 
         private readonly Pawn pawn;
         private readonly List<IntVec3> cells;
+        private readonly Thing repairedItem;
         private readonly int toRepair;
         private readonly List<Consume> table;
         private int pointsDone;
 
-        public RepairProgress(Pawn pawn, IEnumerable<IntVec3> ingredientCells, List<ThingDefCountClass> toConsume, int repairAmount)
+        public RepairProgress(Pawn pawn, IEnumerable<IntVec3> ingredientCells, List<ThingDefCountClass> toConsume, int repairAmount, Thing repairedItem)
         {
             this.pawn = pawn;
             cells = ingredientCells.ToList();
+            this.repairedItem = repairedItem;
             toRepair = Math.Max(1, repairAmount);
             table = toConsume.Select(c => new Consume { def = c.thingDef, toConsume = c.count, consumed = 0 }).ToList();
         }
@@ -76,10 +78,12 @@ namespace GTI_WeaponWear
 
         private List<Thing> StagedItems()
         {
-            // Only loose resource items — never the bench or the weapon/apparel being repaired.
+            // Only loose resource items — never the bench or the item being repaired. The
+            // repaired item is excluded by reference, NOT by def: wood is itself a weapon def,
+            // so a def-based weapon/apparel filter would wrongly skip staged wood materials.
             return cells
                 .SelectMany(c => pawn.Map.thingGrid.ThingsListAt(c))
-                .Where(t => t != null && t.def.category == ThingCategory.Item && !t.def.IsWeapon && !t.def.IsApparel)
+                .Where(t => t != null && t != repairedItem && t.def.category == ThingCategory.Item)
                 .ToList();
         }
 

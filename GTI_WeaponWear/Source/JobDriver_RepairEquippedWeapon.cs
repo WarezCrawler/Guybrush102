@@ -90,8 +90,9 @@ namespace GTI_WeaponWear
                 progress = new RepairProgress(
                     pawn,
                     table.IngredientStackCells,
-                    RepairUtil.GatherStagedMaterials(pawn.Map, table),
-                    weapon.MaxHitPoints - weapon.HitPoints);
+                    RepairUtil.GatherStagedMaterials(pawn.Map, table, weapon),
+                    weapon.MaxHitPoints - weapon.HitPoints,
+                    weapon);
             };
 
             toil.tickAction = delegate
