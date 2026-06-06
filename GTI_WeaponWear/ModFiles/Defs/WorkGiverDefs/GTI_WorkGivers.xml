@@ -1,17 +1,53 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-	<!-- Stands in for DoBillsMachiningTable (workType Smithing, priority 75) at a -->
-	<!-- higher priority, so repair bills become our incremental GTI_RepairWeapon  -->
-	<!-- job. Normal crafting bills are passed through unchanged by the worker.     -->
+	<!-- ============================================================== -->
+	<!-- One generic WorkGiver class (WorkGiver_RepairWeapon) serves all -->
+	<!-- repair benches. A WorkGiverDef carries a single workType + a    -->
+	<!-- single priority, so we need exactly two:                        -->
+	<!--   - Smithing: machining table, smithy, fabrication bench        -->
+	<!--   - Tailoring: tailoring benches                                -->
+	<!-- (The two cannot merge: different workType.) Non-repair bills are -->
+	<!-- passed through to vanilla by the worker; the Harmony patch stops -->
+	<!-- vanilla from running the repair recipe for free.                -->
+	<!-- ============================================================== -->
+
+	<!-- Smithing-side repair: weapons (machining), armor (smithy), utility -->
+	<!-- gear (fabrication). Priority 120 > highest vanilla Smithing giver   -->
+	<!-- (DoBillsMakeWeapons, 115), so repair is considered before fresh     -->
+	<!-- crafting at every covered bench.                                    -->
 	<WorkGiverDef>
-		<defName>GTI_RepairWeaponMachining</defName>
-		<label>repair weapons at machining table</label>
+		<defName>GTI_RepairSmithing</defName>
+		<label>repair gear at smithing benches</label>
 		<giverClass>GTI_WeaponWear.WorkGiver_RepairWeapon</giverClass>
 		<workType>Smithing</workType>
-		<priorityInType>80</priorityInType>
+		<priorityInType>120</priorityInType>
 		<fixedBillGiverDefs>
 			<li>TableMachining</li>
+			<li>ElectricSmithy</li>
+			<li>FueledSmithy</li>
+			<li>FabricationBench</li>
+		</fixedBillGiverDefs>
+		<verb>repair</verb>
+		<gerund>repairing</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+
+	<!-- Tailoring-side repair: clothing at the tailoring benches. Separate    -->
+	<!-- because it uses the Tailoring work type. Priority 115 > vanilla        -->
+	<!-- DoBillsMakeApparel (110).                                             -->
+	<WorkGiverDef>
+		<defName>GTI_RepairTailoring</defName>
+		<label>repair clothing at tailoring benches</label>
+		<giverClass>GTI_WeaponWear.WorkGiver_RepairWeapon</giverClass>
+		<workType>Tailoring</workType>
+		<priorityInType>115</priorityInType>
+		<fixedBillGiverDefs>
+			<li>ElectricTailoringBench</li>
+			<li>HandTailoringBench</li>
 		</fixedBillGiverDefs>
 		<verb>repair</verb>
 		<gerund>repairing</gerund>

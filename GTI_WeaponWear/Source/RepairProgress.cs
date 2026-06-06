@@ -76,10 +76,10 @@ namespace GTI_WeaponWear
 
         private List<Thing> StagedItems()
         {
-            // Only loose resource items — never the bench or the weapon.
+            // Only loose resource items — never the bench or the weapon/apparel being repaired.
             return cells
                 .SelectMany(c => pawn.Map.thingGrid.ThingsListAt(c))
-                .Where(t => t != null && t.def.category == ThingCategory.Item && !t.def.IsWeapon)
+                .Where(t => t != null && t.def.category == ThingCategory.Item && !t.def.IsWeapon && !t.def.IsApparel)
                 .ToList();
         }
 

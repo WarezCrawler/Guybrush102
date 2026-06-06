@@ -6,20 +6,49 @@ End goal: weapons lose hit points as they are used (firing / melee swings), i.e.
 degradation-on-use, which vanilla does not support. Repair is implemented first so wear is
 never purely punishing.
 
-## Step 2 — weapon repair (current work)
+## Step 2 — item repair (current work)
 
-All repair bills live at the **Machining table** (`TableMachining`). The damaged weapon is
-listed as a `count:1` ingredient and is **not consumed** — it is repaired in place, so the
-exact same Thing survives (quality, material, biocode, name, art preserved). Recipes declare
-empty `<products/>`.
+Repair covers **weapons AND apparel**, each at the bench that matches it:
 
-Repair is **incremental**: a custom WorkGiver + JobDriver raises the weapon's HitPoints one
-point at a time and consumes materials **proportionally** as it goes. Interrupting the job
-leaves the weapon partially repaired, having spent only the materials for the HP actually
-restored.
+| Item | Bill | Bench(es) |
+|---|---|---|
+| Weapons (any) | `repair weapon` | Machining table |
+| Armor | `repair armor` | Electric/Fueled Smithy |
+| Clothing | `repair clothing` | Electric/Hand Tailoring bench |
+| Utility gear (belt slot) | `repair utility gear` | Fabrication bench |
 
-**Material cost = the weapon's own original resources.** A single `repair weapon` bill
-handles any damaged weapon; the cost is computed per weapon from its crafting cost:
+Apparel is split into utility / armor / clothing by `ApparelClassifier`:
+1. **Utility** first — anything in the `Belt` apparel layer (shield belt, smokepop belt,
+   fire-foam popper, jump/mech packs, etc.) goes to the **fabrication bench** (late-game),
+   regardless of where it is crafted (several are built at the machining table).
+2. Otherwise by where it is *crafted* (`recipeMaker.recipeUsers`: tailoring bench → clothing,
+   smithy/fabrication/machining → armor).
+3. Falling back to material (fabric/leather → clothing, metal → armor).
+
+Three `SpecialThingFilter`s (`GTI_ApparelNotArmor`, `GTI_ApparelNotCloth`,
+`GTI_ApparelNotUtility`) route each apparel to the right recipe via the "disallow the unwanted
+subset" pattern.
+
+> Naming note: the repair engine is generic, but several classes keep `Weapon`/`weapon` in
+> their names from when it was weapon-only — `WorkGiver_RepairWeapon`, `JobDriver_RepairWeapon`,
+> `RecipeWorker_RepairWeapon`, `WeaponRepairCost`. They handle weapons and apparel alike. The
+> four repair recipes all share `workerClass RecipeWorker_RepairWeapon` (the marker the
+> WorkGiver/Harmony patch use). One generic WorkGiver class serves all benches via just two
+> `WorkGiverDef`s — `GTI_RepairSmithing` (Smithing/120: machining + smithy + fabrication) and
+> `GTI_RepairTailoring` (Tailoring/115: tailoring benches). They can't merge further because a
+> `WorkGiverDef` has a single workType. Neither adds a row to the Work tab (both reuse vanilla
+> work types).
+
+The damaged item is listed as a `count:1` ingredient and is **not consumed** — it is repaired
+in place, so the exact same Thing survives (quality, material, biocode, name, art, tainted
+status preserved).
+
+Repair is **incremental**: a custom WorkGiver + JobDriver raises the item's HitPoints one point
+at a time and consumes materials with payment **leading** the repair (pay-before, rounded up),
+so you can never gain HP you haven't paid for. Interrupting leaves the item partially repaired.
+
+**Material cost = the item's own original resources.** The cost is computed per item from its
+crafting cost:
 
     per material = ceil( originalCount × 0.25 × (missingHP / maxHP) ), min 1
 

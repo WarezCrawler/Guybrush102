@@ -34,7 +34,7 @@ namespace GTI_WeaponWear
 
             Thing weapon = job.targetQueueB?
                 .Select(t => t.Thing)
-                .FirstOrDefault(t => t != null && t.def.IsWeapon);
+                .FirstOrDefault(t => t != null && (t.def.IsWeapon || t.def.IsApparel));
             if (weapon == null)
             {
                 return null;

@@ -40,7 +40,7 @@ namespace GTI_WeaponWear
             // Identify the weapon among the queued ingredients (the rest are materials).
             weapon = job.GetTargetQueue(IngredientInd)
                 .Select(t => t.Thing)
-                .FirstOrDefault(t => t != null && t.def.IsWeapon);
+                .FirstOrDefault(t => t != null && (t.def.IsWeapon || t.def.IsApparel));
 
             this.FailOnDestroyedNullOrForbidden(BenchInd);
             this.FailOnBurningImmobile(BenchInd);
@@ -181,9 +181,9 @@ namespace GTI_WeaponWear
                 foreach (Thing t in pawn.Map.thingGrid.ThingsListAt(cell))
                 {
                     // IngredientStackCells are the bench's OWN cells, so this list also
-                    // contains the bench building and the weapon being repaired. Only
-                    // count loose resource items as consumable materials.
-                    if (t == null || t.def.category != ThingCategory.Item || t.def.IsWeapon)
+                    // contains the bench building and the weapon/apparel being repaired.
+                    // Only count loose resource items as consumable materials.
+                    if (t == null || t.def.category != ThingCategory.Item || t.def.IsWeapon || t.def.IsApparel)
                     {
                         continue;
                     }

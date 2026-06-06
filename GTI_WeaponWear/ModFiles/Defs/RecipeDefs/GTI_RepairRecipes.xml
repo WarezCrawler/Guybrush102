@@ -47,4 +47,124 @@
 		</recipeUsers>
 	</RecipeDef>
 
+	<!-- Armor repaired at the smithy. -->
+	<RecipeDef>
+		<defName>GTI_RepairArmor</defName>
+		<label>repair armor</label>
+		<description>Repair a damaged piece of armor at the smithy. Uses a configurable fraction (mod settings, default 25%) of its own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
+		<jobString>Repairing armor.</jobString>
+		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
+		<effectWorking>Smith</effectWorking>
+		<soundWorking>Recipe_Smith</soundWorking>
+		<workAmount>800</workAmount>
+		<workSkill>Crafting</workSkill>
+		<allowMixingIngredients>false</allowMixingIngredients>
+		<ingredients>
+			<li>
+				<filter>
+					<categories>
+						<li>Apparel</li>
+					</categories>
+					<specialFiltersToDisallow>
+						<li>GTI_ApparelNotArmor</li>
+					</specialFiltersToDisallow>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>GTI_ApparelNotArmor</li>
+			</specialFiltersToDisallow>
+			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
+		</fixedIngredientFilter>
+		<recipeUsers>
+			<li>ElectricSmithy</li>
+			<li>FueledSmithy</li>
+		</recipeUsers>
+	</RecipeDef>
+
+	<!-- Clothing repaired at the tailoring bench. -->
+	<RecipeDef>
+		<defName>GTI_RepairClothing</defName>
+		<label>repair clothing</label>
+		<description>Repair a damaged piece of clothing at the tailoring bench. Uses a configurable fraction (mod settings, default 25%) of its own original materials, scaled by how damaged it is. Quality and material are preserved.</description>
+		<jobString>Repairing clothing.</jobString>
+		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
+		<effectWorking>Tailor</effectWorking>
+		<soundWorking>Recipe_Tailor</soundWorking>
+		<workAmount>800</workAmount>
+		<workSkill>Crafting</workSkill>
+		<allowMixingIngredients>false</allowMixingIngredients>
+		<ingredients>
+			<li>
+				<filter>
+					<categories>
+						<li>Apparel</li>
+					</categories>
+					<specialFiltersToDisallow>
+						<li>GTI_ApparelNotCloth</li>
+					</specialFiltersToDisallow>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>GTI_ApparelNotCloth</li>
+			</specialFiltersToDisallow>
+			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
+		</fixedIngredientFilter>
+		<recipeUsers>
+			<li>ElectricTailoringBench</li>
+			<li>HandTailoringBench</li>
+		</recipeUsers>
+	</RecipeDef>
+
+	<!-- Utility gear (belt-slot: shields, packs, smokepop, etc.) repaired at the -->
+	<!-- fabrication bench  late-game, matching how advanced these items are.     -->
+	<RecipeDef>
+		<defName>GTI_RepairUtility</defName>
+		<label>repair utility gear</label>
+		<description>Repair a damaged piece of utility gear (shield belt, packs, etc.) at the fabrication bench. Uses a configurable fraction (mod settings, default 25%) of its own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
+		<jobString>Repairing utility gear.</jobString>
+		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
+		<effectWorking>Smith</effectWorking>
+		<soundWorking>Recipe_Machining</soundWorking>
+		<workAmount>800</workAmount>
+		<workSkill>Crafting</workSkill>
+		<allowMixingIngredients>false</allowMixingIngredients>
+		<ingredients>
+			<li>
+				<filter>
+					<categories>
+						<li>Apparel</li>
+					</categories>
+					<specialFiltersToDisallow>
+						<li>GTI_ApparelNotUtility</li>
+					</specialFiltersToDisallow>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<fixedIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>GTI_ApparelNotUtility</li>
+			</specialFiltersToDisallow>
+			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
+		</fixedIngredientFilter>
+		<recipeUsers>
+			<li>FabricationBench</li>
+		</recipeUsers>
+	</RecipeDef>
+
 </Defs>
