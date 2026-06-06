@@ -8,6 +8,9 @@ namespace GTI_WeaponWear
     {
         public static JobDef GTI_RepairWeapon;
 
+        // Undrafted pawn repairs its own equipped weapon at a bench (auto-repair).
+        public static JobDef GTI_RepairEquippedWeapon;
+
         static GTI_JobDefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(GTI_JobDefOf));

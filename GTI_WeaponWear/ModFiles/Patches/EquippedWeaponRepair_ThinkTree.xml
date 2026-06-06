@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+	<!-- ============================================================== -->
+	<!-- Insert the equipped-weapon auto-repair JobGiver into the        -->
+	<!-- Humanlike think tree, right after vanilla's apparel optimizer.  -->
+	<!-- Running it from the think tree (not a WorkGiver) is intentional: -->
+	<!-- like "drop worn clothes / equip better", it must work without    -->
+	<!-- the player enabling a work type, so combat pawns (who usually    -->
+	<!-- have crafting disabled) repair their own weapon automatically.   -->
+	<!-- It sits AFTER JobGiver_Work, so it only uses spare time.         -->
+	<!-- Anchored on the apparel-optimizer's Tagger (the ChangingApparel  -->
+	<!-- one whose subnode is JobGiver_OptimizeApparel) to disambiguate   -->
+	<!-- from the prisoner-dressing Tagger.                               -->
+	<!-- ============================================================== -->
+
+	<Operation Class="PatchOperationInsert">
+		<xpath>/Defs/ThinkTreeDef[defName="Humanlike"]//li[@Class="ThinkNode_Tagger" and subNodes/li/@Class="JobGiver_OptimizeApparel"]</xpath>
+		<order>Append</order>
+		<value>
+			<li Class="GTI_WeaponWear.JobGiver_RepairEquippedWeapon" />
+		</value>
+	</Operation>
+
+</Patch>

@@ -47,44 +47,13 @@ namespace GTI_WeaponWear
             repair.countQueue = new List<int>(job.countQueue);
 
             Dictionary<ThingDef, int> mats = WeaponRepairCost.Compute(weapon);
-            if (mats.Count > 0 && !TryFindMaterials(pawn, thing.Position, mats, repair.targetQueueB, repair.countQueue))
+            if (mats.Count > 0 && !RepairUtil.TryFindMaterials(pawn, thing.Position, mats,
+                    repair.targetQueueB, repair.countQueue, out List<ThingDefCountClass> missing))
             {
+                JobFailReason.Is("Not enough materials to repair (need " + RepairUtil.DescribeMaterials(missing) + ")");
                 return null; // not enough materials reachable right now
             }
             return repair;
-        }
-
-        private static bool TryFindMaterials(Pawn pawn, IntVec3 near, Dictionary<ThingDef, int> needed,
-            List<LocalTargetInfo> queue, List<int> counts)
-        {
-            foreach (KeyValuePair<ThingDef, int> kv in needed)
-            {
-                int remaining = kv.Value;
-                List<Thing> stacks = pawn.Map.listerThings.ThingsOfDef(kv.Key)
-                    .OrderBy(t => (t.Position - near).LengthHorizontalSquared)
-                    .ToList();
-
-                foreach (Thing t in stacks)
-                {
-                    if (remaining <= 0)
-                    {
-                        break;
-                    }
-                    if (t.IsForbidden(pawn) || !pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Deadly))
-                    {
-                        continue;
-                    }
-                    int take = Mathf.Min(remaining, t.stackCount);
-                    queue.Add(t);
-                    counts.Add(take);
-                    remaining -= take;
-                }
-                if (remaining > 0)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

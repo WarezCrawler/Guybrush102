@@ -3,10 +3,10 @@
 A C# + XML + Harmony RimWorld mod (RimWorld 1.6). Requires Harmony. **Work in progress.**
 
 End goal: weapons lose hit points as they are used (firing / melee swings), i.e. weapon
-degradation-on-use, which vanilla does not support. Repair is implemented first so wear is
-never purely punishing.
+degradation-on-use, which vanilla does not support. Repair was implemented first so wear is
+never purely punishing; the wear mechanic itself is now in (Step 3 below).
 
-## Step 2 — item repair (current work)
+## Step 2 — item repair
 
 Repair covers **weapons AND apparel**, each at the bench that matches it:
 
@@ -74,6 +74,13 @@ Code:
 Default ingredient HP filter is `0~99%`, so only damaged weapons are picked up. All weapons
 (including stone) are now repairable with their own material.
 
+**Material feedback.** Because the cost is computed per item and never listed on the bill, a
+damaged weapon/apparel's **inspect panel** shows a `Repair needs: Nx Material (have M)` line
+(`Patch_Thing_RepairInfo`), so you can see exactly what a repair will consume and whether you
+have it. If a pawn can't start a repair because the colony is out of that material, ordering it
+manually (right-click) shows a "Not enough materials to repair …" reason (`JobFailReason`). This
+is the common reason a valid-looking repair target is silently skipped.
+
 ### How to test repair
 1. Have a Machining table; damage a weapon (combat, or dev-mode "lower HP").
 2. Add the **repair weapon** bill.
@@ -82,30 +89,85 @@ Default ingredient HP filter is `0~99%`, so only damaged weapons are picked up. 
 4. Note: the bill UI does not list a material requirement (materials are computed
    dynamically); a repair won't start unless the needed material is available on the map.
 
-## Step 1 — scaffolding (kept as a load indicator)
+## Step 3 — weapon wear on use (current work)
 
-This build does **no** gameplay change. It exists to prove the whole pipeline (XML patch +
-C# assembly + Harmony) builds, loads, and shows a visible effect. For weapons only it shows
-`GTI ranged weapon` / `GTI melee weapon` in two places:
+Each time a weapon is **used** — a ranged shot actually fired, or a melee swing — there is a
+chance it loses **1 hit point**. The roll is random, so most uses do nothing.
 
-1. **XML-patch path** — `Patches/WeaponWear_HitPointsLabel.xml` adds a `StatPart`
-   (`GTI_WeaponWear.StatPart_WeaponWearLabel`) to the vanilla `MaxHitPoints` stat, which
-   appends the line to the **Max Hit Points** stat breakdown. The stat *value* is never
-   changed (`TransformValue` is a no-op).
-2. **Harmony path** — `GTI_WeaponWear.Patch_Thing_GetInspectString` postfixes
-   `Thing.GetInspectString()` to append the line to a weapon's **inspect panel** (bottom-left
-   when the weapon is selected). `GTI_WeaponWearMod` (`[StaticConstructorOnStartup]`) runs
-   `Harmony.PatchAll()` at startup and logs `[GTI Weapon Wear] Harmony patches applied.`
+    chance per use = 0.10 × tearMultiplier × qualityMultiplier(quality, qualityInfluence)
 
-Ranged is checked before melee (guns also carry melee tools).
+- **Base** = 10% per use (a normal-quality weapon at default settings).
+- **`tearMultiplier`** (mod settings, 0–2, default 1): overall weight. 0 = no wear, 2 = double.
+- **`qualityInfluence`** (mod settings, 0–2, default 1): how strongly quality matters. At 0 all
+  weapons wear equally; at 1 the per-quality factors below apply; at 2 the spread doubles.
+- Per-quality factor (multiplier at influence 1): Awful 1.4, Poor 1.2, Normal 1.0, Good 0.8,
+  Excellent 0.6, Masterwork 0.4, Legendary 0.2 — so better weapons wear more slowly.
 
-### How to see it in-game
-- **Inspect panel (most visible):** click a weapon lying on the ground or in a stockpile —
-  the GTI line appears in the bottom-left selection info.
-- **Stat breakdown:** open the weapon's Info Card (the **ⓘ**) → click the **Max Hit Points**
-  row → the GTI line is at the bottom of the explanation.
-- Neither appears on non-weapons (apparel, walls, etc.).
-- Confirm load in `Player.log`: search for `[GTI Weapon Wear] Harmony patches applied.`
+**Safeguard / floor:** wear never takes a weapon below **1 HP**. At 1 HP the weapon is
+considered worn out and its combat verbs report unavailable (`Verb.Available()` patch), so the
+pawn **stops using it** — meaning ordinary use can never destroy a weapon. A worn weapon is
+still repairable (the repair filter is 0–99%). If a weapon reaches **0 HP** by other means it
+is destroyed by the vanilla rules and is therefore gone / unrepairable.
+
+Code (`Source/`):
+- `WeaponWear.Notify_WeaponUsed(weapon)` — the wear roll + 1-HP floor. `WearChance` /
+  `QualityWearMultiplier` implement the formula above. `IsWornOut` is the floor test.
+- `Patch_VerbLaunchProjectile_TryCastShot` — postfix on `Verb_LaunchProjectile.TryCastShot`
+  (covers `Verb_Shoot`/`Verb_ShootOneUse`); fires when a pawn actually shoots.
+- `Patch_VerbMeleeAttack_TryCastShot` — postfix on `Verb_MeleeAttack.TryCastShot`; fires once
+  per pawn melee swing. Body-part attacks have no `EquipmentSource` and are ignored.
+- `Patch_Verb_Available` — postfix on `Verb.Available()`; forces `false` for any verb whose
+  `EquipmentSource` is a worn-out weapon. Only real weapons are gated (apparel/body verbs are
+  untouched). Turrets are skipped (`CasterIsPawn` guard in the use patches).
+
+### How to test wear
+1. Equip a pawn with a weapon; note its HP. Set `tearMultiplier` high (e.g. 2) in mod settings
+   to see it quickly.
+2. Have the pawn fire / melee repeatedly (hunt, or draft + attack). HP ticks down ~1 at a time.
+3. Compare a Legendary vs Awful weapon (with `qualityInfluence` at 1) — the Awful one wears
+   noticeably faster.
+4. Let one drop to 1 HP: the pawn should refuse to keep using it (switches to fists / can't
+   fire). Repair it at the matching bench to restore it.
+
+Scaffolding from Steps 1–2 (the `GTI ranged/melee weapon` inspect-string and `MaxHitPoints`
+`StatPart`) has been **removed** — it was only ever a load indicator.
+
+### Auto-repair of equipped weapons
+
+Vanilla lets you set an apparel HP policy (drop/replace clothes below X% HP) but has **no
+equivalent for the equipped weapon**, so a degrading weapon needs constant micromanagement.
+This adds it: when an **undrafted** pawn's primary weapon falls below the
+**`equippedRepairThreshold`** setting (mod options, default 50%, 0 = off), the pawn carries the
+needed materials to a machining table and repairs the weapon **back to full**.
+
+- The weapon **stays equipped** the whole time — only the materials are hauled — so there is no
+  drop, swap, spare-weapon requirement, or re-equip. The same weapon (quality/material) is kept.
+- Cost and pay-before consumption are identical to bench repair (`WeaponRepairCost` +
+  `RepairProgress`). Interrupting (e.g. a raid drafts the pawn) leaves it partially repaired.
+- **Not a work type.** It runs from the **think tree**, inserted right after vanilla's apparel
+  optimizer (`Patches/EquippedWeaponRepair_ThinkTree.xml`), exactly like the "drop worn clothes /
+  equip better" behaviour. This is deliberate: it must work **regardless of the Work tab**, since
+  the combat pawns that carry weapons usually have crafting disabled. The node sits *after*
+  `JobGiver_Work`, so it only uses **spare time** and never interrupts real work, and never runs
+  while drafted. The pawn still needs **Manipulation** and a reachable, usable machining table
+  with the right material; the bench/material scan is throttled per pawn (~10 s).
+- Master control is the threshold slider (`0` = off) — there is no per-pawn Work-tab toggle.
+- **Manual override:** select a pawn and **right-click a machining table** → **"Repair `<weapon>` now"**
+  forces an immediate repair to full, **ignoring the threshold** (works for any damaged weapon, even
+  lightly damaged). If the colony lacks the material the option is shown greyed with the shortfall
+  (e.g. *"… (needs 4x steel)"*). Implemented as a 1.6 `FloatMenuOptionProvider` (auto-discovered;
+  no patch). The job is `playerForced`, so it runs even if the pawn is busy.
+- **Out-of-material heads-up:** if a pawn wants to repair its own weapon but the colony lacks the
+  material, a light top-left message fires (e.g. *"Brick can't repair pistol: needs 4x steel"*) —
+  a transient message, not a letter. Throttled to at most once per pawn per in-game day so it
+  can't spam, and only for these **personal** repairs (bench bills show the shortfall via the
+  item's inspect line / right-click reason instead).
+- Code: `JobGiver_RepairEquippedWeapon.TryGiveJob` (finds bench + materials, builds the job) and
+  `JobDriver_RepairEquippedWeapon` (hauls materials, ticks the equipped weapon's HP up).
+
+Synergy with the 1-HP safeguard: a weapon worn down to 1 HP is below the threshold, so an
+undrafted pawn will fix it automatically; the safeguard only blocks *using* a 1-HP weapon, not
+repairing it.
 
 ## Source / build / deploy
 
@@ -116,10 +178,12 @@ Everything originates from the dev repo and is deployed by the C# build:
 GTI_WeaponWear/                    (dev repo — source of truth)
 ├── GTI_WeaponWear.csproj
 ├── Properties/AssemblyInfo.cs
+├── CODE_REFERENCE.md              (per-file C# method reference — dev only, not deployed)
 ├── Source/*.cs                    (compiled into the DLL)
 └── ModFiles/                      (mod payload — NOT compiled)
     ├── About/About.xml
-    ├── Patches/WeaponWear_HitPointsLabel.xml
+    ├── Defs/                      (recipes, work givers, jobs, filters)
+    ├── Patches/EquippedWeaponRepair_ThinkTree.xml
     └── DOCUMENTATION.md           (this file)
 ```
 
@@ -132,9 +196,41 @@ GTI_WeaponWear/                    (dev repo — source of truth)
 ```
 T:\...\RimWorld\Mods\GTI_WeaponWear\   (deployed — do NOT edit by hand)
 ├── About/About.xml
-├── Patches/WeaponWear_HitPointsLabel.xml
+├── Defs/
+├── Patches/EquippedWeaponRepair_ThinkTree.xml
 ├── Assemblies/GTI_WeaponWear.dll
 └── DOCUMENTATION.md
 ```
 
-- No Harmony dependency yet (a `StatPart` needs none). The real wear mechanic will add Harmony.
+- Requires Harmony (brrainz.harmony) — declared in `About.xml` (`modDependencies` + `loadAfter`).
+
+## Changelog
+
+All initial development on 2026-06-06 (RimWorld 1.6). Newest first.
+
+- **Manual repair override.** Select a pawn and right-click a machining table → "Repair `<weapon>`
+  now" forces an immediate repair to full, ignoring the auto-repair threshold (greyed with the
+  shortfall when material is missing). 1.6 `FloatMenuOptionProvider` (auto-discovered).
+- **Out-of-material heads-up.** A light top-left message fires when a pawn wants to auto-repair its
+  own weapon but the colony lacks the material (throttled ~1/day per pawn; personal repairs only).
+- **Equipped-weapon auto-repair no longer needs a work type.** Moved from a Smithing WorkGiver to a
+  think-tree JobGiver (next to apparel optimization), so combat pawns with crafting disabled still
+  auto-repair their weapon. Runs in spare time only; the threshold slider is the master control.
+- **Repair material feedback.** Damaged weapons/apparel show a `Repair needs: Nx Material (have M)`
+  line on their inspect panel; bench bills also report a "not enough materials" reason on right-click.
+- **Equipped-weapon auto-repair.** Undrafted pawns carry materials to a machining table and repair
+  their own equipped weapon (kept equipped) when it falls below a configurable HP threshold
+  (default 50%, 0 = off).
+- **Weapon wear on use (the core mechanic).** Each shot/melee swing has a chance to lose 1 HP:
+  `0.10 × tear multiplier × quality multiplier`. Two new settings sliders (tear multiplier,
+  quality influence). Worn weapons stop being used at 1 HP, so use alone never destroys them; 0 HP
+  (other damage) = destroyed/unrepairable. Step-1/2 scaffolding (inspect tag + StatPart) removed.
+- **Utility apparel repair.** Belt-slot gear (shields, packs, etc.) repairs at the fabrication
+  bench. Work givers consolidated from four to two (one Smithing, one Tailoring).
+- **Apparel repair.** Armor repairs at the smithy, clothing at the tailoring bench, routed by an
+  apparel classifier; bill lists show only the matching category.
+- **Weapon repair (bench).** Incremental in-place repair at the machining table: pay-before
+  material consumption, cost computed from the weapon's own original materials (components
+  excluded), scaled by damage, at a configurable fraction (default 25%). Quality/material preserved.
+- **Initial scaffolding.** Pipeline proof (XML patch + C# + Harmony) tagging weapons in the inspect
+  panel; superseded and removed once real features landed.

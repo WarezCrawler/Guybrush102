@@ -7,4 +7,11 @@
 		<reportString>repairing TargetB.</reportString>
 	</JobDef>
 
+	<!-- Undrafted pawn repairs its OWN equipped weapon at a machining table. -->
+	<JobDef>
+		<defName>GTI_RepairEquippedWeapon</defName>
+		<driverClass>GTI_WeaponWear.JobDriver_RepairEquippedWeapon</driverClass>
+		<reportString>repairing equipped weapon.</reportString>
+	</JobDef>
+
 </Defs>

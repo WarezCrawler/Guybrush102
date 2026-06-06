@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -7,23 +6,20 @@ using Verse.AI;
 
 namespace GTI_WeaponWear
 {
-    // Incremental weapon repair, adapted from RepairBench's JobDriver_RepairItem.
-    //
-    // Flow: reserve the bench + ingredient queue, haul every ingredient (the weapon
-    // plus the wood/steel) to the bench, then run a work toil that raises the weapon's
-    // HitPoints one point at a time and consumes the materials proportionally. If the
-    // job is interrupted, the weapon keeps whatever HP it reached and only the matching
-    // fraction of materials has been spent.
-    public class JobDriver_RepairWeapon : JobDriver
+    // Repairs the pawn's OWN equipped weapon at a bench. The weapon stays equipped the whole
+    // time — only the materials are hauled to the bench — so there is no drop / swap / re-equip.
+    // Materials are consumed pay-before (RepairProgress) exactly like the bench-bill repair, so
+    // interrupting (e.g. a raid drafting the pawn) leaves the weapon partially repaired and only
+    // the matching share of materials spent.
+    public class JobDriver_RepairEquippedWeapon : JobDriver
     {
         private const TargetIndex BenchInd = TargetIndex.A;
         private const TargetIndex IngredientInd = TargetIndex.B;
         private const TargetIndex CellInd = TargetIndex.C;
 
-        // Base game-ticks of work to restore one hit point (before work-speed factors).
         private const float TicksPerHitPoint = 25f;
 
-        private Thing weapon;
+        private ThingWithComps Weapon => pawn.equipment?.Primary;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -37,13 +33,10 @@ namespace GTI_WeaponWear
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            // Identify the weapon among the queued ingredients (the rest are materials).
-            weapon = job.GetTargetQueue(IngredientInd)
-                .Select(t => t.Thing)
-                .FirstOrDefault(t => t != null && (t.def.IsWeapon || t.def.IsApparel));
-
             this.FailOnDestroyedNullOrForbidden(BenchInd);
             this.FailOnBurningImmobile(BenchInd);
+            // Drafting (e.g. a raid) or losing/swapping the weapon cancels the job cleanly.
+            this.FailOn(() => pawn.Drafted || Weapon == null);
             AddEndCondition(() =>
                 (job.GetTarget(BenchInd).Thing is Building b && b.Spawned)
                     ? JobCondition.Ongoing
@@ -52,7 +45,7 @@ namespace GTI_WeaponWear
             yield return Toils_Reserve.Reserve(BenchInd);
             yield return Toils_Reserve.ReserveQueue(IngredientInd);
 
-            // ---- Collect ingredients (weapon + materials) and bring them to the bench ----
+            // ---- Haul the materials to the bench (the weapon is NOT hauled — it stays equipped) ----
             Toil extract = Toils_JobTransforms.ExtractNextTargetFromQueue(IngredientInd);
             yield return extract;
 
@@ -71,25 +64,10 @@ namespace GTI_WeaponWear
             yield return Toils_Haul.PlaceHauledThingInCell(CellInd, findPlace, false);
             yield return Toils_Jump.JumpIfHaveTargetInQueue(IngredientInd, extract);
 
-            Toil gotoBench = Toils_Goto.GotoThing(BenchInd, PathEndMode.InteractionCell);
-            yield return gotoBench;
+            yield return Toils_Goto.GotoThing(BenchInd, PathEndMode.InteractionCell);
 
-            // ---- The incremental repair toil ----
+            // ---- Incremental repair of the equipped weapon ----
             yield return MakeRepairToil();
-
-            // ---- Finish the bill iteration (only reached on full repair) ----
-            yield return new Toil
-            {
-                initAction = delegate
-                {
-                    if (weapon != null)
-                    {
-                        List<Thing> done = new List<Thing> { weapon };
-                        job.bill?.Notify_IterationCompleted(pawn, done);
-                        RecordsUtility.Notify_BillDone(pawn, done);
-                    }
-                }
-            };
             yield return Toils_Reserve.Release(BenchInd);
         }
 
@@ -97,26 +75,18 @@ namespace GTI_WeaponWear
         {
             RepairProgress progress = null;
             float ticksToNext = TicksPerHitPoint;
-
-            Toil toil = new Toil
-            {
-                defaultCompleteMode = ToilCompleteMode.Never
-            };
             Building_WorkTable table = job.GetTarget(BenchInd).Thing as Building_WorkTable;
+
+            Toil toil = new Toil { defaultCompleteMode = ToilCompleteMode.Never };
 
             toil.initAction = delegate
             {
+                ThingWithComps weapon = Weapon;
                 if (weapon == null || table == null)
                 {
                     EndJobWith(JobCondition.Incompletable);
                     return;
                 }
-                job.bill?.Notify_DoBillStarted(pawn);
-
-                // The materials hauled here were already computed (fraction of the
-                // weapon's own cost, scaled by damage) by WorkGiver_RepairWeapon, so we
-                // simply consume exactly what was staged, spread proportionally across
-                // the repair.
                 progress = new RepairProgress(
                     pawn,
                     table.IngredientStackCells,
@@ -126,14 +96,13 @@ namespace GTI_WeaponWear
 
             toil.tickAction = delegate
             {
+                ThingWithComps weapon = Weapon;
                 if (weapon == null || progress == null)
                 {
                     EndJobWith(JobCondition.Incompletable);
                     return;
                 }
 
-                job.bill?.Notify_PawnDidWork(pawn);
-                job.SetTarget(IngredientInd, weapon);
                 pawn.skills?.Learn(SkillDefOf.Crafting, 0.08f);
 
                 float speed = pawn.GetStatValue(StatDefOf.WorkSpeedGlobal)
@@ -150,8 +119,6 @@ namespace GTI_WeaponWear
                     ReadyForNextToil();
                     return;
                 }
-                // Pay for the point BEFORE granting it. If the material isn't available,
-                // stop without restoring this hit point.
                 if (!progress.TryPayForNextPoint())
                 {
                     EndJobWith(JobCondition.Incompletable);
@@ -164,8 +131,8 @@ namespace GTI_WeaponWear
                 }
             };
 
-            toil.WithProgressBar(IngredientInd,
-                () => weapon == null ? 1f : (float)weapon.HitPoints / weapon.MaxHitPoints);
+            toil.WithProgressBar(BenchInd,
+                () => Weapon == null ? 1f : (float)Weapon.HitPoints / Weapon.MaxHitPoints);
             toil.FailOnDestroyedNullOrForbidden(BenchInd);
             toil.FailOnCannotTouch(BenchInd, PathEndMode.InteractionCell);
             return toil;
