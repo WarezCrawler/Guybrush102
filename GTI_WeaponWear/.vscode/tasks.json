@@ -16,8 +16,9 @@
                 "isDefault": true
             },
             "presentation": {
-                "reveal": "silent",
-                "panel": "shared"
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
             },
             "problemMatcher": "$msCompile"
         }

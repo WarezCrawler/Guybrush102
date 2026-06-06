@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>GTI Weapon Wear</name>
+	<author>WarezCrawler</author>
+	<packageId>GTI.WeaponWear</packageId>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>brrainz.harmony</li>
+	</loadAfter>
+	<description>
+GTI Weapon Wear (work in progress).
+
+Scaffolding build: combines a small C# assembly with XML and Harmony patches. For now it only tags weapons with a "GTI ranged weapon" / "GTI melee weapon" line (in the Max Hit Points stat breakdown and on the weapon's inspect panel), to verify the build and load pipeline. The actual weapon-degradation-on-use mechanic comes later.
+
+Requires Harmony. Safe to add to or remove from a save.
+	</description>
+</ModMetaData>

@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "GTI_InfiniteTurrets"
+		},
+		{
+			"path": "GTI_Replicator"
+		},
+		{
+			"path": "GTI_WeaponWear"
+		}
+	],
+	"settings": {}
+}
