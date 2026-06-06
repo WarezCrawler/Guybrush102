@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace GTI_WeaponWear
 {
-    // Consumes the staged material ingredients (sitting in the bench's ingredient
-    // cells) proportionally to how much of the weapon has been repaired. Adapted
-    // from RepairBench's ItemRepairProgress.
+    // Charges the staged material ingredients for an incremental repair. Payment LEADS the
+    // repair: before each hit point is granted, the materials owed up to that point (rounded
+    // up) must be available and are consumed first. This guarantees the player can never gain
+    // a hit point they haven't paid for, even if the job is interrupted.
     //
-    // Example: repairing 50 HP costing 5 wood -> 1 wood is removed roughly every
-    // 10 HP restored. If the job is interrupted, only the wood for the HP actually
-    // restored has been consumed.
+    // Example: 4 steel over 53 HP -> a steel is consumed as each ~13-HP slice begins, with the
+    // first taken before the first point is restored.
     public class RepairProgress
     {
         private sealed class Consume
@@ -25,7 +26,7 @@ namespace GTI_WeaponWear
         private readonly List<IntVec3> cells;
         private readonly int toRepair;
         private readonly List<Consume> table;
-        private float repaired;
+        private int pointsDone;
 
         public RepairProgress(Pawn pawn, IEnumerable<IntVec3> ingredientCells, List<ThingDefCountClass> toConsume, int repairAmount)
         {
@@ -35,55 +36,78 @@ namespace GTI_WeaponWear
             table = toConsume.Select(c => new Consume { def = c.thingDef, toConsume = c.count, consumed = 0 }).ToList();
         }
 
-        // Returns false when the required material could no longer be found (out of
-        // staged materials) so the caller can abort the job.
-        public bool AddRepairedAmount(int amount)
+        // Call BEFORE granting one hit point. Consumes (rounded up) the materials owed up to
+        // and including that point. Returns false and consumes nothing if any required
+        // material is unavailable — the caller must then NOT grant the point.
+        public bool TryPayForNextPoint()
         {
-            repaired += amount;
-            float progress = repaired / toRepair;
+            int next = pointsDone + 1;
+            float progress = (float)next / toRepair;
 
-            // Only ever look at loose resource items. The ingredient cells are the
-            // bench's own cells, so the raw list also contains the bench building and
-            // the weapon — neither must ever be consumed.
-            List<Thing> staged = cells
+            List<Thing> staged = StagedItems();
+
+            List<KeyValuePair<Consume, int>> due = new List<KeyValuePair<Consume, int>>();
+            foreach (Consume c in table)
+            {
+                int need = Mathf.CeilToInt(c.toConsume * progress) - c.consumed;
+                if (need > 0)
+                {
+                    due.Add(new KeyValuePair<Consume, int>(c, need));
+                }
+            }
+
+            // Affordability check first, so we never partially consume and then abort.
+            foreach (KeyValuePair<Consume, int> d in due)
+            {
+                if (Available(staged, d.Key.def) < d.Value)
+                {
+                    return false;
+                }
+            }
+
+            foreach (KeyValuePair<Consume, int> d in due)
+            {
+                Remove(staged, d.Key.def, d.Value);
+                d.Key.consumed += d.Value;
+            }
+            pointsDone = next;
+            return true;
+        }
+
+        private List<Thing> StagedItems()
+        {
+            // Only loose resource items — never the bench or the weapon.
+            return cells
                 .SelectMany(c => pawn.Map.thingGrid.ThingsListAt(c))
                 .Where(t => t != null && t.def.category == ThingCategory.Item && !t.def.IsWeapon)
                 .ToList();
-
-            bool ok = true;
-            foreach (Consume c in table)
-            {
-                int want = (int)Math.Floor(c.toConsume * progress) - c.consumed;
-                if (want > 0)
-                {
-                    c.consumed += want;
-                    ok &= Remove(staged, c.def, want);
-                }
-            }
-            return ok;
         }
 
-        private static bool Remove(List<Thing> staged, ThingDef def, int amount)
+        private static int Available(List<Thing> staged, ThingDef def)
+        {
+            return staged.Where(t => t.def == def).Sum(t => t.stackCount);
+        }
+
+        private static void Remove(List<Thing> staged, ThingDef def, int amount)
         {
             foreach (Thing t in staged.Where(x => x.def == def).ToArray())
             {
+                if (amount <= 0)
+                {
+                    break;
+                }
                 if (t.stackCount <= amount)
                 {
                     amount -= t.stackCount;
                     t.Destroy();
                     staged.Remove(t);
-                    if (amount == 0)
-                    {
-                        return true;
-                    }
                 }
                 else
                 {
                     t.SplitOff(amount).Destroy();
-                    return true;
+                    amount = 0;
                 }
             }
-            return amount <= 0;
         }
     }
 }

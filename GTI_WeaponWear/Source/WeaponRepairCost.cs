@@ -16,8 +16,10 @@ namespace GTI_WeaponWear
     //   - everything else (guns, bows): the def's costList, minus components
     public static class WeaponRepairCost
     {
-        public static Dictionary<ThingDef, int> Compute(Thing weapon, float fraction)
+        public static Dictionary<ThingDef, int> Compute(Thing weapon)
         {
+            float fraction = GTI_WeaponWearMod.Settings?.repairFraction ?? 0.25f;
+
             Dictionary<ThingDef, int> result = new Dictionary<ThingDef, int>();
             if (weapon?.def == null)
             {

@@ -19,7 +19,7 @@
 	<RecipeDef>
 		<defName>GTI_RepairWeapon</defName>
 		<label>repair weapon</label>
-		<description>Repair a damaged weapon at the machining table. Uses a fraction (~25%) of the weapon's own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
+		<description>Repair a damaged weapon at the machining table. Uses a configurable fraction (mod settings, default 25%) of the weapon's own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
 		<jobString>Repairing weapon.</jobString>
 		<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
 		<effectWorking>Smith</effectWorking>

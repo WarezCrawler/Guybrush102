@@ -18,8 +18,6 @@ namespace GTI_WeaponWear
     // recipes at all.
     public class WorkGiver_RepairWeapon : WorkGiver_DoBill
     {
-        private const float RepairFraction = 0.25f;
-
         public override Job JobOnThing(Pawn pawn, Thing thing, bool forced = false)
         {
             Job job = base.JobOnThing(pawn, thing, forced);
@@ -48,7 +46,7 @@ namespace GTI_WeaponWear
             repair.targetQueueB = new List<LocalTargetInfo>(job.targetQueueB);
             repair.countQueue = new List<int>(job.countQueue);
 
-            Dictionary<ThingDef, int> mats = WeaponRepairCost.Compute(weapon, RepairFraction);
+            Dictionary<ThingDef, int> mats = WeaponRepairCost.Compute(weapon);
             if (mats.Count > 0 && !TryFindMaterials(pawn, thing.Position, mats, repair.targetQueueB, repair.countQueue))
             {
                 return null; // not enough materials reachable right now

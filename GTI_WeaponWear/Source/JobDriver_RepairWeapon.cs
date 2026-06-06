@@ -145,16 +145,19 @@ namespace GTI_WeaponWear
                 }
                 ticksToNext = TicksPerHitPoint;
 
-                if (weapon.HitPoints < weapon.MaxHitPoints)
+                if (weapon.HitPoints >= weapon.MaxHitPoints)
                 {
-                    weapon.HitPoints++;
+                    ReadyForNextToil();
+                    return;
                 }
-                if (!progress.AddRepairedAmount(1))
+                // Pay for the point BEFORE granting it. If the material isn't available,
+                // stop without restoring this hit point.
+                if (!progress.TryPayForNextPoint())
                 {
-                    // Ran out of staged materials.
                     EndJobWith(JobCondition.Incompletable);
                     return;
                 }
+                weapon.HitPoints++;
                 if (weapon.HitPoints >= weapon.MaxHitPoints)
                 {
                     ReadyForNextToil();
