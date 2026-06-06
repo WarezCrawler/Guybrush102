@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Deploy to RimWorld",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-Command",
+                "robocopy '${workspaceFolder}' 'T:\\SteamLibrary\\steamapps\\common\\RimWorld\\Mods\\GTI_Utilities' /MIR /XD .git .vscode /XF *.ffs_db /NP; if ($LASTEXITCODE -lt 8) { exit 0 } else { exit $LASTEXITCODE }"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
