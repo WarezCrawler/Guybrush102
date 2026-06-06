@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "../Data",
+      "../../workshop/content/294100"
+    ]
+  }
+}
