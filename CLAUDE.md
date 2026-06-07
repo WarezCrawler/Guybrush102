@@ -10,6 +10,7 @@ Mods/
 ├── GTI_InfiniteTurrets/   Published Steam mod — turrets/mortars never need fuel or barrels
 ├── GTI_Replicator/        Personal fork of "Resource Replicator" — item-cloning workbenches
 ├── GTI_Utilities/         Personal grab-bag of XML patches (currently all disabled)
+├── GTI_WeaponWear/        C# mod (repo's first) — weapons wear with use; repair benches + auto-repair
 ├── README.md              Short human-facing overview
 └── CLAUDE.md              This file
 ```
@@ -26,9 +27,16 @@ when changing a specific mod.
   - Anything that references a def from a non-installed DLC **must** be guarded with `MayRequire` (see below),
     or it produces red cross-reference errors on load.
 
-## These are pure-XML mods
+## Mostly pure-XML mods — one C# exception
 
-There are **no C# assemblies** anywhere — no `Assemblies/` folders, no `.dll`, no source to compile.
+**`GTI_WeaponWear` is a C# mod** (the repo's first). Its source (`Source/*.cs` + a net472 `.csproj`) lives in
+the dev tree at `O:\Mod Development\Rimworld\Guybrush102\GTI_WeaponWear\`; `dotnet build -c Release` compiles
+it and an MSBuild **Deploy** target wipes the live mod folder and copies `ModFiles\**` plus the freshly built
+DLL into `Assemblies\`. Verification still = launch RimWorld + read `Player.log` (no unit tests). Architecture,
+formulas, and code gotchas live in that mod's own `CODE_REFERENCE.md` / `DOCUMENTATION.md`; build/deploy
+specifics are in the `rimworld-csharp-mod-build` memory. **Everything below applies to the other (XML-only) mods.**
+
+The XML mods have **no C# assemblies** — no `Assemblies/` folders, no `.dll`, no source to compile.
 Everything is Defs and PatchOperations. This means:
 - "Updating for a new game version" = checking that def names / fields / xpaths still match vanilla, and
   bumping `<supportedVersions>` in `About/About.xml`. There is nothing to recompile.
@@ -76,6 +84,22 @@ per-frame NREs from *unrelated* mods. It looks like someone else's mod broke, bu
   ```powershell
   try { [xml](Get-Content path\file.xml -Raw); 'VALID' } catch { "INVALID: $($_.Exception.Message)" }
   ```
+
+### ⚠️ (C#) Wood (`WoodLog`) is itself a weapon def
+`WoodLog` derives from `ResourceVerbBase`, so it carries a melee verb and `def.IsWeapon == true` — a colonist
+can wield a log as a club. It is the **only** stuff-resource that does (steel/plasteel/uranium/jade are plain
+`ResourceBase`). Consequence for any code that separates "the item being worked on" from "the materials":
+**never** filter by `def.IsWeapon` / `def.IsApparel` to exclude the worked item — wood *materials* get silently
+skipped too. Identify the specific item by **reference** (`thing == theItem`). This caused a real GTI_WeaponWear
+bug where wooden items (war mask, bows) repaired for free because the staged wood was never counted or consumed.
+
+### (C#) Repair model: materials are dynamic, not in the recipe
+GTI_WeaponWear's repair recipe lists **no material ingredient** — the "ingredient" is the damaged item itself
+(category + `allowedHitPointsPercents 0~0.99`), and the real material cost is computed per-item at runtime
+(`WeaponRepairCost`). So vanilla `WorkGiver_DoBill` always thinks the bill is doable and hands back only the
+single *closest* damaged item. `WorkGiver_RepairWeapon` therefore tries the closest item first (fast path) and,
+only if its materials are unavailable, enumerates the other damaged items the bill covers. A Harmony postfix
+(`Patch_WorkGiverDoBill_SkipRepair`) stops vanilla givers from running the material-less repair recipe for free.
 
 ### After a failed load, check the log
 RimWorld log: `%USERPROFILE%\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Player.log`.
