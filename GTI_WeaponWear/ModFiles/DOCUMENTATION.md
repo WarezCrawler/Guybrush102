@@ -17,17 +17,38 @@ Repair covers **weapons AND apparel**, each at the bench that matches it:
 | Clothing | `repair clothing` | Electric/Hand Tailoring bench |
 | Utility gear (belt slot) | `repair utility gear` | Fabrication bench |
 
-Apparel is split into utility / armor / clothing by `ApparelClassifier`:
-1. **Utility** first — anything in the `Belt` apparel layer (shield belt, smokepop belt,
-   fire-foam popper, jump/mech packs, etc.) goes to the **fabrication bench** (late-game),
-   regardless of where it is crafted (several are built at the machining table).
-2. Otherwise by where it is *crafted* (`recipeMaker.recipeUsers`: tailoring bench → clothing,
-   smithy/fabrication/machining → armor).
-3. Falling back to material (fabric/leather → clothing, metal → armor).
+### Where an item is repaired is data-driven (`RepairProperties` node)
 
-Three `SpecialThingFilter`s (`GTI_ApparelNotArmor`, `GTI_ApparelNotCloth`,
-`GTI_ApparelNotUtility`) route each apparel to the right recipe via the "disallow the unwanted
-subset" pattern.
+Which bench repairs an item — **and whether it is repairable at all** — is decided by
+`RepairRouting`, in this order:
+
+1. **A `RepairProperties` modExtension on the item's def wins.** It lists the `<benches>` the item
+   may be repaired at. An empty/omitted `<benches>` means **explicitly never repairable**. Add this
+   node from any mod (via `PatchOperationAddModExtension`) to route or block your own items — no C#
+   needed. See the disabled `Patches/Examples/RepairRouting_Example.xm_` for a copy-paste template.
+2. **Otherwise the built-in fallback** classifies the (hit-pointed) item:
+   - **Weapons** → the machining table.
+   - **Apparel** via `ApparelClassifier`: **Utility** first (anything in the `Belt` apparel layer —
+     shield belt, smokepop belt, packs — → **fabrication bench**, regardless of craft bench); else
+     by where it is *crafted* (`recipeMaker.recipeUsers`: tailoring → clothing, smithy/fabrication/
+     machining → armor); else by material (fabric/leather → clothing, metal → armor).
+
+So an un-patched item (vanilla or third-party) keeps the sensible default; the node is a pure
+override. Bench lists themselves live in the recipe `<recipeUsers>` (XML) — `RepairRouting` reads
+them, never hardcodes them.
+
+The fallback in step 2 can be **switched off** with the **Auto-assign repair benches for un-tagged
+items** mod option (`fallbackRouting`, default on). With it off, *only* items carrying an explicit
+`RepairProperties` tag are repairable; everything else is non-repairable (but still wears).
+
+> For a full reference of the XML defs and patches (recipes, filters, work givers, the per-item tag,
+> the compat patch) and how they tie together — with diagrams — see `XML_REFERENCE.md` in the mod's
+> dev repo.
+
+Four `SpecialThingFilter`s (`GTI_NotRepairWeapon`, `GTI_NotRepairArmor`, `GTI_NotRepairClothing`,
+`GTI_NotRepairUtility`) — one per repair recipe — keep each bench's bill list to exactly the items
+routed to it, via the "disallow the unwanted subset" pattern: a recipe rejects an item when the
+item is not routed to any of that recipe's benches.
 
 > Naming note: the repair engine is generic, but several classes keep `Weapon`/`weapon` in
 > their names from when it was weapon-only — `WorkGiver_RepairWeapon`, `JobDriver_RepairWeapon`,
@@ -136,9 +157,11 @@ Scaffolding from Steps 1–2 (the `GTI ranged/melee weapon` inspect-string and `
 
 Vanilla lets you set an apparel HP policy (drop/replace clothes below X% HP) but has **no
 equivalent for the equipped weapon**, so a degrading weapon needs constant micromanagement.
-This adds it: when an **undrafted** pawn's primary weapon falls below the
-**`equippedRepairThreshold`** setting (mod options, default 50%, 0 = off), the pawn carries the
-needed materials to a machining table and repairs the weapon **back to full**.
+This adds it: while the **Auto-repair equipped weapons** option is on (mod options, default on) and
+an **undrafted** pawn's primary weapon falls below the **`equippedRepairThreshold`** setting
+(default 50%), the pawn carries the needed materials to the bench that repairs that weapon (per its
+routing — `RepairRouting.BenchesFor`, so rerouting a weapon's node also moves its auto-repair) and
+repairs the weapon **back to full**.
 
 - The weapon **stays equipped** the whole time — only the materials are hauled — so there is no
   drop, swap, spare-weapon requirement, or re-equip. The same weapon (quality/material) is kept.
@@ -149,10 +172,11 @@ needed materials to a machining table and repairs the weapon **back to full**.
   equip better" behaviour. This is deliberate: it must work **regardless of the Work tab**, since
   the combat pawns that carry weapons usually have crafting disabled. The node sits *after*
   `JobGiver_Work`, so it only uses **spare time** and never interrupts real work, and never runs
-  while drafted. The pawn still needs **Manipulation** and a reachable, usable machining table
+  while drafted. The pawn still needs **Manipulation** and a reachable, usable repair bench
   with the right material; the bench/material scan is throttled per pawn (~10 s).
-- Master control is the threshold slider (`0` = off) — there is no per-pawn Work-tab toggle.
-- **Manual override:** select a pawn and **right-click a machining table** → **"Repair `<weapon>` now"**
+- Master control is the **Auto-repair equipped weapons** on/off checkbox; the threshold slider
+  (greyed out while off) sets the trigger level. There is no per-pawn Work-tab toggle.
+- **Manual override:** select a pawn and **right-click a repair bench** → **"Repair `<weapon>` now"**
   forces an immediate repair to full, **ignoring the threshold** (works for any damaged weapon, even
   lightly damaged). If the colony lacks the material the option is shown greyed with the shortfall
   (e.g. *"… (needs 4x steel)"*). Implemented as a 1.6 `FloatMenuOptionProvider` (auto-discovered;
@@ -171,15 +195,18 @@ repairing it.
 
 ## Mod settings — sliders and the formulas they feed
 
-The four settings sliders (`GTI_WeaponWearSettings`, shown in *Options → Mod Settings → GTI Weapon
-Wear*) each plug into exactly one formula:
+The settings (`GTI_WeaponWearSettings`, shown in *Options → Mod Settings → GTI Weapon Wear*) are
+grouped into three sections, top to bottom: **Weapon wear** (the mechanic) → **Repairs** (cost +
+what's repairable where) → **Automatic repair** (the convenience layer). Each plugs into one place:
 
-| Setting (field) | Range / default | Used in |
-|---|---|---|
-| **Wear rate** (`tearMultiplier`) | 0–2, default 1 | wear chance (below) |
-| **Quality influence** (`qualityInfluence`) | 0–2, default 1 | quality multiplier (below) |
-| **Repair material cost** (`repairFraction`) | 0–1, default 0.25 | repair cost (below) |
-| **Auto-repair below** (`equippedRepairThreshold`) | 0–1, default 0.5 | auto-repair trigger (below) |
+| Section | Setting (field) | Range / default | Used in |
+|---|---|---|---|
+| Weapon wear | **Wear rate** (`tearMultiplier`) | 0–2, default 1 | wear chance (below) |
+| Weapon wear | **Quality influence** (`qualityInfluence`) | 0–2, default 1 | quality multiplier (below) |
+| Repairs | **Repair material cost** (`repairFraction`) | 0–1, default 0.25 | repair cost (below) |
+| Repairs | **Auto-assign repair benches for un-tagged items** (`fallbackRouting`) | on/off, default on | `RepairRouting` fallback |
+| Automatic repair | **Auto-repair equipped weapons** (`autoRepairEquipped`) | on/off, default on | master switch for auto-repair (below) |
+| Automatic repair | **Repair when below** (`equippedRepairThreshold`) | 0–1, default 0.5 | auto-repair trigger (below) |
 
 **Wear chance** — rolled once per weapon use (a fired shot or a melee swing); on success the weapon
 loses 1 HP (floored at 1, so use alone never destroys it). `WeaponWear.WearChance`:
@@ -220,9 +247,10 @@ loses 1 HP (floored at 1, so use alone never destroys it). `WeaponWear.WearChanc
 **Auto-repair trigger** — when an undrafted pawn's equipped weapon is repaired automatically.
 `JobGiver_RepairEquippedWeapon`:
 
-    auto-repair fires when   (HitPoints / MaxHitPoints) < equippedRepairThreshold
+    auto-repair fires when   autoRepairEquipped  AND  (HitPoints / MaxHitPoints) < equippedRepairThreshold
 
-- `equippedRepairThreshold = 0` disables the feature entirely (no scan).
+- `autoRepairEquipped = false` (the on/off checkbox) disables the feature entirely (no scan); the
+  manual right-click repair still works. `equippedRepairThreshold = 0` also yields no scan.
 
 ## Source / build / deploy
 
@@ -238,7 +266,8 @@ GTI_WeaponWear/                    (dev repo — source of truth)
 └── ModFiles/                      (mod payload — NOT compiled)
     ├── About/About.xml
     ├── Defs/                      (recipes, work givers, jobs, filters)
-    ├── Patches/EquippedWeaponRepair_ThinkTree.xml
+    ├── Patches/                   (think-tree insert, Repair Workbench compat, routing examples)
+    ├── CHANGELOG.txt              (dated changelog — Steam Workshop copy source)
     └── DOCUMENTATION.md           (this file)
 ```
 
@@ -252,7 +281,8 @@ GTI_WeaponWear/                    (dev repo — source of truth)
 T:\...\RimWorld\Mods\GTI_WeaponWear\   (deployed — do NOT edit by hand)
 ├── About/About.xml
 ├── Defs/
-├── Patches/EquippedWeaponRepair_ThinkTree.xml
+├── Patches/
+├── CHANGELOG.txt
 ├── Assemblies/GTI_WeaponWear.dll
 └── DOCUMENTATION.md
 ```
@@ -261,31 +291,6 @@ T:\...\RimWorld\Mods\GTI_WeaponWear\   (deployed — do NOT edit by hand)
 
 ## Changelog
 
-All initial development on 2026-06-06 (RimWorld 1.6). Newest first.
-
-- **Manual repair override.** Select a pawn and right-click a machining table → "Repair `<weapon>`
-  now" forces an immediate repair to full, ignoring the auto-repair threshold (greyed with the
-  shortfall when material is missing). 1.6 `FloatMenuOptionProvider` (auto-discovered).
-- **Out-of-material heads-up.** A light top-left message fires when a pawn wants to auto-repair its
-  own weapon but the colony lacks the material (throttled ~1/day per pawn; personal repairs only).
-- **Equipped-weapon auto-repair no longer needs a work type.** Moved from a Smithing WorkGiver to a
-  think-tree JobGiver (next to apparel optimization), so combat pawns with crafting disabled still
-  auto-repair their weapon. Runs in spare time only; the threshold slider is the master control.
-- **Repair material feedback.** Damaged weapons/apparel show a `Repair needs: Nx Material (have M)`
-  line on their inspect panel; bench bills also report a "not enough materials" reason on right-click.
-- **Equipped-weapon auto-repair.** Undrafted pawns carry materials to a machining table and repair
-  their own equipped weapon (kept equipped) when it falls below a configurable HP threshold
-  (default 50%, 0 = off).
-- **Weapon wear on use (the core mechanic).** Each shot/melee swing has a chance to lose 1 HP:
-  `0.10 × tear multiplier × quality multiplier`. Two new settings sliders (tear multiplier,
-  quality influence). Worn weapons stop being used at 1 HP, so use alone never destroys them; 0 HP
-  (other damage) = destroyed/unrepairable. Step-1/2 scaffolding (inspect tag + StatPart) removed.
-- **Utility apparel repair.** Belt-slot gear (shields, packs, etc.) repairs at the fabrication
-  bench. Work givers consolidated from four to two (one Smithing, one Tailoring).
-- **Apparel repair.** Armor repairs at the smithy, clothing at the tailoring bench, routed by an
-  apparel classifier; bill lists show only the matching category.
-- **Weapon repair (bench).** Incremental in-place repair at the machining table: pay-before
-  material consumption, cost computed from the weapon's own original materials (components
-  excluded), scaled by damage, at a configurable fraction (default 25%). Quality/material preserved.
-- **Initial scaffolding.** Pipeline proof (XML patch + C# + Harmony) tagging weapons in the inspect
-  panel; superseded and removed once real features landed.
+The changelog has moved to a dated plain-text file, **`CHANGELOG.txt`** (in the dev repo at
+`ModFiles/CHANGELOG.txt`; deployed to the mod root), for easy copy-paste into the Steam Workshop
+description. Every entry there is dated.

@@ -1,0 +1,23 @@
+GTI Weapon Wear - Changelog
+RimWorld 1.6. Newest first.
+
+
+2026-06-07
+- Repair bills now exclude tainted and biocoded gear by default. New repair bills start with "allow tainted apparel" and "allow biocoded weapons/apparel" turned off; tick them back on per bill if you want to repair such items. (Equipped-weapon auto-repair is unaffected and still repairs biocoded weapons.)
+- Repair Workbench compatibility. When Acruid's "Repair Workbench" mod is active, all GTI repairs are rerouted to its dedicated repair bench (ElectricTableRepair) instead of the vanilla machining / smithy / tailoring / fabrication benches, serviced by a Crafting work giver. The bench shows two repair bills: "repair weapon" (weapons) and "repair apparel" (all apparel in one bill).
+- Repair routing is now data-driven. Where (and if) an item is repaired comes from a per-item RepairProperties modExtension (a list of benches; empty = never repairable). Any mod can route or block its own gear with a PatchOperationAddModExtension - no C# needed - and equipped-weapon auto-repair follows the same data (no longer hardwired to the machining table). Items without a tag keep the built-in fallback (weapons -> machining, apparel by craft bench / material), which can itself be switched off so that only explicitly tagged items are repairable. The three apparel filters were generalised to four per-recipe filters.
+- Auto-repair on/off switch. A new checkbox is the master control for equipped-weapon auto-repair; the HP-threshold slider (hidden when off) only sets the trigger level.
+- Options menu reorganised into a logical progression: Weapon wear -> Repairs -> Automatic repair.
+
+
+2026-06-06
+- Manual repair override. Select a pawn and right-click a repair bench -> "Repair <weapon> now" forces an immediate repair to full, ignoring the auto-repair threshold (greyed out with the shortfall when material is missing).
+- Out-of-material heads-up. A light top-left message fires when a pawn wants to auto-repair its own weapon but the colony lacks the material (throttled to about once per pawn per day; personal repairs only).
+- Equipped-weapon auto-repair no longer needs a work type. Moved to a think-tree job giver (next to apparel optimization), so combat pawns with crafting disabled still auto-repair their weapon. Runs in spare time only.
+- Repair material feedback. Damaged weapons/apparel show a "Repair needs: Nx Material (have M)" line on their inspect panel; bench bills also report a "not enough materials" reason on right-click.
+- Equipped-weapon auto-repair. Undrafted pawns carry materials to a bench and repair their own equipped weapon (kept equipped) when it falls below a configurable HP threshold (default 50%).
+- Weapon wear on use (the core mechanic). Each shot or melee swing has a chance to lose 1 HP: 0.10 x tear multiplier x quality multiplier. Two settings sliders (tear multiplier, quality influence). Worn weapons stop being used at 1 HP, so use alone never destroys them; 0 HP (from other damage) means destroyed and unrepairable.
+- Utility apparel repair. Belt-slot gear (shields, packs, etc.) repairs at the fabrication bench. Work givers consolidated from four to two (one Smithing, one Tailoring).
+- Apparel repair. Armor repairs at the smithy, clothing at the tailoring bench, routed by an apparel classifier; bill lists show only the matching category.
+- Weapon repair (bench). Incremental in-place repair at the machining table: pay-before material consumption, cost computed from the weapon's own original materials (components excluded), scaled by damage, at a configurable fraction (default 25%). Quality and material are preserved.
+- Initial scaffolding. Pipeline proof (XML patch + C# + Harmony) tagging weapons in the inspect panel; superseded and removed once real features landed.

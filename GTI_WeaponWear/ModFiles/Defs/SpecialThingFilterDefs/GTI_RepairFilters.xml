@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<!-- ============================================================== -->
+	<!-- One filter per repair recipe. Each MATCHES the items that recipe -->
+	<!-- should REJECT, and the recipe DISALLOWS it (vanilla "disallow    -->
+	<!-- the unwanted subset" pattern). An item is rejected by a recipe   -->
+	<!-- when it is NOT routed to any of that recipe's benches.           -->
+	<!--                                                                  -->
+	<!-- Routing is decided by RepairRouting: a GTI RepairProperties      -->
+	<!-- modExtension on the item's def (its <benches>) wins; otherwise   -->
+	<!-- the built-in fallback (weapons => machining, apparel by craft    -->
+	<!-- bench / material) applies. So WHERE an item is repaired is now   -->
+	<!-- data driven  add the node to reroute, or empty benches to make   -->
+	<!-- it non-repairable.                                               -->
+	<!-- ============================================================== -->
+
+	<SpecialThingFilterDef>
+		<defName>GTI_NotRepairWeapon</defName>
+		<label>not repaired at this bench (weapon)</label>
+		<description>Weapons not routed to this bench for repair.</description>
+		<parentCategory>Weapons</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiNotRepairWeapon</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotRepairWeapon</workerClass>
+	</SpecialThingFilterDef>
+
+	<SpecialThingFilterDef>
+		<defName>GTI_NotRepairArmor</defName>
+		<label>not repaired at this bench (armor)</label>
+		<description>Apparel not routed to this bench for repair.</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiNotRepairArmor</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotRepairArmor</workerClass>
+	</SpecialThingFilterDef>
+
+	<SpecialThingFilterDef>
+		<defName>GTI_NotRepairClothing</defName>
+		<label>not repaired at this bench (clothing)</label>
+		<description>Apparel not routed to this bench for repair.</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiNotRepairClothing</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotRepairClothing</workerClass>
+	</SpecialThingFilterDef>
+
+	<SpecialThingFilterDef>
+		<defName>GTI_NotRepairUtility</defName>
+		<label>not repaired at this bench (utility)</label>
+		<description>Apparel not routed to this bench for repair.</description>
+		<parentCategory>Apparel</parentCategory>
+		<allowedByDefault>true</allowedByDefault>
+		<configurable>false</configurable>
+		<saveKey>gtiNotRepairUtility</saveKey>
+		<workerClass>GTI_WeaponWear.SpecialThingFilterWorker_NotRepairUtility</workerClass>
+	</SpecialThingFilterDef>
+
+</Defs>

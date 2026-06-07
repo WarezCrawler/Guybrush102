@@ -29,7 +29,12 @@ namespace GTI_WeaponWear
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            float threshold = GTI_WeaponWearMod.Settings?.equippedRepairThreshold ?? 0f;
+            GTI_WeaponWearSettings settings = GTI_WeaponWearMod.Settings;
+            if (settings == null || !settings.autoRepairEquipped)
+            {
+                return null; // feature switched off in mod options
+            }
+            float threshold = settings.equippedRepairThreshold;
             if (threshold <= 0f)
             {
                 return null;

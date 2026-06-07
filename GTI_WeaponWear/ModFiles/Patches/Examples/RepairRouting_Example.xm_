@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- ================================================================= -->
+<!-- EXAMPLE  disabled by the .xm_ extension (rename to .xml to try).   -->
+<!--                                                                    -->
+<!-- GTI Weapon Wear decides WHERE (and IF) an item is repaired from a  -->
+<!-- per-item GTI node: the RepairProperties modExtension. Add it to    -->
+<!-- any weapon/apparel ThingDef to override the built-in routing.      -->
+<!--                                                                    -->
+<!--   <benches> lists the workbenches the item may be repaired at.     -->
+<!--   An EMPTY (or omitted) <benches> means the item is NEVER          -->
+<!--   repairable. No node at all => the built-in default applies       -->
+<!--   (weapons => machining table; apparel => its crafting bench,      -->
+<!--   then material).                                                  -->
+<!--                                                                    -->
+<!-- Note: a bench only actually repairs an item if that bench also     -->
+<!-- hosts a repair recipe covering the item's category. The shipped    -->
+<!-- recipes cover: weapons @ machining; apparel @ smithy / tailoring / -->
+<!-- fabrication. So you can freely re-route apparel between the apparel -->
+<!-- benches; to repair gear at a brand-new bench, also add that bench  -->
+<!-- to the matching recipe's <recipeUsers> and the work giver's        -->
+<!-- <fixedBillGiverDefs>.                                              -->
+<!-- ================================================================= -->
+<Patch>
+
+	<!-- ==== Example 1: repair flak vests at the TAILORING bench instead -->
+	<!-- of the smithy (both are apparel benches, so this just works). ==== -->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="Apparel_FlakVest"]</xpath>
+		<value>
+			<li Class="GTI_WeaponWear.RepairProperties">
+				<benches>
+					<li>ElectricTailoringBench</li>
+					<li>HandTailoringBench</li>
+				</benches>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- ==== Example 2: make the autopistol NON-repairable (it still -->
+	<!-- wears, but can never be repaired). Empty <benches>. ==== -->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="Gun_Autopistol"]</xpath>
+		<value>
+			<li Class="GTI_WeaponWear.RepairProperties">
+				<benches />
+			</li>
+		</value>
+	</Operation>
+
+</Patch>

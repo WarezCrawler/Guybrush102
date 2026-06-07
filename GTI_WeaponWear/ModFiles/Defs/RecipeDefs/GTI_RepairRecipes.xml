@@ -32,6 +32,9 @@
 					<categories>
 						<li>Weapons</li>
 					</categories>
+					<specialFiltersToDisallow>
+						<li>GTI_NotRepairWeapon</li>
+					</specialFiltersToDisallow>
 				</filter>
 				<count>1</count>
 			</li>
@@ -40,8 +43,20 @@
 			<categories>
 				<li>Weapons</li>
 			</categories>
+			<specialFiltersToDisallow>
+				<li>GTI_NotRepairWeapon</li>
+			</specialFiltersToDisallow>
 			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
 		</fixedIngredientFilter>
+		<!-- New bills start with biocoded weapons excluded; re-enable per bill if wanted. -->
+		<defaultIngredientFilter>
+			<categories>
+				<li>Weapons</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>AllowBiocodedWeapons</li>
+			</specialFiltersToDisallow>
+		</defaultIngredientFilter>
 		<recipeUsers>
 			<li>TableMachining</li>
 		</recipeUsers>
@@ -66,7 +81,7 @@
 						<li>Apparel</li>
 					</categories>
 					<specialFiltersToDisallow>
-						<li>GTI_ApparelNotArmor</li>
+						<li>GTI_NotRepairArmor</li>
 					</specialFiltersToDisallow>
 				</filter>
 				<count>1</count>
@@ -77,10 +92,20 @@
 				<li>Apparel</li>
 			</categories>
 			<specialFiltersToDisallow>
-				<li>GTI_ApparelNotArmor</li>
+				<li>GTI_NotRepairArmor</li>
 			</specialFiltersToDisallow>
 			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
 		</fixedIngredientFilter>
+		<!-- New bills start with tainted and biocoded apparel excluded; re-enable per bill if wanted. -->
+		<defaultIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>AllowDeadmansApparel</li>
+				<li>AllowBiocodedApparel</li>
+			</specialFiltersToDisallow>
+		</defaultIngredientFilter>
 		<recipeUsers>
 			<li>ElectricSmithy</li>
 			<li>FueledSmithy</li>
@@ -106,7 +131,7 @@
 						<li>Apparel</li>
 					</categories>
 					<specialFiltersToDisallow>
-						<li>GTI_ApparelNotCloth</li>
+						<li>GTI_NotRepairClothing</li>
 					</specialFiltersToDisallow>
 				</filter>
 				<count>1</count>
@@ -117,10 +142,20 @@
 				<li>Apparel</li>
 			</categories>
 			<specialFiltersToDisallow>
-				<li>GTI_ApparelNotCloth</li>
+				<li>GTI_NotRepairClothing</li>
 			</specialFiltersToDisallow>
 			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
 		</fixedIngredientFilter>
+		<!-- New bills start with tainted and biocoded apparel excluded; re-enable per bill if wanted. -->
+		<defaultIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>AllowDeadmansApparel</li>
+				<li>AllowBiocodedApparel</li>
+			</specialFiltersToDisallow>
+		</defaultIngredientFilter>
 		<recipeUsers>
 			<li>ElectricTailoringBench</li>
 			<li>HandTailoringBench</li>
@@ -147,7 +182,7 @@
 						<li>Apparel</li>
 					</categories>
 					<specialFiltersToDisallow>
-						<li>GTI_ApparelNotUtility</li>
+						<li>GTI_NotRepairUtility</li>
 					</specialFiltersToDisallow>
 				</filter>
 				<count>1</count>
@@ -158,10 +193,20 @@
 				<li>Apparel</li>
 			</categories>
 			<specialFiltersToDisallow>
-				<li>GTI_ApparelNotUtility</li>
+				<li>GTI_NotRepairUtility</li>
 			</specialFiltersToDisallow>
 			<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
 		</fixedIngredientFilter>
+		<!-- New bills start with tainted and biocoded apparel excluded; re-enable per bill if wanted. -->
+		<defaultIngredientFilter>
+			<categories>
+				<li>Apparel</li>
+			</categories>
+			<specialFiltersToDisallow>
+				<li>AllowDeadmansApparel</li>
+				<li>AllowBiocodedApparel</li>
+			</specialFiltersToDisallow>
+		</defaultIngredientFilter>
 		<recipeUsers>
 			<li>FabricationBench</li>
 		</recipeUsers>

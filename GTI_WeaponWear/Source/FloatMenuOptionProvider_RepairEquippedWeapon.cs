@@ -20,18 +20,17 @@ namespace GTI_WeaponWear
 
         public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
         {
-            if (!EquippedWeaponRepair.IsRepairBench(clickedThing))
-            {
-                yield break;
-            }
-            Building_WorkTable bench = (Building_WorkTable)clickedThing;
             Pawn pawn = context.FirstSelectedPawn;
-
             ThingWithComps weapon = EquippedWeaponRepair.RepairableWeapon(pawn);
             if (weapon == null)
             {
                 yield break; // no equipped weapon, or it's already at full HP
             }
+            if (!EquippedWeaponRepair.IsRepairBenchFor(clickedThing, weapon))
+            {
+                yield break; // this bench doesn't repair this weapon (per its routing)
+            }
+            Building_WorkTable bench = (Building_WorkTable)clickedThing;
 
             string label = "Repair " + weapon.LabelShortCap + " now";
 

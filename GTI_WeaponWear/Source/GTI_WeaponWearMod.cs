@@ -17,8 +17,18 @@ namespace GTI_WeaponWear
         // same), 1 = default spread, 2 = quality matters twice as much.
         public float qualityInfluence = 1f;
 
+        // Whether items WITHOUT a RepairProperties tag fall back to the built-in C# routing
+        // (weapons -> machining, apparel by craft bench / material). When false, only items that
+        // carry an explicit GTI repair tag are repairable; everything else is non-repairable.
+        public bool fallbackRouting = true;
+
+        // Master on/off for the equipped-weapon auto-repair feature. When false, no pawn ever
+        // auto-repairs its own weapon (the manual right-click "Repair ... now" still works).
+        public bool autoRepairEquipped = true;
+
         // Undrafted pawns auto-repair their own equipped weapon when its HP falls below this
-        // fraction. 0 = feature off. (Mirrors the apparel HP policy, which weapons lack.)
+        // fraction. (Mirrors the apparel HP policy, which weapons lack.) Only consulted while
+        // autoRepairEquipped is on.
         public float equippedRepairThreshold = 0.5f;
 
         public override void ExposeData()
@@ -26,6 +36,8 @@ namespace GTI_WeaponWear
             Scribe_Values.Look(ref repairFraction, "repairFraction", 0.25f);
             Scribe_Values.Look(ref tearMultiplier, "tearMultiplier", 1f);
             Scribe_Values.Look(ref qualityInfluence, "qualityInfluence", 1f);
+            Scribe_Values.Look(ref fallbackRouting, "fallbackRouting", true);
+            Scribe_Values.Look(ref autoRepairEquipped, "autoRepairEquipped", true);
             Scribe_Values.Look(ref equippedRepairThreshold, "equippedRepairThreshold", 0.5f);
         }
     }
@@ -107,24 +119,44 @@ namespace GTI_WeaponWear
 
             list.Gap();
 
-            // Auto-repair threshold for equipped weapons. 0 = off. Snap to 5% steps.
-            if (Settings.equippedRepairThreshold <= 0f)
+            // Fallback routing: whether un-tagged items are auto-assigned a repair bench.
+            list.CheckboxLabeled("Auto-assign repair benches for un-tagged items",
+                ref Settings.fallbackRouting,
+                "When on, any weapon or apparel without an explicit GTI repair tag is routed by the "
+                + "built-in rules (weapons at the machining table; armor at the smithy; clothing at the "
+                + "tailoring bench; utility gear at the fabrication bench).\n"
+                + "When off, only items a mod has explicitly tagged are repairable; everything else "
+                + "cannot be repaired at all (though it still wears).");
+
+            list.GapLine();
+
+            // ===== Section 3: automatic repair of equipped weapons =====
+            Text.Font = GameFont.Medium;
+            list.Label("Automatic repair");
+            Text.Font = GameFont.Small;
+            list.Gap(4f);
+
+            // Master on/off for equipped-weapon auto-repair.
+            list.CheckboxLabeled("Auto-repair equipped weapons",
+                ref Settings.autoRepairEquipped,
+                "When on, undrafted pawns repair their own carried weapon in their spare time and keep "
+                + "it equipped throughout. No per-pawn setup and no work type needs to be enabled; it "
+                + "pauses while the pawn is drafted. You can always force a repair by selecting a pawn "
+                + "and right-clicking a repair bench, even when this is off.");
+
+            // The threshold only matters while the feature is on; hide the slider otherwise.
+            int athr = Mathf.RoundToInt(Settings.equippedRepairThreshold * 100f);
+            if (Settings.autoRepairEquipped)
             {
-                list.Label("Auto-repair equipped weapons: off");
+                list.Label("    Repair when below: " + athr + "% HP");
+                // Snap the slider to 5% steps.
+                float athrRaw = list.Slider(Settings.equippedRepairThreshold, 0f, 1f);
+                Settings.equippedRepairThreshold = Mathf.Round(athrRaw * 20f) / 20f;
             }
             else
             {
-                int athr = Mathf.RoundToInt(Settings.equippedRepairThreshold * 100f);
-                list.Label("Auto-repair equipped weapons below: " + athr + "% HP");
+                list.Label("    (off — would repair below " + athr + "% HP when enabled)");
             }
-            float athrRaw = list.Slider(Settings.equippedRepairThreshold, 0f, 1f);
-            Settings.equippedRepairThreshold = Mathf.Round(athrRaw * 20f) / 20f;
-            list.Label("When a pawn's own carried weapon drops below this condition, the pawn will "
-                + "repair it in their spare time and keep it equipped throughout.\n"
-                + "    0 = off (no automatic repairs)\n"
-                + "No per-pawn setup and no work type needs to be enabled; it pauses while the pawn "
-                + "is drafted. You can always force a repair by selecting a pawn and right-clicking a "
-                + "machining table.");
 
             list.End();
         }
