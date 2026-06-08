@@ -53,6 +53,11 @@ namespace GTI_WeaponWear
     {
         public static GTI_WeaponWearSettings Settings;
 
+        // Scroll state for the settings window. The content (four sections of help text) is taller
+        // than the fixed mod-settings window, so it must scroll or the lower options get clipped.
+        private Vector2 settingsScroll = Vector2.zero;
+        private float settingsContentHeight = 700f;
+
         public GTI_WeaponWearMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<GTI_WeaponWearSettings>();
@@ -74,8 +79,13 @@ namespace GTI_WeaponWear
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
+            // Scrollable view — the help text is taller than the window, so without this the last
+            // section (Debugging) is drawn below the visible area and can't be reached.
+            Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, settingsContentHeight);
+            Widgets.BeginScrollView(inRect, ref settingsScroll, viewRect);
+
             Listing_Standard list = new Listing_Standard();
-            list.Begin(inRect);
+            list.Begin(viewRect);
 
             // ===== Section 1: how fast weapons wear =====
             Text.Font = GameFont.Medium;
@@ -179,7 +189,11 @@ namespace GTI_WeaponWear
                 + "repair job is issued, and when the material search starts.\n"
                 + "Leave off for normal play; turn on only when reporting a problem.");
 
+            // Remember how tall the content was so the scroll view sizes itself next frame.
+            settingsContentHeight = list.CurHeight;
             list.End();
+
+            Widgets.EndScrollView();
         }
     }
 }
