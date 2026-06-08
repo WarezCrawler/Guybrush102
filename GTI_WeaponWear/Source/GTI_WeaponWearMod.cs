@@ -31,6 +31,11 @@ namespace GTI_WeaponWear
         // autoRepairEquipped is on.
         public float equippedRepairThreshold = 0.5f;
 
+        // When true, the mod prints diagnostic [GTI Weapon Wear] lines to the dev/Player.log for
+        // routing, auto-repair decisions, and material searches. Off by default; gated through
+        // GtiLog so it stays quiet unless the player turns it on.
+        public bool debugLogging = false;
+
         public override void ExposeData()
         {
             Scribe_Values.Look(ref repairFraction, "repairFraction", 0.25f);
@@ -39,6 +44,7 @@ namespace GTI_WeaponWear
             Scribe_Values.Look(ref fallbackRouting, "fallbackRouting", true);
             Scribe_Values.Look(ref autoRepairEquipped, "autoRepairEquipped", true);
             Scribe_Values.Look(ref equippedRepairThreshold, "equippedRepairThreshold", 0.5f);
+            Scribe_Values.Look(ref debugLogging, "debugLogging", false);
         }
     }
 
@@ -157,6 +163,21 @@ namespace GTI_WeaponWear
             {
                 list.Label("    (off — would repair below " + athr + "% HP when enabled)");
             }
+
+            list.GapLine();
+
+            // ===== Section 4: debugging =====
+            Text.Font = GameFont.Medium;
+            list.Label("Debugging");
+            Text.Font = GameFont.Small;
+            list.Gap(4f);
+
+            list.CheckboxLabeled("Enable debug logging",
+                ref Settings.debugLogging,
+                "When on, the mod writes diagnostic lines (prefixed \"[GTI Weapon Wear]\") to the "
+                + "in-game dev log and Player.log: auto-repair decisions and why they fail, when a "
+                + "repair job is issued, and when the material search starts.\n"
+                + "Leave off for normal play; turn on only when reporting a problem.");
 
             list.End();
         }

@@ -55,16 +55,22 @@ namespace GTI_WeaponWear
             Job direct = TryFundRepair(pawn, thing, bill, job, chosen, out List<ThingDefCountClass> chosenMissing);
             if (direct != null)
             {
+                GtiLog.Msg("Issuing repair of " + chosen.LabelShortCap + " at " + thing.LabelShort
+                    + " for " + pawn.LabelShort + " (closest damaged item).");
                 return direct;
             }
 
             // Closest item can't be funded — only NOW enumerate the other damaged items this bill
             // covers (closest-first) and take the first one we can fully fund.
+            GtiLog.Msg("Closest item (" + chosen.LabelShortCap + ") unfundable at " + thing.LabelShort
+                + "; scanning other damaged items the bill covers.");
             foreach (Thing item in FindRepairCandidates(pawn, thing, bill, chosen))
             {
                 Job repair = TryFundRepair(pawn, thing, bill, job, item, out _);
                 if (repair != null)
                 {
+                    GtiLog.Msg("Issuing repair of " + item.LabelShortCap + " at " + thing.LabelShort
+                        + " for " + pawn.LabelShort + " (fallback after closest was unfundable).");
                     return repair; // found a damaged item we can fully fund — do this one
                 }
             }

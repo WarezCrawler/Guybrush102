@@ -25,6 +25,12 @@ namespace GTI_WeaponWear
             List<LocalTargetInfo> queue, List<int> counts, out List<ThingDefCountClass> missing)
         {
             missing = new List<ThingDefCountClass>();
+            if (GtiLog.Enabled && needed.Count > 0)
+            {
+                // One line as the search begins — NOT one per material/stack.
+                GtiLog.Msg("Searching map for repair materials near " + near + ": "
+                    + DescribeMaterials(needed.Select(kv => new ThingDefCountClass(kv.Key, kv.Value))) + ".");
+            }
             foreach (KeyValuePair<ThingDef, int> kv in needed)
             {
                 int remaining = kv.Value;
@@ -59,6 +65,24 @@ namespace GTI_WeaponWear
         public static string DescribeMaterials(IEnumerable<ThingDefCountClass> mats)
         {
             return string.Join(", ", mats.Select(m => m.count + "x " + m.thingDef.label));
+        }
+
+        // One-line debug summary emitted when a repair job ends (success OR interruption), shared
+        // by both repair JobDrivers. Gated by the caller via GtiLog.Enabled.
+        public static void LogRepairSummary(Pawn pawn, string itemLabel, int startHp, int maxHp,
+            RepairProgress progress)
+        {
+            int done = progress.PointsDone;
+            int endHp = startHp + done;
+            int startPct = maxHp > 0 ? Mathf.RoundToInt(100f * startHp / maxHp) : 0;
+            int endPct = maxHp > 0 ? Mathf.RoundToInt(100f * endHp / maxHp) : 0;
+            List<ThingDefCountClass> consumed = progress.ConsumedMaterials();
+            string mats = consumed.Count > 0 ? DescribeMaterials(consumed) : "no materials";
+            string verb = endHp >= maxHp
+                ? "fully repaired"
+                : (done > 0 ? "partially repaired" : "made no progress repairing");
+            GtiLog.Msg(pawn.LabelShort + " " + verb + " " + itemLabel + ": +" + done + " HP ("
+                + startPct + "% -> " + endPct + "%), consumed " + mats + ".");
         }
 
         // Sum the loose resource items currently staged in the bench's ingredient cells,

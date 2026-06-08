@@ -38,6 +38,17 @@ namespace GTI_WeaponWear
             table = toConsume.Select(c => new Consume { def = c.thingDef, toConsume = c.count, consumed = 0 }).ToList();
         }
 
+        // Hit points actually granted (and paid for) so far. Used for the debug repair summary.
+        public int PointsDone => pointsDone;
+
+        // The materials consumed so far, grouped by def. Used for the debug repair summary.
+        public List<ThingDefCountClass> ConsumedMaterials()
+        {
+            return table.Where(c => c.consumed > 0)
+                .Select(c => new ThingDefCountClass(c.def, c.consumed))
+                .ToList();
+        }
+
         // Call BEFORE granting one hit point. Consumes (rounded up) the materials owed up to
         // and including that point. Returns false and consumes nothing if any required
         // material is unavailable — the caller must then NOT grant the point.

@@ -52,6 +52,8 @@ namespace GTI_WeaponWear
             Job captured = job;
             yield return new FloatMenuOption(label, delegate
             {
+                GtiLog.Msg(pawn.LabelShort + " manually ordered to repair " + weapon.LabelShortCap
+                    + " at " + bench.LabelShort + " (forced, threshold ignored).");
                 captured.playerForced = true;
                 pawn.jobs.TryTakeOrderedJob(captured, JobTag.Misc);
             });

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -66,18 +67,31 @@ namespace GTI_WeaponWear
             }
             nextScanTick[pawn.thingIDNumber] = now + CheckIntervalTicks;
 
+            // Past the cheap per-tick gates and the scan throttle: from here on we only run once
+            // per CheckIntervalTicks per pawn, so logging here can't flood the log.
+            int hpPct = Mathf.RoundToInt(100f * weapon.HitPoints / weapon.MaxHitPoints);
+            GtiLog.Msg(pawn.LabelShort + " checking auto-repair of " + weapon.LabelShortCap
+                + " (" + hpPct + "% HP, below " + Mathf.RoundToInt(threshold * 100f) + "% threshold).");
+
             Building_WorkTable bench = EquippedWeaponRepair.FindBench(pawn);
             if (bench == null)
             {
+                GtiLog.Msg(pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap
+                    + ": no reachable, usable repair bench for this weapon.");
                 return null;
             }
 
             Job job = EquippedWeaponRepair.MakeJobAt(pawn, bench, out List<ThingDefCountClass> missing);
             if (job == null)
             {
+                GtiLog.Msg(pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap + " at "
+                    + bench.LabelShort + ": missing materials ("
+                    + (missing.NullOrEmpty() ? "unreachable" : RepairUtil.DescribeMaterials(missing)) + ").");
                 NotifyMissingMaterials(pawn, weapon, missing, now);
                 return null; // materials not reachable right now — re-checked after the throttle
             }
+            GtiLog.Msg(pawn.LabelShort + " starting auto-repair of " + weapon.LabelShortCap
+                + " at " + bench.LabelShort + ".");
             return job;
         }
 
