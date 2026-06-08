@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using RimWorld;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -18,8 +17,10 @@ namespace GTI_WeaponWear
     public class JobGiver_RepairEquippedWeapon : ThinkNode_JobGiver
     {
         // The bench + material scan is comparatively expensive and this node is re-evaluated
-        // often while a pawn is idle, so throttle it per pawn.
-        private const int CheckIntervalTicks = 600;
+        // often while a pawn is idle, so throttle it per pawn. A worn weapon is a maintenance
+        // concern, not an emergency, so a few in-game hours of latency is fine; this also keeps
+        // the (gated) diagnostic logging quiet. GenDate.TicksPerHour == 2500.
+        private const int CheckIntervalTicks = 3 * GenDate.TicksPerHour; // 7500 = 3 in-game hours
 
         // How long to wait before re-notifying the same pawn about a material shortfall (~1 day),
         // so the light message can't spam while the situation persists.
@@ -67,16 +68,13 @@ namespace GTI_WeaponWear
             }
             nextScanTick[pawn.thingIDNumber] = now + CheckIntervalTicks;
 
-            // Past the cheap per-tick gates and the scan throttle: from here on we only run once
-            // per CheckIntervalTicks per pawn, so logging here can't flood the log.
-            int hpPct = Mathf.RoundToInt(100f * weapon.HitPoints / weapon.MaxHitPoints);
-            GtiLog.Msg(pawn.LabelShort + " checking auto-repair of " + weapon.LabelShortCap
-                + " (" + hpPct + "% HP, below " + Mathf.RoundToInt(threshold * 100f) + "% threshold).");
-
             Building_WorkTable bench = EquippedWeaponRepair.FindBench(pawn);
             if (bench == null)
             {
-                GtiLog.Msg(pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap
+                // Hot path (re-checked every scan while the weapon stays worn) — throttle so a
+                // pawn with no reachable bench doesn't repeat the same line forever.
+                GtiLog.MsgThrottled("autorepair-nobench:" + pawn.thingIDNumber,
+                    pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap
                     + ": no reachable, usable repair bench for this weapon.");
                 return null;
             }
@@ -84,12 +82,16 @@ namespace GTI_WeaponWear
             Job job = EquippedWeaponRepair.MakeJobAt(pawn, bench, out List<ThingDefCountClass> missing);
             if (job == null)
             {
-                GtiLog.Msg(pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap + " at "
-                    + bench.LabelShort + ": missing materials ("
-                    + (missing.NullOrEmpty() ? "unreachable" : RepairUtil.DescribeMaterials(missing)) + ").");
+                string need = missing.NullOrEmpty() ? "unreachable" : RepairUtil.DescribeMaterials(missing);
+                // Key on the shortfall so a different missing-material set logs immediately, but the
+                // same shortfall repeating each scan is suppressed.
+                GtiLog.MsgThrottled("autorepair-missing:" + pawn.thingIDNumber + ":" + need,
+                    pawn.LabelShort + " cannot auto-repair " + weapon.LabelShortCap + " at "
+                    + bench.LabelShort + ": missing materials (" + need + ").");
                 NotifyMissingMaterials(pawn, weapon, missing, now);
                 return null; // materials not reachable right now — re-checked after the throttle
             }
+            // A job is actually being issued — a genuine one-off event, so log it unthrottled.
             GtiLog.Msg(pawn.LabelShort + " starting auto-repair of " + weapon.LabelShortCap
                 + " at " + bench.LabelShort + ".");
             return job;

@@ -27,9 +27,12 @@ namespace GTI_WeaponWear
             missing = new List<ThingDefCountClass>();
             if (GtiLog.Enabled && needed.Count > 0)
             {
-                // One line as the search begins — NOT one per material/stack.
-                GtiLog.Msg("Searching map for repair materials near " + near + ": "
-                    + DescribeMaterials(needed.Select(kv => new ThingDefCountClass(kv.Key, kv.Value))) + ".");
+                // One line as the search begins — NOT one per material/stack. This runs in the
+                // work-scanner hot path, so it's throttled per pawn+material-set: the same search
+                // repeating each scan is suppressed, but a different material need logs at once.
+                string desc = DescribeMaterials(needed.Select(kv => new ThingDefCountClass(kv.Key, kv.Value)));
+                GtiLog.MsgThrottled("matsearch:" + pawn.thingIDNumber + ":" + desc,
+                    pawn.LabelShort + " searching map for repair materials: " + desc + ".");
             }
             foreach (KeyValuePair<ThingDef, int> kv in needed)
             {
