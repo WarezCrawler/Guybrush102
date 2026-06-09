@@ -169,10 +169,12 @@ Pay-before material consumption so HP is never granted unpaid.
 - `Available(staged, def)` / `Remove(staged, def, amount)` — private stack tally / destroy helpers.
 
 ### `RecipeWorker_RepairWeapon.cs` — `RecipeWorker_RepairWeapon` (`RecipeWorker`)
-- `ConsumeIngredient(Thing, RecipeDef, Map)` — for a weapon, restores HP in place and does NOT
-  destroy it (preserves quality/material/etc.); other ingredients consumed normally. Also the
-  marker type that the WorkGiver / skip-patch recognise. Called by the vanilla bill flow (atomic
-  fallback path).
+- Marker type with **no behaviour**. The four repair recipes set `workerClass` to it so the rest of
+  the mod recognises a repair bill via `recipe.workerClass == typeof(RecipeWorker_RepairWeapon)` (see
+  `WorkGiver_RepairWeapon` and `Patch_WorkGiverDoBill_SkipRepair`). The repair itself is done in
+  `JobDriver_RepairWeapon`, which protects the repaired item **by reference**; the vanilla atomic
+  `ConsumeIngredient` flow is never reached (WorkGiver emits only the custom job; the skip-patch nulls
+  any vanilla repair job), so there is no override.
 
 ### `Patch_WorkGiverDoBill.cs`
 - **`Patch_WorkGiverDoBill_SkipRepair.Postfix`** — nulls any repair-recipe job produced by a

@@ -89,8 +89,8 @@ Code:
   run the (material-less) repair recipe for free; only our giver does.
 - `JobDriver_RepairWeapon` — hauls weapon + computed materials to the bench, `HitPoints++`
   every ~25 work-ticks (scaled by work speed) until full; `RepairProgress` consumes the hauled
-  materials proportionally. The recipe `workerClass` `RecipeWorker_RepairWeapon` is the marker
-  the WorkGiver/patch use and an atomic in-place fallback.
+  materials proportionally. The recipe `workerClass` `RecipeWorker_RepairWeapon` is just the marker
+  the WorkGiver/patch use to recognise repair bills (no behaviour of its own).
 
 Default ingredient HP filter is `0~99%`, so only damaged weapons are picked up. All weapons
 (including stone) are now repairable with their own material.

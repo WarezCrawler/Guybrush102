@@ -12,7 +12,7 @@
 	<!-- repair + proportional consumption happen in JobDriver_RepairWeapon. -->
 	<!--                                                                 -->
 	<!-- workerClass is the marker WorkGiver_RepairWeapon / the Harmony   -->
-	<!-- safeguard use to recognise repair bills (and an atomic fallback).-->
+	<!-- safeguard use to recognise repair bills.                        -->
 	<!-- Default HP filter 0~99% so only damaged weapons are picked.      -->
 	<!-- ============================================================== -->
 

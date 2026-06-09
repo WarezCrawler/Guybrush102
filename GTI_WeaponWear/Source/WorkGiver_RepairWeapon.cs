@@ -99,24 +99,32 @@ namespace GTI_WeaponWear
                 return null;
             }
 
-            // Fast path: try the closest item first. When its materials are available (the common
-            // case) we return immediately and skip the full map enumeration + sort + per-item
-            // reachability scan below entirely.
-            Job direct = TryFundRepair(pawn, thing, bill, job, chosen, out List<ThingDefCountClass> chosenMissing);
-            if (direct != null)
+            // Fast path: try the closest item first — but ONLY if this pawn can actually haul it.
+            // Vanilla's bill-ingredient search also picks items stored inside container buildings
+            // (e.g. an outfit stand / armor rack): those are despawned and held in an innerContainer,
+            // which our simple haul toils (GotoThing + StartCarryThing) can't extract. The job would
+            // fail instantly on the toil's "despawned" check and the giver would re-issue it every
+            // scan — the "started 10 jobs in one tick" repair thrash. So skip an un-haulable chosen
+            // item here; the fallback scan below enumerates only spawned map items (listerThings).
+            List<ThingDefCountClass> chosenMissing = null;
+            if (CanPawnHaul(pawn, chosen))
             {
-                // Work-scanner hot path — throttle per pawn+item so re-scans of the same repair
-                // don't repeat; a different item logs immediately.
-                GtiLog.MsgThrottled("issue:" + pawn.thingIDNumber + ":" + chosen.thingIDNumber,
-                    "Issuing repair of " + chosen.LabelShortCap + " at " + thing.LabelShort
-                    + " for " + pawn.LabelShort + " (closest damaged item).");
-                return direct;
+                Job direct = TryFundRepair(pawn, thing, bill, job, chosen, out chosenMissing);
+                if (direct != null)
+                {
+                    // Work-scanner hot path — throttle per pawn+item so re-scans of the same repair
+                    // don't repeat; a different item logs immediately.
+                    GtiLog.MsgThrottled("issue:" + pawn.thingIDNumber + ":" + chosen.thingIDNumber,
+                        "Issuing repair of " + chosen.LabelShortCap + " at " + thing.LabelShort
+                        + " for " + pawn.LabelShort + " (closest damaged item).");
+                    return direct;
+                }
             }
 
-            // Closest item can't be funded — only NOW enumerate the other damaged items this bill
-            // covers (closest-first) and take the first one we can fully fund.
+            // Closest item is un-haulable or can't be funded — only NOW enumerate the other damaged
+            // items this bill covers (closest-first) and take the first one we can fully fund.
             GtiLog.MsgThrottled("fallbackscan:" + pawn.thingIDNumber + ":" + chosen.thingIDNumber,
-                "Closest item (" + chosen.LabelShortCap + ") unfundable at " + thing.LabelShort
+                "Closest item (" + chosen.LabelShortCap + ") unavailable at " + thing.LabelShort
                 + "; scanning other damaged items the bill covers.");
             foreach (Thing item in FindRepairCandidates(pawn, thing, bill, chosen))
             {
@@ -209,8 +217,7 @@ namespace GTI_WeaponWear
                     {
                         continue; // wrong class / outside HP filter for this bill
                     }
-                    if (t.IsForbidden(pawn)
-                        || !pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Deadly))
+                    if (!CanPawnHaul(pawn, t))
                     {
                         continue;
                     }
@@ -221,6 +228,20 @@ namespace GTI_WeaponWear
             result.Sort((a, b) => (a.Position - bench.Position).LengthHorizontalSquared
                 .CompareTo((b.Position - bench.Position).LengthHorizontalSquared));
             return result;
+        }
+
+        // Whether this pawn can actually fetch 'item' with our haul toils: it must be a spawned,
+        // reachable, reservable, non-forbidden map item. Items inside container buildings (e.g. an
+        // outfit stand / armor rack) are despawned and held in an innerContainer, so GotoThing /
+        // StartCarryThing can't extract them — issuing a repair for one would thrash the work giver
+        // (the job fails instantly and is re-offered every scan). listerThings only returns spawned
+        // things, but vanilla's bill-ingredient search does not, so the fast path needs this guard.
+        private static bool CanPawnHaul(Pawn pawn, Thing item)
+        {
+            return item != null
+                && item.Spawned
+                && !item.IsForbidden(pawn)
+                && pawn.CanReserveAndReach(item, PathEndMode.ClosestTouch, Danger.Deadly);
         }
     }
 }

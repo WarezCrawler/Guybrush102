@@ -3,6 +3,7 @@ RimWorld 1.6. Newest first.
 
 
 2026-06-09
+- Fixed a repair bill flooding the log with "started 10 jobs in one tick" errors. Items stored inside a container building (such as an outfit stand / armor rack) are held away from the map and can't be carried out by the repair job, but the work giver was still offering them, so the job failed and was re-issued every tick. Such items are now skipped (a damaged item must be a free, reachable item to be auto-repaired - take it out of the stand to repair it). Repair of loose / stockpiled / shelved gear is unchanged.
 - Fixed a repair bill stalling the workbench. When a repair bill was placed above other bills and its materials were missing, the bench would go idle instead of moving on to the bills below it. A repair bill that can't be funded now steps aside so the bench proceeds to the next bill in the list as expected.
 
 

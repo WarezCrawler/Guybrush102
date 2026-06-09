@@ -110,7 +110,7 @@ RecipeDef ──────────────────┘
   ├─ category + HP filter 0~0.99   (what's eligible)
   ├─ specialFiltersToDisallow ─→ SpecialThingFilterDef ─→ Worker ─(asks)→ RepairRouting
   ├─ recipeUsers ─────────────→ Workbench  (recipe available here)
-  └─ workerClass = RecipeWorker_RepairWeapon  (marker + in-place fallback)
+  └─ workerClass = RecipeWorker_RepairWeapon  (marker only)
 
 WorkGiverDef ─ fixedBillGiverDefs ─→ Workbench
             └ giverClass WorkGiver_RepairWeapon ─→ JobDef ─→ JobDriver  (incremental repair)
@@ -134,7 +134,7 @@ item set, and the canonical bench list.
 
 Key fields (shared):
 - `<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>` — the **marker** the WorkGiver
-  and the Harmony skip-patch use to recognise a repair bill; also the in-place repair fallback.
+  and the Harmony skip-patch use to recognise a repair bill (no behaviour of its own).
 - `<ingredients>` / `<fixedIngredientFilter>` — `<categories>` (Weapons or Apparel) plus
   `<specialFiltersToDisallow>` naming this recipe's filter, plus `<allowedHitPointsPercents>0~0.99`
   (only damaged items qualify). **No material ingredient is listed** — the cost is computed per item
