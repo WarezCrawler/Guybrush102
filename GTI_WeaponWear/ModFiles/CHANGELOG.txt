@@ -2,6 +2,12 @@ GTI Weapon Wear - Changelog
 RimWorld 1.6. Newest first.
 
 
+2026-06-09
+- Debug logging toggle. A new "Debugging" section in the mod options adds an "Enable debug logging" checkbox (off by default). When on, the mod writes diagnostic "[GTI Weapon Wear]" lines to the dev log / Player.log: equipped-weapon auto-repair decisions and why they fail, when a repair job is issued, when the material search begins, and a one-line summary when each repair finishes (item, HP before -> after, materials consumed). Lines on busy code paths are rate-limited per pawn so they can't flood the log; leave the toggle off for normal play.
+- Settings window now scrolls, so longer option lists (including the new Debugging section) can no longer be clipped off the bottom of the window.
+- Equipped-weapon auto-repair now re-checks at most once per 3 in-game hours per pawn (previously far more often). A worn weapon is treated as routine maintenance rather than an emergency, which also cuts background work and log noise. Manual right-click "Repair <weapon> now" is still immediate.
+
+
 2026-06-07
 - Repair bills now exclude tainted and biocoded gear by default. New repair bills start with "allow tainted apparel" and "allow biocoded weapons/apparel" turned off; tick them back on per bill if you want to repair such items. (Equipped-weapon auto-repair is unaffected and still repairs biocoded weapons.)
 - Repair Workbench compatibility. When Acruid's "Repair Workbench" mod is active, all GTI repairs are rerouted to its dedicated repair bench (ElectricTableRepair) instead of the vanilla machining / smithy / tailoring / fabrication benches, serviced by a Crafting work giver. The bench shows two repair bills: "repair weapon" (weapons) and "repair apparel" (all apparel in one bill).
