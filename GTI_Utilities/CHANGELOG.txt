@@ -1,0 +1,9 @@
+GTI Utilities - Changelog
+
+2026-06-09
+- Added Toxic Environment Protection to recon and marine armor (mirrors the gas mask):
+    Recon armor    +10%
+    Recon helmet   +20%
+    Marine armor   +20%
+    Marine helmet  +40%
+  This stacks with other gear that provides toxic environment resistance.

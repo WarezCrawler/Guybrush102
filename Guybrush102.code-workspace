@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "GTI_WeaponWear"
+		},
+		{
+			"path": "GTI_Utilities"
 		}
 	],
 	"settings": {}
