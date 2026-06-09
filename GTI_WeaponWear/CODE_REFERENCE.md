@@ -2,7 +2,8 @@
 
 Per-file summary of every C# type and method in `Source/`, with purpose and where it's called
 from. Two subsystems: **wear** (HP loss on use) and **repair** (incremental in-place repair at a
-bench). For gameplay/design see `ModFiles/DOCUMENTATION.md`.
+bench). For gameplay/design see `ModFiles/DOCUMENTATION.md`; for the XML defs/patches and how they
+tie together (with diagrams) see [`XML_REFERENCE.md`](XML_REFERENCE.md).
 
 ---
 
@@ -11,7 +12,10 @@ bench). For gameplay/design see `ModFiles/DOCUMENTATION.md`.
 ### `GTI_WeaponWearMod.cs`
 - **`GTI_WeaponWearSettings`** (`ModSettings`) — persisted options: `repairFraction` (full-repair
   cost share), `tearMultiplier` (wear weight 0–2), `qualityInfluence` (quality effect 0–2),
-  `equippedRepairThreshold` (auto-repair an equipped weapon below this HP fraction; 0 = off).
+  `fallbackRouting` (whether un-tagged items use the built-in C# routing; default true — read by
+  `RepairRouting`), `autoRepairEquipped` (master on/off for equipped-weapon auto-repair; default
+  true), `equippedRepairThreshold` (auto-repair an equipped weapon below this HP fraction; gated by
+  the on/off switch).
   - `ExposeData()` — save/load the four values. Called by RimWorld's Scribe.
 - **`GTI_WeaponWearMod`** (`Mod`) — entry point.
   - `GTI_WeaponWearMod(ModContentPack)` — ctor; loads `Settings`, runs `Harmony.PatchAll()`.
@@ -19,8 +23,10 @@ bench). For gameplay/design see `ModFiles/DOCUMENTATION.md`.
   - `SettingsCategory()` — returns the menu label "GTI Weapon Wear". Called by the options UI.
   - `WearChanceBlurb()` — formats the effective per-use % for a normal-quality weapon. Used only
     by `DoSettingsWindowContents`.
-  - `DoSettingsWindowContents(Rect)` — draws the four sliders (repair cost, wear multiplier,
-    quality influence, equipped-weapon auto-repair threshold). Called by the options UI.
+  - `DoSettingsWindowContents(Rect)` — draws three sections top-to-bottom: **Weapon wear** (wear
+    rate, quality influence), **Repairs** (repair material cost, the "Auto-assign repair benches for
+    un-tagged items" fallback checkbox), and **Automatic repair** (the "Auto-repair equipped weapons"
+    checkbox + HP-threshold slider, hidden while off). Called by the options UI.
 - **`Settings`** (static) — global accessor read by `WeaponWear` and `WeaponRepairCost`.
 
 ### `GTI_JobDefOf.cs`
@@ -104,11 +110,12 @@ Runs the `GTI_RepairWeapon` (bench-bill) job. Const `TicksPerHitPoint = 25`.
 ### `EquippedWeaponRepair.cs` — `EquippedWeaponRepair` (static)
 Shared logic for repairing a pawn's own equipped weapon (used by the JobGiver and the float-menu
 provider).
-- `Recipe` (cached) — the `GTI_RepairWeapon` `RecipeDef` via DefDatabase.
 - `RepairableWeapon(Pawn)` — the pawn's equipped primary weapon if it's a damaged, hit-pointed
   weapon; else null.
-- `IsRepairBench(Thing)` — true if the thing is a `Building_WorkTable` hosting the repair recipe.
-- `FindBench(Pawn)` — nearest reachable, usable repair bench.
+- `IsRepairBenchFor(Thing bench, ThingWithComps weapon)` — true if `bench` is a `Building_WorkTable`
+  in `RepairRouting.BenchesFor(weapon.def)` (i.e. it repairs that specific weapon).
+- `FindBench(Pawn)` — nearest reachable, usable bench from `RepairRouting.BenchesFor(weapon.def)`,
+  so rerouting the weapon's node moves where it auto-repairs.
 - `MakeJobAt(pawn, bench, out missing)` — builds the `GTI_RepairEquippedWeapon` job at that bench;
   null (+ `missing`) if materials can't be found. Does NOT apply the HP threshold.
 
@@ -116,8 +123,9 @@ provider).
 Passive auto-repair — run from the **think tree** (inserted after the apparel optimizer via
 `Patches/EquippedWeaponRepair_ThinkTree.xml`), NOT a work giver, so it works regardless of
 Work-tab settings. Sits after `JobGiver_Work` (spare time only).
-- `TryGiveJob(Pawn)` — if threshold > 0, pawn is an undrafted player colonist with Manipulation
-  and the equipped weapon is below the threshold, uses `EquippedWeaponRepair.FindBench/MakeJobAt`
+- `TryGiveJob(Pawn)` — if `autoRepairEquipped` is on and threshold > 0, pawn is an undrafted player
+  colonist with Manipulation and the equipped weapon is below the threshold, uses
+  `EquippedWeaponRepair.FindBench/MakeJobAt`
   (throttled per pawn via `nextScanTick`) to build the job. Null otherwise. Called by the think
   tree each time the pawn seeks a job.
 - `NotifyMissingMaterials(pawn, weapon, missing, now)` — private; fires a light transient
@@ -164,27 +172,43 @@ Pay-before material consumption so HP is never granted unpaid.
 
 ---
 
-## Apparel routing (which bench repairs which apparel)
+## Repair routing (which bench repairs which item — data-driven)
 
-### `ApparelClassifier.cs`
+### `RepairProperties.cs` — `RepairProperties` (`DefModExtension`)
+The "generic GTI node" attached to a weapon/apparel def in XML: `List<ThingDef> benches`. Presence
+with ≥1 bench = repairable at exactly those benches; present but empty = explicitly never repairable;
+absent = use the built-in fallback. Read by `RepairRouting`.
+
+### `RepairRouting.cs` — `RepairRouting` (static)
+Single source of truth for "which bench(es) repair this item, if any". Used by the filters,
+`WorkGiver_RepairWeapon` (via the bill filter), and `EquippedWeaponRepair`.
+- `BenchesFor(ThingDef)` / `BenchesFor(Thing)` — the node's `<benches>` if present; else, **only when
+  the `fallbackRouting` option is on**, the fallback: hit-pointed weapons → `GTI_RepairWeapon`'s
+  `recipeUsers`; apparel → `ApparelClassifier` class → that class's recipe's `recipeUsers`; else
+  empty. The `useHitPoints` guard keeps `WoodLog` (an `IsWeapon` resource) from being treated as a
+  repairable weapon. With the fallback off, un-tagged items return empty (non-repairable).
+- `RepairableAt(Thing, ThingDef bench)` / `IsRepairable(Thing)` — convenience predicates.
+- `RecipeBenches(string recipeDefName)` — a recipe's `recipeUsers` (the XML bench list), cached.
+- `IsCertainAtDefLevel(ThingDef)` — whether def-level routing is authoritative for every instance
+  (false only for un-noded apparel with no crafting recipe). Used by the filters' `AlwaysMatches`.
+- The only routing constant in C# is the 4-entry apparel-class → recipe-defName map; benches live in
+  the recipe `recipeUsers`.
+
+### `ApparelClassifier.cs` — built-in fallback only (used when an item has no node)
 - **`ApparelRepairClass`** (enum) — `NotApparel | Clothing | Armor | Utility`.
-- **`ApparelClassifier`** (static):
-  - `ClassifyDef(ThingDef)` — def-level *certain* class: Belt layer→Utility, else by crafting
-    bench; `NotApparel` if unsure. Used by all three filters' `AlwaysMatches` (def-level list
-    hiding) and by `Classify`.
-  - `Classify(Thing)` — instance-level: `ClassifyDef` first, then material fallback (always
-    resolves apparel to a class). Used by all three filters' `Matches`.
-  - `IsUtilityApparel(ThingDef)` — private; true if the def uses the `Belt` apparel layer.
-  - `IsTailoringBench(ThingDef)` / `IsArmorBench(ThingDef)` — private bench-name tests used by
-    `ClassifyDef`.
+- **`ApparelClassifier`** (static): `ClassifyDef(ThingDef)` (def-level certain class: Belt→Utility,
+  else craft bench, else `NotApparel`), `Classify(Thing)` (instance-level, material fallback),
+  plus private `IsUtilityApparel` / `IsTailoringBench` / `IsArmorBench`. Now consulted only through
+  `RepairRouting` for un-noded items.
 
-### `SpecialThingFilterWorker_NotArmorApparel.cs` / `_NotClothApparel.cs` / `_NotUtilityApparel.cs`
-Three filters, one per apparel class. Each is *disallowed* by its recipe so only the target class
-remains selectable. All share the same three methods:
-- `Matches(Thing)` — true for apparel that is NOT the target class (per-instance selection block).
-- `CanEverMatch(ThingDef)` — true for any apparel (lets the filter apply to apparel defs).
-- `AlwaysMatches(ThingDef)` — true when the def is *certainly* a different class, so it's hidden
-  from the recipe's bill list entirely.
+### `SpecialThingFilterWorker_NotRepairableAt.cs` — one base + four recipe subclasses
+Replaces the old three apparel-class workers. Abstract base with `RecipeDefName`; the recipe
+disallows its own filter, so an item is rejected when it is NOT routed to any of that recipe's
+benches (`RepairRouting.RecipeBenches`). Methods:
+- `Matches(Thing)` — reject when the item's `BenchesFor` shares no bench with this recipe's benches.
+- `CanEverMatch(ThingDef)` — true for hit-pointed weapons/apparel.
+- `AlwaysMatches(ThingDef)` — def-level hide, only when `IsCertainAtDefLevel` and disjoint.
 
-All three are referenced from `ModFiles/Defs/SpecialThingFilterDefs/GTI_ApparelFilters.xml` and
+Subclasses `…_NotRepairWeapon / _NotRepairArmor / _NotRepairClothing / _NotRepairUtility` each name
+their recipe. Referenced from `ModFiles/Defs/SpecialThingFilterDefs/GTI_RepairFilters.xml` and
 invoked by RimWorld's `ThingFilter`.

@@ -77,6 +77,11 @@ namespace GTI_WeaponWear
             float ticksToNext = TicksPerHitPoint;
             Building_WorkTable table = job.GetTarget(BenchInd).Thing as Building_WorkTable;
 
+            // Captured for the debug repair summary emitted when the toil ends (any reason).
+            int startHp = 0;
+            int maxHp = 0;
+            string itemLabel = null;
+
             Toil toil = new Toil { defaultCompleteMode = ToilCompleteMode.Never };
 
             toil.initAction = delegate
@@ -87,6 +92,9 @@ namespace GTI_WeaponWear
                     EndJobWith(JobCondition.Incompletable);
                     return;
                 }
+                startHp = weapon.HitPoints;
+                maxHp = weapon.MaxHitPoints;
+                itemLabel = weapon.LabelShortCap;
                 progress = new RepairProgress(
                     pawn,
                     table.IngredientStackCells,
@@ -94,6 +102,14 @@ namespace GTI_WeaponWear
                     weapon.MaxHitPoints - weapon.HitPoints,
                     weapon);
             };
+
+            toil.AddFinishAction(delegate
+            {
+                if (GtiLog.Enabled && progress != null)
+                {
+                    RepairUtil.LogRepairSummary(pawn, itemLabel, startHp, maxHp, progress);
+                }
+            });
 
             toil.tickAction = delegate
             {

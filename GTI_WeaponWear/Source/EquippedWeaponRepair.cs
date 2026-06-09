@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -10,11 +11,6 @@ namespace GTI_WeaponWear
     // (forced, threshold-ignored).
     public static class EquippedWeaponRepair
     {
-        private static RecipeDef recipeCached;
-
-        public static RecipeDef Recipe =>
-            recipeCached ?? (recipeCached = DefDatabase<RecipeDef>.GetNamedSilentFail("GTI_RepairWeapon"));
-
         // The pawn's equipped primary weapon if it is a damaged, hit-pointed weapon; else null.
         public static ThingWithComps RepairableWeapon(Pawn pawn)
         {
@@ -27,24 +23,26 @@ namespace GTI_WeaponWear
             return w;
         }
 
-        // True if 'thing' is a bench that can repair weapons (hosts the GTI_RepairWeapon recipe).
-        public static bool IsRepairBench(Thing thing)
+        // True if 'thing' is a bench that can repair this specific weapon (per its routing).
+        public static bool IsRepairBenchFor(Thing thing, ThingWithComps weapon)
         {
-            return thing is Building_WorkTable
-                && Recipe?.recipeUsers != null
-                && Recipe.recipeUsers.Contains(thing.def);
+            return thing is Building_WorkTable && weapon != null
+                && RepairRouting.BenchesFor(weapon.def).Contains(thing.def);
         }
 
-        // Nearest reachable, usable repair bench for the pawn, or null.
+        // Nearest reachable, usable bench that repairs the pawn's equipped weapon, or null. The bench
+        // set comes from RepairRouting (the weapon's GTI node, else the built-in fallback), so
+        // rerouting a weapon in XML also moves where it is auto-repaired.
         public static Building_WorkTable FindBench(Pawn pawn)
         {
-            if (Recipe?.recipeUsers == null)
+            ThingWithComps weapon = pawn?.equipment?.Primary;
+            if (weapon == null)
             {
                 return null;
             }
             Building_WorkTable best = null;
             float bestDistSq = float.MaxValue;
-            foreach (ThingDef benchDef in Recipe.recipeUsers)
+            foreach (ThingDef benchDef in RepairRouting.BenchesFor(weapon.def))
             {
                 foreach (Thing t in pawn.Map.listerThings.ThingsOfDef(benchDef))
                 {

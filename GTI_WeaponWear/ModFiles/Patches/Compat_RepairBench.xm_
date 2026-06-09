@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- ================================================================= -->
+<!-- Compatibility: Acruid's "Repair Workbench" mod (Acruid.RepairBench). -->
+<!--                                                                    -->
+<!-- When that mod is active, route ALL GTI repairs to its dedicated    -->
+<!-- repair bench (ElectricTableRepair) instead of the vanilla          -->
+<!-- machining / smithy / tailoring / fabrication benches.              -->
+<!--                                                                    -->
+<!-- A single shared bench can only host TWO non-overlapping repair      -->
+<!-- bills, because the per-bench bill filter distinguishes recipes by    -->
+<!-- their bench set: if several category recipes share one bench, none  -->
+<!-- can be told apart and every apparel bill shows every apparel item.  -->
+<!-- So we present:                                                      -->
+<!--   "repair weapon"  = GTI_RepairWeapon (weapons only, keeps filter)   -->
+<!--   "repair apparel" = GTI_RepairApparel (new; ALL apparel, no filter) -->
+<!-- and take the three apparel category recipes off all benches.         -->
+<!--                                                                     -->
+<!-- Equipped-weapon auto-repair follows automatically (it reads         -->
+<!-- GTI_RepairWeapon's recipeUsers, now the repair bench).              -->
+<!--                                                                     -->
+<!-- The whole thing is gated by PatchOperationFindMod, so it is inert   -->
+<!-- when the mod is not installed (its bench def would not exist).      -->
+<!-- ================================================================= -->
+<Patch>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Repair Workbench</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+
+				<!-- ==== Weapons: keep the weapon recipe, move it to the bench. ==== -->
+				<!-- It keeps its GTI_NotRepairWeapon filter, so the bill lists only   -->
+				<!-- weapons and still honours non-repairable weapon tags.            -->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/RecipeDef[defName="GTI_RepairWeapon"]/recipeUsers</xpath>
+					<value>
+						<recipeUsers>
+							<li>ElectricTableRepair</li>
+						</recipeUsers>
+					</value>
+				</li>
+
+				<!-- ==== Apparel: take the three category recipes off every bench, ==== -->
+				<!-- so they no longer create overlapping bills anywhere.                -->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/RecipeDef[defName="GTI_RepairArmor"]/recipeUsers</xpath>
+					<value><recipeUsers /></value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/RecipeDef[defName="GTI_RepairClothing"]/recipeUsers</xpath>
+					<value><recipeUsers /></value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/RecipeDef[defName="GTI_RepairUtility"]/recipeUsers</xpath>
+					<value><recipeUsers /></value>
+				</li>
+
+				<!-- ==== One unified apparel repair bill at the bench. No GTI sub- ==== -->
+				<!-- filter, so it lists ALL damaged apparel (clothing, armor and       -->
+				<!-- utility together). Same workerClass as the others, so the GTI      -->
+				<!-- WorkGiver / skip-patch treat it as a repair bill.                  -->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs</xpath>
+					<value>
+						<RecipeDef>
+							<defName>GTI_RepairApparel</defName>
+							<label>repair apparel</label>
+							<description>Repair any damaged piece of apparel (clothing, armor or utility gear) at the repair bench. Uses a configurable fraction (mod settings, default 25%) of its own original materials, scaled by how damaged it is; components are never needed. Quality and material are preserved.</description>
+							<jobString>Repairing apparel.</jobString>
+							<workerClass>GTI_WeaponWear.RecipeWorker_RepairWeapon</workerClass>
+							<effectWorking>Tailor</effectWorking>
+							<soundWorking>Recipe_Tailor</soundWorking>
+							<workAmount>800</workAmount>
+							<workSkill>Crafting</workSkill>
+							<allowMixingIngredients>false</allowMixingIngredients>
+							<ingredients>
+								<li>
+									<filter>
+										<categories>
+											<li>Apparel</li>
+										</categories>
+									</filter>
+									<count>1</count>
+								</li>
+							</ingredients>
+							<fixedIngredientFilter>
+								<categories>
+									<li>Apparel</li>
+								</categories>
+								<allowedHitPointsPercents>0~0.99</allowedHitPointsPercents>
+							</fixedIngredientFilter>
+							<!-- New bills start with tainted and biocoded apparel excluded; re-enable per bill if wanted. -->
+							<defaultIngredientFilter>
+								<categories>
+									<li>Apparel</li>
+								</categories>
+								<specialFiltersToDisallow>
+									<li>AllowDeadmansApparel</li>
+									<li>AllowBiocodedApparel</li>
+								</specialFiltersToDisallow>
+							</defaultIngredientFilter>
+							<recipeUsers>
+								<li>ElectricTableRepair</li>
+							</recipeUsers>
+						</RecipeDef>
+					</value>
+				</li>
+
+				<!-- ==== Add one work giver so pawns service the repair bench. ==== -->
+				<!-- Crafting work type matches the Repair Workbench mod's own giver. -->
+				<!-- Priority 120 > the mod's own RepairItem giver (95), so GTI repair  -->
+				<!-- is considered first.                                              -->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs</xpath>
+					<value>
+						<WorkGiverDef>
+							<defName>GTI_RepairAtRepairBench</defName>
+							<label>GTI repair gear</label>
+							<giverClass>GTI_WeaponWear.WorkGiver_RepairWeapon</giverClass>
+							<workType>Crafting</workType>
+							<priorityInType>120</priorityInType>
+							<fixedBillGiverDefs>
+								<li>ElectricTableRepair</li>
+							</fixedBillGiverDefs>
+							<verb>repair</verb>
+							<gerund>repairing</gerund>
+							<requiredCapacities>
+								<li>Manipulation</li>
+							</requiredCapacities>
+							<prioritizeSustains>true</prioritizeSustains>
+						</WorkGiverDef>
+					</value>
+				</li>
+
+			</operations>
+		</match>
+	</Operation>
+
+</Patch>

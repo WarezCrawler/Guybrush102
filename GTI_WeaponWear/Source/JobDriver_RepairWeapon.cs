@@ -98,6 +98,11 @@ namespace GTI_WeaponWear
             RepairProgress progress = null;
             float ticksToNext = TicksPerHitPoint;
 
+            // Captured for the debug repair summary emitted when the toil ends (any reason).
+            int startHp = 0;
+            int maxHp = 0;
+            string itemLabel = null;
+
             Toil toil = new Toil
             {
                 defaultCompleteMode = ToilCompleteMode.Never
@@ -112,6 +117,10 @@ namespace GTI_WeaponWear
                     return;
                 }
                 job.bill?.Notify_DoBillStarted(pawn);
+
+                startHp = weapon.HitPoints;
+                maxHp = weapon.MaxHitPoints;
+                itemLabel = weapon.LabelShortCap;
 
                 // The materials hauled here were already computed (fraction of the
                 // weapon's own cost, scaled by damage) by WorkGiver_RepairWeapon, so we
@@ -164,6 +173,14 @@ namespace GTI_WeaponWear
                     ReadyForNextToil();
                 }
             };
+
+            toil.AddFinishAction(delegate
+            {
+                if (GtiLog.Enabled && progress != null)
+                {
+                    RepairUtil.LogRepairSummary(pawn, itemLabel, startHp, maxHp, progress);
+                }
+            });
 
             toil.WithProgressBar(IngredientInd,
                 () => weapon == null ? 1f : (float)weapon.HitPoints / weapon.MaxHitPoints);
