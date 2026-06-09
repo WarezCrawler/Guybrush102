@@ -26,20 +26,70 @@ namespace GTI_WeaponWear
     {
         public override Job JobOnThing(Pawn pawn, Thing thing, bool forced = false)
         {
-            Job job = base.JobOnThing(pawn, thing, forced);
-            if (job == null || job.def != JobDefOf.DoBill)
+            // Our repair recipe carries no material ingredient, so vanilla always treats a repair
+            // bill as doable and commits to the FIRST one it finds in the stack — even when we later
+            // discover its materials are unavailable. Returning null there would abort the whole
+            // scan, so the bench would never fall through to the bills below an unfundable repair
+            // bill (the reported "repair on top stalls the workbench" bug). To avoid that, when a
+            // repair bill can't be funded we temporarily suspend it and re-ask vanilla for the next
+            // doable bill, restoring every bill we touched before we return.
+            List<Bill> suspended = null;
+            try
             {
-                return job;
-            }
+                while (true)
+                {
+                    Job job = base.JobOnThing(pawn, thing, forced);
+                    if (job == null || job.def != JobDefOf.DoBill)
+                    {
+                        return job;
+                    }
 
-            RecipeDef recipe = job.bill?.recipe;
-            if (recipe == null || recipe.workerClass != typeof(RecipeWorker_RepairWeapon))
+                    RecipeDef recipe = job.bill?.recipe;
+                    if (recipe == null || recipe.workerClass != typeof(RecipeWorker_RepairWeapon))
+                    {
+                        return job; // normal crafting bill — leave untouched
+                    }
+
+                    Bill bill = job.bill;
+
+                    Job repairJob = TryRepairBill(pawn, thing, job, bill);
+                    if (repairJob != null)
+                    {
+                        return repairJob;
+                    }
+
+                    // This repair bill is unfundable. Suspend it (so vanilla skips it on the next
+                    // pass) and loop to evaluate the next bill in the stack. The Contains guard is
+                    // a belt-and-suspenders stop against an infinite loop.
+                    if (suspended == null)
+                    {
+                        suspended = new List<Bill>();
+                    }
+                    if (suspended.Contains(bill))
+                    {
+                        return null;
+                    }
+                    suspended.Add(bill);
+                    bill.suspended = true;
+                }
+            }
+            finally
             {
-                return job; // normal crafting bill — leave untouched
+                if (suspended != null)
+                {
+                    foreach (Bill b in suspended)
+                    {
+                        b.suspended = false;
+                    }
+                }
             }
+        }
 
-            Bill bill = job.bill;
-
+        // Try to produce a fundable GTI repair job for this repair bill, or null if nothing it
+        // covers can be funded (in which case a JobFailReason describing the nearest shortfall is
+        // recorded for the caller to surface).
+        private static Job TryRepairBill(Pawn pawn, Thing thing, Job job, Bill bill)
+        {
             // The item vanilla already chose (the closest match).
             Thing chosen = job.targetQueueB?
                 .Select(t => t.Thing)

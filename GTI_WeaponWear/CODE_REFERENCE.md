@@ -94,9 +94,18 @@ Helpers shared by both repair WorkGivers/JobDrivers.
 ### `WorkGiver_RepairWeapon.cs` — `WorkGiver_RepairWeapon` (`WorkGiver_DoBill`)
 Generic bench-bill repair giver (Machining/Smithy/Tailoring/Fabrication via the repair recipes).
 - `JobOnThing(Pawn, Thing, forced)` — calls base to find a doable bill; for repair recipes,
-  computes materials (`RepairUtil.TryFindMaterials`) and issues a `GTI_RepairWeapon` job (null +
-  a `JobFailReason` naming the shortfall if materials unreachable); passes normal bills through.
-  Called by the work scheduler.
+  delegates to `TryRepairBill`. **Because the repair recipe has no material ingredient, vanilla
+  always treats a repair bill as doable and commits to the first one in the stack.** If that bill
+  is unfundable, returning null would abort the scan and the bench would never reach the bills
+  below it (the "repair-on-top stalls the workbench" bug). So an unfundable repair bill is
+  temporarily `suspended` and `base.JobOnThing` is re-asked for the next doable bill, in a loop;
+  every bill touched is un-suspended in a `finally`. Passes normal bills through. Called by the
+  work scheduler.
+- `TryRepairBill(pawn, thing, job, bill)` — private; the per-repair-bill logic: tries the
+  vanilla-chosen closest item (fast path), then enumerates the bill's other damaged items
+  (closest-first) via `FindRepairCandidates`, issuing a `GTI_RepairWeapon` job for the first one it
+  can fully fund. Returns null (and records a `JobFailReason` naming the nearest item's shortfall)
+  when none can be funded.
 
 ### `JobDriver_RepairWeapon.cs` — `JobDriver_RepairWeapon` (`JobDriver`)
 Runs the `GTI_RepairWeapon` (bench-bill) job. Const `TicksPerHitPoint = 25`.
