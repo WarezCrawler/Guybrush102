@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+	<!-- ====================================================================== -->
+	<!-- Animal augmentation bench                                              -->
+	<!-- A themed workbench dedicated to A Dog Said... animal prosthetics,      -->
+	<!-- bionics and synthetic organs. Its veterinary-themed artwork            -->
+	<!-- (Textures/Things/Building/Production/GTI_AnimalBionicsTable_*) is        -->
+	<!-- derived from EPOE's TableBionics: recoloured blue->green with a paw      -->
+	<!-- decal, then baked into standalone PNGs - so it is self-contained at      -->
+	<!-- runtime (no texture dependency). Personal/unpublished use only.          -->
+	<!-- The animal-part recipes are routed here by                              -->
+	<!-- Patches/PatchAnimalProstheticsBench.xml.                                -->
+	<!-- ====================================================================== -->
+
+	<ThingDef ParentName="BenchBase">
+		<defName>GTI_AnimalBionicsTable</defName>
+		<label>animal augmentation bench</label>
+		<description>A veterinary fabrication bench equipped for the production of animal prosthetics, bionics and synthetic organs. All A Dog Said animal body parts are crafted here.</description>
+		<thingClass>Building_WorkTable</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Production/GTI_AnimalBionicsTable</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(3.5,1.5)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<castEdgeShadows>true</castEdgeShadows>
+		<staticSunShadowHeight>0.20</staticSunShadowHeight>
+		<costList>
+			<Steel>100</Steel>
+			<ComponentIndustrial>6</ComponentIndustrial>
+		</costList>
+		<altitudeLayer>Building</altitudeLayer>
+		<fillPercent>0.5</fillPercent>
+		<useHitPoints>True</useHitPoints>
+		<statBases>
+			<WorkToBuild>2500</WorkToBuild>
+			<MaxHitPoints>200</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Cleanliness>-2</Cleanliness>
+		</statBases>
+		<size>(3,1)</size>
+		<designationCategory>Production</designationCategory>
+		<passability>PassThroughOnly</passability>
+		<pathCost>50</pathCost>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<surfaceType>Item</surfaceType>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<recipes />
+		<inspectorTabs>
+			<li>ITab_Bills</li>
+		</inspectorTabs>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<shortCircuitInRain>true</shortCircuitInRain>
+				<basePowerConsumption>250</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities>
+					<li>ToolCabinet</li>
+				</linkableFacilities>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+		</comps>
+		<building>
+			<spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity>
+		</building>
+		<constructEffect>ConstructMetal</constructEffect>
+		<researchPrerequisites>
+			<li>SimpleAnimalProsthetics</li>
+		</researchPrerequisites>
+		<placeWorkers>
+			<li>PlaceWorker_PreventInteractionSpotOverlap</li>
+		</placeWorkers>
+	</ThingDef>
+
+</Defs>

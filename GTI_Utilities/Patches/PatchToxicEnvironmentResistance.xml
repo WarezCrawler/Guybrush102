@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- ====================================================================
+       Grants Toxic Environment Protection (ToxicEnvironmentResistance) to
+       recon and marine armor pieces, mirroring how the vanilla gas mask
+       (Apparel_GasMask) supplies it via equippedStatOffsets.
+
+       None of these concrete defs declare equippedStatOffsets in their own
+       raw XML (recon pieces inherit theirs from their abstract base; marine
+       pieces' inherited block lives on the power-armor base). Adding a fresh
+       equippedStatOffsets node here is safe: RimWorld resolves def
+       inheritance by element name, so any inherited offsets (e.g.
+       VacuumResistance) are preserved and ToxicEnvironmentResistance is
+       merged in alongside them.
+
+         Recon armor    (Apparel_ArmorRecon)        10%
+         Recon helmet   (Apparel_ArmorHelmetRecon)  20%
+         Marine armor   (Apparel_PowerArmor)        20%
+         Marine helmet  (Apparel_PowerArmorHelmet)  40%
+       ==================================================================== -->
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_ArmorRecon"]</xpath>
+    <value>
+      <equippedStatOffsets>
+        <ToxicEnvironmentResistance>0.10</ToxicEnvironmentResistance>
+      </equippedStatOffsets>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_ArmorHelmetRecon"]</xpath>
+    <value>
+      <equippedStatOffsets>
+        <ToxicEnvironmentResistance>0.20</ToxicEnvironmentResistance>
+      </equippedStatOffsets>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_PowerArmor"]</xpath>
+    <value>
+      <equippedStatOffsets>
+        <ToxicEnvironmentResistance>0.20</ToxicEnvironmentResistance>
+      </equippedStatOffsets>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[defName="Apparel_PowerArmorHelmet"]</xpath>
+    <value>
+      <equippedStatOffsets>
+        <ToxicEnvironmentResistance>0.40</ToxicEnvironmentResistance>
+      </equippedStatOffsets>
+    </value>
+  </Operation>
+
+</Patch>

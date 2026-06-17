@@ -1,32 +1,21 @@
-using RimWorld;
 using Verse;
 
 namespace GTI_WeaponWear
 {
-    // Repairs the weapon ingredient IN PLACE rather than destroying it.
+    // Marker type only. The four repair recipes (weapon/armor/clothing/utility) all set
+    // workerClass to this so the rest of the mod can recognise a repair bill by
+    //   recipe.workerClass == typeof(RecipeWorker_RepairWeapon)
+    // — see WorkGiver_RepairWeapon (which builds the incremental GTI_RepairWeapon job) and
+    // Patch_WorkGiverDoBill_SkipRepair (which stops vanilla running these recipes).
     //
-    // The vanilla bill flow calls RecipeWorker.ConsumeIngredient once per ingredient
-    // after the work is done. For the material ingredient (wood/steel) we let the base
-    // class consume it normally; for the weapon we instead restore its HitPoints to max
-    // and return without destroying it — so the exact same Thing survives, preserving
-    // quality, material, biocode, custom name and art. The recipe declares empty
-    // <products/>, so nothing new is created; the repaired weapon is left at the bench
-    // and hauled to storage as usual.
+    // It deliberately has NO behaviour. The actual repair is done incrementally in
+    // JobDriver_RepairWeapon, which restores the item's HitPoints in place and consumes the
+    // dynamically-staged materials — the repaired item is protected by REFERENCE there (and in
+    // RepairProgress / RepairUtil.GatherStagedMaterials), never by a def predicate. The vanilla
+    // atomic bill flow (RecipeWorker.ConsumeIngredient) is never reached: our WorkGiver only ever
+    // emits the custom job, and the skip-patch nulls any repair job a vanilla giver would make. An
+    // override here would be dead code, so there isn't one.
     public class RecipeWorker_RepairWeapon : RecipeWorker
     {
-        public override void ConsumeIngredient(Thing ingredient, RecipeDef recipe, Map map)
-        {
-            if (ingredient?.def != null && ingredient.def.IsWeapon)
-            {
-                if (ingredient.HitPoints < ingredient.MaxHitPoints)
-                {
-                    ingredient.HitPoints = ingredient.MaxHitPoints;
-                }
-                // Deliberately do NOT call base: the weapon must survive.
-                return;
-            }
-
-            base.ConsumeIngredient(ingredient, recipe, map);
-        }
     }
 }

@@ -1,0 +1,22 @@
+GTI Utilities - Changelog
+
+2026-06-14
+- Added the "animal augmentation bench" (GTI_AnimalBionicsTable): an animal-themed workbench
+  dedicated to A Dog Said... animal prosthetics.
+    - Veterinary-themed artwork derived from EPOE's TableBionics (recoloured blue->green with a
+      glowing paw decal, baked into standalone PNGs); self-contained at runtime, personal use
+      only. Built from Steel + industrial components; unlocked by the animal "Animal prosthetics"
+      research (SimpleAnimalProsthetics).
+    - All A Dog Said craft recipes (simple prosthetics, surrogate organs, bionics, synthetic
+      organs) now craft EXCLUSIVELY at this bench and no longer appear on the vanilla machining
+      table / fabrication bench or EPOE's TableBionics / TableOrgans.
+    - Pure XML, no assemblies. Guarded by mod presence; load GTI Utilities after A Dog Said and
+      EPOE-Forked (declared via loadAfter).
+
+2026-06-09
+- Added Toxic Environment Protection to recon and marine armor (mirrors the gas mask):
+    Recon armor    +10%
+    Recon helmet   +20%
+    Marine armor   +20%
+    Marine helmet  +40%
+  This stacks with other gear that provides toxic environment resistance.

@@ -94,9 +94,18 @@ Helpers shared by both repair WorkGivers/JobDrivers.
 ### `WorkGiver_RepairWeapon.cs` — `WorkGiver_RepairWeapon` (`WorkGiver_DoBill`)
 Generic bench-bill repair giver (Machining/Smithy/Tailoring/Fabrication via the repair recipes).
 - `JobOnThing(Pawn, Thing, forced)` — calls base to find a doable bill; for repair recipes,
-  computes materials (`RepairUtil.TryFindMaterials`) and issues a `GTI_RepairWeapon` job (null +
-  a `JobFailReason` naming the shortfall if materials unreachable); passes normal bills through.
-  Called by the work scheduler.
+  delegates to `TryRepairBill`. **Because the repair recipe has no material ingredient, vanilla
+  always treats a repair bill as doable and commits to the first one in the stack.** If that bill
+  is unfundable, returning null would abort the scan and the bench would never reach the bills
+  below it (the "repair-on-top stalls the workbench" bug). So an unfundable repair bill is
+  temporarily `suspended` and `base.JobOnThing` is re-asked for the next doable bill, in a loop;
+  every bill touched is un-suspended in a `finally`. Passes normal bills through. Called by the
+  work scheduler.
+- `TryRepairBill(pawn, thing, job, bill)` — private; the per-repair-bill logic: tries the
+  vanilla-chosen closest item (fast path), then enumerates the bill's other damaged items
+  (closest-first) via `FindRepairCandidates`, issuing a `GTI_RepairWeapon` job for the first one it
+  can fully fund. Returns null (and records a `JobFailReason` naming the nearest item's shortfall)
+  when none can be funded.
 
 ### `JobDriver_RepairWeapon.cs` — `JobDriver_RepairWeapon` (`JobDriver`)
 Runs the `GTI_RepairWeapon` (bench-bill) job. Const `TicksPerHitPoint = 25`.
@@ -160,10 +169,12 @@ Pay-before material consumption so HP is never granted unpaid.
 - `Available(staged, def)` / `Remove(staged, def, amount)` — private stack tally / destroy helpers.
 
 ### `RecipeWorker_RepairWeapon.cs` — `RecipeWorker_RepairWeapon` (`RecipeWorker`)
-- `ConsumeIngredient(Thing, RecipeDef, Map)` — for a weapon, restores HP in place and does NOT
-  destroy it (preserves quality/material/etc.); other ingredients consumed normally. Also the
-  marker type that the WorkGiver / skip-patch recognise. Called by the vanilla bill flow (atomic
-  fallback path).
+- Marker type with **no behaviour**. The four repair recipes set `workerClass` to it so the rest of
+  the mod recognises a repair bill via `recipe.workerClass == typeof(RecipeWorker_RepairWeapon)` (see
+  `WorkGiver_RepairWeapon` and `Patch_WorkGiverDoBill_SkipRepair`). The repair itself is done in
+  `JobDriver_RepairWeapon`, which protects the repaired item **by reference**; the vanilla atomic
+  `ConsumeIngredient` flow is never reached (WorkGiver emits only the custom job; the skip-patch nulls
+  any vanilla repair job), so there is no override.
 
 ### `Patch_WorkGiverDoBill.cs`
 - **`Patch_WorkGiverDoBill_SkipRepair.Postfix`** — nulls any repair-recipe job produced by a
