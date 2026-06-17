@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>GTI Runtime GC</name>
+	<author>WarezCrawler (fork of user19990313, louize, RunningBugs)</author>
+	<packageId>GTI.RuntimeGC</packageId>
+	<url>https://github.com/user19990313/RimWorld-RuntimeGC</url>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<description>
+Personal GTI fork/maintenance copy of RuntimeGC (the in-game cleaner). All credit for the original mod goes to user19990313, with the 1.5/1.6 fork by louize and RunningBugs.
+
+&lt;size=20&gt;RuntimeGC In-Game Cleaner&lt;/size&gt;
+
+- Remove unnecessary World Pawns to alleviate burden of GameSystem
+- Clear AvoidGrids to reduce the size of your savegame
+- Remove useless members (dead or of other factions) in an animal family
+- Remove filth in HomeArea, and snow
+- Remove corpses in current map
+- Remove BattleLog entries
+- Fix some faction relationship errors (those caused by mod conflicts are not included!)
+- Re-generate faction leaders to fix some CommTable issues
+- Reclaim memory used by GameSystem to boost game performance
+
+Warning: please back up your save before using this.
+
+Original repository: https://github.com/user19990313/RimWorld-RuntimeGC
+	</description>
+</ModMetaData>

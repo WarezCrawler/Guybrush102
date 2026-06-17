@@ -13,9 +13,44 @@ separate mods. It is **not** published to the Workshop.
 
 ## Current state
 
-**One patch is active** (`PatchToxicEnvironmentResistance.xml`); **every other patch file in `Patches/` is
-disabled** (renamed to the `.xm_` extension, which RimWorld does not load). To activate a disabled patch,
-rename it from `.xm_` back to `.xml`. See the repo `CLAUDE.md` for the disabled-file convention.
+**Two patches are active** (`PatchToxicEnvironmentResistance.xml` and `PatchAnimalProstheticsBench.xml`,
+the latter paired with the `Defs/Buildings_AnimalBionics.xml` building def); **every other patch file in
+`Patches/` is disabled** (renamed to the `.xm_` extension, which RimWorld does not load). To activate a
+disabled patch, rename it from `.xm_` back to `.xml`. See the repo `CLAUDE.md` for the disabled-file
+convention.
+
+## The animal augmentation bench (active)
+
+A new building, `GTI_AnimalBionicsTable` ("animal augmentation bench"), defined in
+`Defs/Buildings_AnimalBionics.xml`. Its veterinary-themed artwork
+(`Textures/Things/Building/Production/GTI_AnimalBionicsTable_{south,north,east}.png`; west is auto-mirrored)
+is **derived from EPOE's `TableBionics`** — hue-shifted blue→green and stamped with a glowing paw decal on
+the console, then baked into standalone PNGs, so the bench is **self-contained at runtime** (it keeps
+RimWorld's native shading/perspective and needs no other mod's texture to draw). Because it is derived from
+EPOE art it is **personal/unpublished use only**. Regenerate with `_art_gen.py` (Pillow) in the mod root;
+RimWorld ignores the `.py`. Unlocked by A Dog Said's `SimpleAnimalProsthetics` ("Animal prosthetics")
+research.
+
+`Patches/PatchAnimalProstheticsBench.xml` then re-routes **A Dog Said... Animal Prosthetics 2** craft
+recipes to this bench *exclusively*, by replacing `recipeMaker/recipeUsers` on its abstract bases:
+
+| ADS base patched | Tier covered | Was crafted at |
+|------------------|--------------|----------------|
+| `BodyPartProstheticAnimalBase` | Simple prosthetics (+ surrogate organs by inheritance) | `TableMachining` |
+| `BodyPartBionicAnimalBase` | Bionics | `FabricationBench` → EPOE `TableBionics` |
+| `BodyPartSyntheticAnimalBase` *(EPOE only)* | Synthetic organs | EPOE `TableOrgans` |
+
+The surrogate base (`BodyPartSurrogateAnimalBase`) has no `recipeUsers` of its own and inherits from the
+simple base, so it needs no separate patch. The synthetic base explicitly overrides `recipeUsers`
+(`Inherit="False"`), so it gets its own (EPOE-guarded) replace.
+
+**Caveats:**
+- The patch is guarded by `PatchOperationFindMod` (ADS, and EPOE for the synthetic-organ op), so it no-ops
+  cleanly if those mods are absent.
+- ADS's own EPOE-compat patch also sets the bionic base's `recipeUsers`. To win, **GTI Utilities must load
+  after A Dog Said and EPOE-Forked** — enforced via `<loadAfter>` in `About.xml`.
+- Because recipes are *exclusive* to this bench, the bench is gated on the earliest tier
+  (`SimpleAnimalProsthetics`) so simple animal prosthetics are never locked behind bionics research.
 
 ## The patches
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ========================================================================== -->
+<!-- Route all A Dog Said... Animal Prosthetics 2 craft recipes EXCLUSIVELY to   -->
+<!-- the GTI animal augmentation bench (GTI_AnimalBionicsTable).                  -->
+<!--                                                                             -->
+<!-- ADS generates its craft recipes from recipeMaker blocks on a few abstract   -->
+<!-- ThingDef bases. We replace each base's recipeUsers so the generated         -->
+<!-- Make_* recipes only appear on our bench and no longer clutter the vanilla    -->
+<!-- TableMachining / FabricationBench / EPOE TableBionics / TableOrgans lists.   -->
+<!--                                                                             -->
+<!-- Bases covered:                                                              -->
+<!--   BodyPartProstheticAnimalBase  -> simple prosthetics (also feeds the        -->
+<!--                                     EPOE surrogate base by inheritance)       -->
+<!--   BodyPartBionicAnimalBase      -> bionics                                   -->
+<!--   BodyPartSyntheticAnimalBase   -> synthetic organs (EPOE-only; explicitly    -->
+<!--                                     overrides recipeUsers, so patched here)   -->
+<!--                                                                             -->
+<!-- Load order: GTI Utilities must load AFTER A Dog Said and EPOE so this        -->
+<!-- replace wins over ADS's own EPOE-compat recipeUsers patch (see About.xml      -->
+<!-- loadAfter). Guarded by mod presence so it no-ops cleanly when ADS/EPOE        -->
+<!-- are absent.                                                                  -->
+<!-- ========================================================================== -->
+<Patch>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>A Dog Said... Animal Prosthetics 2</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+
+				<!-- Simple prosthetics (and surrogate organs via inheritance) -->
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="BodyPartProstheticAnimalBase"]/recipeMaker/recipeUsers</xpath>
+					<value>
+						<recipeUsers>
+							<li>GTI_AnimalBionicsTable</li>
+						</recipeUsers>
+					</value>
+				</li>
+
+				<!-- Bionics -->
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="BodyPartBionicAnimalBase"]/recipeMaker/recipeUsers</xpath>
+					<value>
+						<recipeUsers>
+							<li>GTI_AnimalBionicsTable</li>
+						</recipeUsers>
+					</value>
+				</li>
+
+				<!-- Synthetic organs (only exists when EPOE-Forked is active) -->
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Expanded Prosthetics and Organ Engineering - Forked</li>
+					</mods>
+					<match Class="PatchOperationReplace">
+						<xpath>Defs/ThingDef[@Name="BodyPartSyntheticAnimalBase"]/recipeMaker/recipeUsers</xpath>
+						<value>
+							<recipeUsers Inherit="False">
+								<li>GTI_AnimalBionicsTable</li>
+							</recipeUsers>
+						</value>
+					</match>
+				</li>
+
+			</operations>
+		</match>
+	</Operation>
+
+</Patch>
