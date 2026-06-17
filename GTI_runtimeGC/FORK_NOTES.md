@@ -15,6 +15,35 @@ verified, what was broken, what was fixed, and the decisions still open.
 
 ---
 
+## Current status & where to resume
+
+**State:** builds clean (0 errors) and deploys to the live Mods folder. All features
+verified *statically* against vanilla 1.6.4633, and three bugs fixed — but the mod
+has **not yet been run inside RimWorld**. Everything here is "verified on paper,"
+not observed working.
+
+**Next step — in-game smoke test.** This is the repo's real verification (launch +
+read `Player.log`). With debug logging on (the default), click through and watch the
+log for any `[RuntimeGC] Tool '…' failed` line:
+
+1. RuntimeGC tab → **GC world pawns**, then the verbose variant.
+2. **Fix** menu → faction relationships, faction leaders, avoid-grid regen.
+3. **More CleanUp** menu → Animal Family sweep-up, filth, snow, corpses, and
+   **Remove battle-log entries** (fix #1).
+4. Shift-click **System GC** → the three cleaners: **Clean ModMetaData** (fix #3),
+   Clean Language data, **Clean DefPackage** (fix #2).
+5. Toggle **RuntimeGC: Debug logging** off, confirm the routine chatter stops (real
+   errors should still print), then back on.
+
+**Build / deploy:** `dotnet build GTI_runtimeGC.csproj -c Release` (or the VS Code
+"Build & Deploy (Release)" task). The Deploy target wipes and re-copies `ModFiles`
+plus the freshly built DLL into `...\RimWorld\Mods\GTI_runtimeGC`.
+
+**Not committed:** all work is staged in the working tree only — commits are done
+manually.
+
+---
+
 ## Feature status at a glance
 
 | Feature | Status |
@@ -161,4 +190,8 @@ toggle off just quiets the routine start/finish/step chatter.
 - **Unified logging:** every `Log.Message/Warning/Error` in the mod now routes
   through `RGCLog`, so the toggle governs all diagnostics (including the previously
   always-on `[GC Log]` chatter). Errors still always print.
+- **Removed:** the Russian language folder (`ModFiles/Languages/Russian`). Remaining
+  languages: ChineseSimplified, ChineseTraditional, English, German, Japanese,
+  Spanish, SpanishLatin.
 - Verified all features against installed RimWorld 1.6.4633; builds with 0 errors.
+  **Not yet run in-game** — see "Current status & where to resume" above.
