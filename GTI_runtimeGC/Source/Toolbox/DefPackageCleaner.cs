@@ -19,7 +19,9 @@ public static class DefPackageCleaner
 		//IL_009b: Invalid comparison between Unknown and I4
 		//IL_00a9: Unknown result type (might be due to invalid IL or missing references)
 		//IL_00ae: Unknown result type (might be due to invalid IL or missing references)
-		FieldInfo field = typeof(ModContentPack).GetField("defPackages", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+		// 1.6 renamed ModContentPack.defPackages -> defs (List<Def>). The old name
+		// returned a null FieldInfo and NRE'd here. (GTI fix.)
+		FieldInfo field = typeof(ModContentPack).GetField("defs", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 		int num = 0;
 		foreach (ModContentPack runningMod in LoadedModManager.RunningMods)
 		{

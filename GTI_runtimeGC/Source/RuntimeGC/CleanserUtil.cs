@@ -13,15 +13,14 @@ internal static class CleanserUtil
 
 	private static FieldInfo battles = typeof(BattleLog).GetField("battles", BindingFlags.Instance | BindingFlags.NonPublic);
 
-	private static FieldInfo activeEntries = typeof(BattleLog).GetField("activeEntries", BindingFlags.Instance | BindingFlags.NonPublic);
+	// 1.6 renamed BattleLog.activeEntries -> cachedActiveEntries (HashSet<LogEntry>).
+	private static FieldInfo cachedActiveEntries = typeof(BattleLog).GetField("cachedActiveEntries", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	private static FieldInfo archivables = typeof(Archive).GetField("archivables", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	private static FieldInfo pinnedArchivables = typeof(Archive).GetField("pinnedArchivables", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	private static FieldInfo forceNormalSpeedUntil = typeof(TimeSlower).GetField("forceNormalSpeedUntil", BindingFlags.Instance | BindingFlags.NonPublic);
-
-	private static FieldInfo selMod = typeof(Dialog_ModSettings).GetField("selMod", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	private static WorldPawnCleaner gcobject = new WorldPawnCleaner();
 
@@ -49,15 +48,12 @@ internal static class CleanserUtil
 			int num = 0;
 			foreach (Battle battle in Find.BattleLog.Battles)
 			{
-				num = battle.Entries.Count;
-				if (num <= 0)
-				{
-					num = 0;
-					continue;
-				}
-				battles.SetValue(Find.BattleLog, null);
+				num += battle.Entries.Count;
+			}
+			if (num > 0)
+			{
 				battles.SetValue(Find.BattleLog, new List<Battle>(20));
-				activeEntries.SetValue(Find.BattleLog, null);
+				cachedActiveEntries.SetValue(Find.BattleLog, new HashSet<LogEntry>());
 			}
 			return num;
 		}

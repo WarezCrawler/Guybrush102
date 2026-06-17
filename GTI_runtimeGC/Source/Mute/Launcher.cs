@@ -22,6 +22,12 @@ public static class Launcher
 		Scribe_Collections.Look<Battle>(ref list, "battles", (LookMode)2, Array.Empty<object>());
 	}
 
+	// TODO(GTI): DEAD CODE — this Launch() has NO call sites. The "Integrated
+	// MuteGC / MuteBL" feature (DoMuteGC / DoMuteBL settings) does nothing until
+	// this is invoked from RuntimeGC.StaticConstructor. See the TODO block there.
+	// CAUTION before re-enabling: DoDetour() below does raw function-pointer
+	// patching (unsafe), which is fragile on the current Mono runtime — prefer a
+	// Harmony reimplementation. Currently inert and harmless: never called.
 	public static void Launch(bool doGC, bool doBL)
 	{
 		BindingFlags bflag = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

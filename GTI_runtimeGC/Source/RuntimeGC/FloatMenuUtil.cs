@@ -240,8 +240,11 @@ public static class FloatMenuUtil
 		//IL_0133: Expected O, but got Unknown
 		//IL_0102: Unknown result type (might be due to invalid IL or missing references)
 		List<FloatMenuOption> list = new List<FloatMenuOption>();
-		FloatMenuOption val = new FloatMenuOption((Translator.Translate("FloatACModMetaData")), (Action)global::Toolbox.Toolbox.CleanModMetaData, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
-		if (global::Toolbox.Toolbox.Cleaned)
+		// GTI fix: was wired to Toolbox.Toolbox.CleanModMetaData, an unused stub that
+		// throws NotImplementedException. Point at the real implementation instead,
+		// matching the LanguageData/DefPackage options below.
+		FloatMenuOption val = new FloatMenuOption((Translator.Translate("FloatACModMetaData")), (Action)ModMetaDataCleaner.CleanModMetaData, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
+		if (ModMetaDataCleaner.Cleaned)
 		{
 			val.Label = (Translator.Translate("FloatACModMetaDataCleared"));
 			val.Disabled = true;
