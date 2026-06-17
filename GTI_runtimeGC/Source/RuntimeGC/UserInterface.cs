@@ -209,7 +209,7 @@ public class UserInterface : MainTabWindow
 	{
 		int num = PawnsAliveCount;
 		int num2 = PawnsDeadCount;
-		int num3 = CleanserUtil.GCObject.GC(verbose);
+		int num3 = RGCLog.Guard("Garbage-collect world pawns", () => CleanserUtil.GCObject.GC(verbose), 0);
 		Notify_PawnsCountDirty();
 		int num4 = num + num2 - PawnsAliveCount - PawnsDeadCount;
 		string text = (TranslatorFormattedStringExtensions.Translate("DlgTextGC", (num), (PawnsAliveCount), (num2), (PawnsDeadCount), (num4)));

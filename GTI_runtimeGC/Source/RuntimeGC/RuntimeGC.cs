@@ -221,6 +221,11 @@ public class RuntimeGC : Mod
 		val2 = new(0f, num3 + 5f, num2, num3);
 		Widgets.CheckboxLabeled(val2, (Translator.Translate("SettingsArchiveGeneralLabel")), ref Settings.ArchiveMessageGeneral, false, (Texture2D)null, (Texture2D)null, false, false);
 		TooltipHandler.TipRegion(val2, (Translator.Translate("SettingsArchiveGeneralTip")));
+		// GTI: debug-logging toggle (literal text — intentionally not a translation
+		// key, to avoid missing-key warnings across the shipped language folders).
+		val2 = new(0f, num3 * 2f + 10f, num2, num3);
+		Widgets.CheckboxLabeled(val2, "RuntimeGC: Debug logging", ref Settings.DebugLogging, false, (Texture2D)null, (Texture2D)null, false, false);
+		TooltipHandler.TipRegion(val2, "Logs each cleanup tool's start/finish and turns any failure into a clearly-labelled [RuntimeGC] error in the dev log. Helpful while testing; turn off to reduce log noise. Errors are always logged regardless of this setting.");
 		GUI.EndGroup();
 		Rect val15 = new(inRect.xMax - 5f - 135f - 50f, inRect.yMax - 35f - 65f, 135f, 35f);
 		if (Widgets.ButtonText(val15, (Translator.Translate("SettingsReset")), true, true, true, (TextAnchor?)null))

@@ -14,7 +14,7 @@ internal class StaticConstructor
 		//IL_0051: Unknown result type (might be due to invalid IL or missing references)
 		if ((Object)(object)GameObject.Find("RuntimeGCInstance") != (Object)null)
 		{
-			Log.Warning("[RuntimeGC] More than one RuntimeGC instance is running!");
+			RGCLog.Warn("More than one RuntimeGC instance is running!");
 		}
 		else
 		{

@@ -90,9 +90,9 @@ public static class FloatMenuUtil
 			//IL_0029: Unknown result type (might be due to invalid IL or missing references)
 			//IL_002e: Unknown result type (might be due to invalid IL or missing references)
 			int num = CleanserUtil.DeconstructAnimalFamily();
-			Log.Message("CleanserUtil.DeconstructAnimalFamily():Round 1 completed.");
+			RGCLog.Msg("CleanserUtil.DeconstructAnimalFamily():Round 1 completed.");
 			CleanserUtil.DeconstructAnimalFamily();
-			Log.Message("CleanserUtil.DeconstructAnimalFamily():Round 2 completed.");
+			RGCLog.Msg("CleanserUtil.DeconstructAnimalFamily():Round 2 completed.");
 			Message((TranslatorFormattedStringExtensions.Translate("MsgTextAFT", (num))), MessageTypeDefOf.PositiveEvent);
 		});
 		Add(groupFix, (Translator.Translate("FloatToolsItems2")), delegate
@@ -217,7 +217,15 @@ public static class FloatMenuUtil
 		{
 			if (!devOnly[item] || Prefs.DevMode)
 			{
-				list.Add(new FloatMenuOption(item, items[item], (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0));
+				// GTI: run every tool through RGCLog.Guard so a failure surfaces as a
+				// labelled "[RuntimeGC] Tool '<name>' failed" error (not an anonymous
+				// stack trace), with start/finish logged when debug logging is on.
+				string toolName = item;
+				Action toolAction = items[item];
+				list.Add(new FloatMenuOption(toolName, (Action)delegate
+				{
+					RGCLog.Guard(toolName, toolAction);
+				}, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0));
 			}
 		}
 		Find.WindowStack.Add((Window)new FloatMenu(list));
@@ -243,21 +251,30 @@ public static class FloatMenuUtil
 		// GTI fix: was wired to Toolbox.Toolbox.CleanModMetaData, an unused stub that
 		// throws NotImplementedException. Point at the real implementation instead,
 		// matching the LanguageData/DefPackage options below.
-		FloatMenuOption val = new FloatMenuOption((Translator.Translate("FloatACModMetaData")), (Action)ModMetaDataCleaner.CleanModMetaData, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
+		FloatMenuOption val = new FloatMenuOption((Translator.Translate("FloatACModMetaData")), (Action)delegate
+		{
+			RGCLog.Guard("Clean mod metadata", ModMetaDataCleaner.CleanModMetaData);
+		}, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
 		if (ModMetaDataCleaner.Cleaned)
 		{
 			val.Label = (Translator.Translate("FloatACModMetaDataCleared"));
 			val.Disabled = true;
 		}
 		list.Add(val);
-		val = new FloatMenuOption((Translator.Translate("FloatACLanguageData")), (Action)LanguageDataCleaner.CleanLanguageData, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
+		val = new FloatMenuOption((Translator.Translate("FloatACLanguageData")), (Action)delegate
+		{
+			RGCLog.Guard("Clean language data", LanguageDataCleaner.CleanLanguageData);
+		}, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
 		if (LanguageDataCleaner.Cleaned)
 		{
 			val.Label = (Translator.Translate("FloatACLanguageDataCleared"));
 			val.Disabled = true;
 		}
 		list.Add(val);
-		val = new FloatMenuOption((Translator.Translate("FloatACDefPackage")), (Action)DefPackageCleaner.CleanDefPackage, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
+		val = new FloatMenuOption((Translator.Translate("FloatACDefPackage")), (Action)delegate
+		{
+			RGCLog.Guard("Clean def packages", DefPackageCleaner.CleanDefPackage);
+		}, (MenuOptionPriority)4, (Action<Rect>)null, (Thing)null, 0f, (Func<Rect, bool>)null, (WorldObject)null, true, 0);
 		if (DefPackageCleaner.Cleaned)
 		{
 			val.Label = (Translator.Translate("FloatACDefPackageCleared"));

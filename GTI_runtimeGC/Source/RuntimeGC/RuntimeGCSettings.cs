@@ -31,6 +31,10 @@ public class RuntimeGCSettings : ModSettings
 
 	public bool DevOnScreenMemoryUsage;
 
+	// GTI: gates all optional "[RuntimeGC]" diagnostics via RGCLog. Defaults on
+	// during the fork's bug-hunting phase. (Errors always log regardless.)
+	public bool DebugLogging;
+
 	internal int restartFlags = 0;
 
 	public bool EnableMemoryMonitorBar
@@ -117,7 +121,7 @@ public class RuntimeGCSettings : ModSettings
 	{
 		get
 		{
-			Log.Warning("RuntimeGCSettings.get_Mod() is called!");
+			RGCLog.Warn("RuntimeGCSettings.get_Mod() is called!");
 			return (Mod)(object)LoadedModManager.GetMod<RuntimeGC>();
 		}
 		set
@@ -142,6 +146,7 @@ public class RuntimeGCSettings : ModSettings
 		ArchiveGCDialog = true;
 		ArchiveMessageGeneral = false;
 		DevOnScreenMemoryUsage = false;
+		DebugLogging = true;
 	}
 
 	public void InitMemoryMonitor()
@@ -202,6 +207,7 @@ public class RuntimeGCSettings : ModSettings
 		Scribe_Values.Look<bool>(ref ArchiveGCDialog, "ArchiveGCDialog", true, false);
 		Scribe_Values.Look<bool>(ref ArchiveMessageGeneral, "ArchiveMessageGeneral", false, false);
 		Scribe_Values.Look<bool>(ref DevOnScreenMemoryUsage, "DevOnScreenMemoryUsage", false, false);
+		Scribe_Values.Look<bool>(ref DebugLogging, "DebugLogging", true, false);
 		if ((int)Scribe.mode == 2)
 		{
 			if (MemoryUsageBarLowerBoundMb < 0)

@@ -35,6 +35,7 @@ verified, what was broken, what was fixed, and the decisions still open.
 | Manual cleanup menu: ModMetaData / Language / DefPackage | ✅ Works *(after fixes #2, #3)* |
 | **Auto-cleanup on startup** | ⛔ Not wired up (see Open Decisions) |
 | **MuteGC / MuteBL integration** | ⛔ Not wired up (see Open Decisions) |
+| Debug logging toggle (mod options) | ✅ Works (defaults on) |
 
 ---
 
@@ -106,6 +107,14 @@ before re-enabling. The exact wiring (with code snippets) is documented inline i
 - **Risk if enabled as-is:** high.
 
 ### Minor / cosmetic
+- **Animal Family sweep-up — small logic quirk (revisit later).** The "Animal
+  Family sweep-up" tool (`CleanserUtil.DeconstructAnimalFamily`) anchors on living
+  colony animals and prunes their dead/absent relatives from the world-pawn list.
+  When deciding whether to remove a *relative*, it checks "has no corpse" against
+  the **anchor animal** rather than the relative being removed. Harmless — it just
+  makes the sweep slightly more conservative when the anchor animal itself has a
+  corpse. Not changed; worth a look another day to confirm whether that was
+  intended. (The feature itself works and is verified on 1.6.)
 - `Faction.GenerateNewLeader()` is marked obsolete by RimWorld ("will be removed in
   the future"). Still works on 1.6; watch for removal in a future game version.
 - Leftover decompiler scaffolding remains (`DirectXmlToObject`, an unused
@@ -113,6 +122,25 @@ before re-enabling. The exact wiring (with code snippets) is documented inline i
   during a cleanup pass.
 
 ---
+
+## Debugging aid
+
+A **"RuntimeGC: Debug logging"** checkbox now sits in the mod options (General
+section), **defaulting on** while we hunt for bugs. It routes all optional
+diagnostics through a single gate (`RGCLog`) and, more importantly, runs every
+user-triggered cleanup tool through a guard that:
+
+- logs each tool's start and finish (with timing) when the toggle is on, and
+- on a failure, writes a clearly-labelled `[RuntimeGC] Tool '<name>' failed …`
+  error naming the exact tool — instead of an anonymous stack trace or (worse) a
+  silently swallowed exception.
+
+Errors are **always** logged regardless of the toggle, on purpose. Turning the
+toggle off just quiets the routine start/finish/step chatter.
+
+> Reminder: consider flipping the default to **off** before any wider release, so
+> a normal user's log isn't noisy. It's on now purely to make the upcoming
+> in-game test pass easy to read.
 
 ## Change log
 
@@ -127,4 +155,10 @@ before re-enabling. The exact wiring (with code snippets) is documented inline i
   real cleaner).
 - **Cleaned up:** removed a dead reflection field; documented two unwired features
   (auto-cleanup, mute integration) inline and in this document.
+- **Added:** toggleable debug logging (`RGCLog`) + a per-tool guard that labels any
+  failure with the tool name; checkbox in mod options, defaults on. (See
+  "Debugging aid" above.)
+- **Unified logging:** every `Log.Message/Warning/Error` in the mod now routes
+  through `RGCLog`, so the toggle governs all diagnostics (including the previously
+  always-on `[GC Log]` chatter). Errors still always print.
 - Verified all features against installed RimWorld 1.6.4633; builds with 0 errors.

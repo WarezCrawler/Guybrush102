@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using RimWorld;
+using RuntimeGC;
 using Verse;
 
 namespace Toolbox;
@@ -42,7 +43,7 @@ public static class ModMetaDataCleaner
 				num++;
 			}
 		}
-		Log.Message("[ModMetaDataCleaner] Removed " + num + " Metadata and cleaned " + num2 + " PreviewImage.\nRemoved: " + stringBuilder.ToString() + "\nCleaned: " + stringBuilder2.ToString());
+		RGCLog.Msg("[ModMetaDataCleaner] Removed " + num + " Metadata and cleaned " + num2 + " PreviewImage.\nRemoved: " + stringBuilder.ToString() + "\nCleaned: " + stringBuilder2.ToString());
 		if ((int)Current.ProgramState == 2)
 		{
 			Messages.Message((TranslatorFormattedStringExtensions.Translate("MsgModMetaDataCleaned", (num), (num2))), MessageTypeDefOf.PositiveEvent, false);

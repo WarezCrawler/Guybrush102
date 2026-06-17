@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using RimWorld.Planet;
+using RuntimeGC;
 using Verse;
 
 namespace Mute;
@@ -37,7 +38,7 @@ public static class Launcher
 			LongEventHandler.QueueLongEvent((Action)delegate
 			{
 				DoDetour(typeof(WorldPawnGC).GetMethod("WorldPawnGCTick", bflag), typeof(Launcher).GetMethod("WorldPawnGCTick", bflag2));
-				Log.Message("[RuntimeGC] Detour completed: MuteGC");
+				RGCLog.Msg("Detour completed: MuteGC");
 			}, "Initializing", false, (Action<Exception>)null, true);
 		}
 		if (doBL)
@@ -46,7 +47,7 @@ public static class Launcher
 			{
 				DoDetour(typeof(BattleLog).GetMethod("Add", bflag), typeof(Launcher).GetMethod("Add", bflag2));
 				DoDetour(typeof(BattleLog).GetMethod("ExposeData", bflag), typeof(Launcher).GetMethod("ExposeData", bflag2));
-				Log.Message("[RuntimeGC] Detour completed: MuteBL");
+				RGCLog.Msg("Detour completed: MuteBL");
 			}, "Initializing", false, (Action<Exception>)null, true);
 		}
 	}

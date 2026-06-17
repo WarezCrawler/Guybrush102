@@ -79,7 +79,7 @@ internal static class CleanserUtil
 			array[9] = Environment.NewLine;
 			array[10] = Environment.NewLine;
 			array[11] = "RuntimeGC End.";
-			Log.Message(string.Concat(array));
+			RGCLog.Msg(string.Concat(array));
 			return 0;
 		}
 	}
@@ -182,7 +182,7 @@ internal static class CleanserUtil
 			}
 			if (!((Thing)val).Discarded)
 			{
-				Log.Warning("A thing_filth_object destroyed before is not discarded!That's wierd.");
+				RGCLog.Warn("A thing_filth_object destroyed before is not discarded!That's wierd.");
 				((Thing)val).Discard(false);
 			}
 		}
@@ -298,7 +298,7 @@ internal static class CleanserUtil
 			}
 			catch (Exception ex)
 			{
-				Log.Error("Exception in InitUsedTalePawns with Tale id=" + list[num].id + " :\n" + ex.ToString());
+				RGCLog.Error("Exception in InitUsedTalePawns with Tale id=" + list[num].id + " :\n" + ex.ToString());
 				list2.Add(item);
 			}
 		}

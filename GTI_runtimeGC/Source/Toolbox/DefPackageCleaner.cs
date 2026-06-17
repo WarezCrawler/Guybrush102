@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RimWorld;
+using RuntimeGC;
 using Verse;
 
 namespace Toolbox;
@@ -32,7 +33,7 @@ public static class DefPackageCleaner
 			num += ((List<Def>)field.GetValue(runningMod)).Count;
 			field.SetValue(runningMod, new List<Def>());
 		}
-		Log.Message("[DefPackageCleaner] Cleaned " + num + " DefPackages.");
+		RGCLog.Msg("[DefPackageCleaner] Cleaned " + num + " DefPackages.");
 		if ((int)Current.ProgramState == 2)
 		{
 			Messages.Message((TranslatorFormattedStringExtensions.Translate("MsgDefPackageCleaned", (num))), MessageTypeDefOf.PositiveEvent, false);

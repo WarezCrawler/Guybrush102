@@ -54,10 +54,10 @@ public class WorldPawnCleaner
 		//IL_0007: Invalid comparison between Unknown and I4
 		if ((int)Current.ProgramState != 2)
 		{
-			Log.Error("You must be kidding me...GC a save without loading one?");
+			RGCLog.Error("You must be kidding me...GC a save without loading one?");
 			return 0;
 		}
-		Log.Message("[GC Log] Pre-Initializing GC...");
+		RGCLog.Msg("[GC Log] Pre-Initializing GC...");
 		reference = Find.WorldPawns.AllPawnsAliveOrDead.ToList();
 		allFlags.Clear();
 		if (verbose)
@@ -69,11 +69,11 @@ public class WorldPawnCleaner
 				allFlagsCounter.Add((Flags)(1 << i), 0);
 			}
 		}
-		Log.Message("[GC Log] Generating EntryPoints from Map Pawns...");
+		RGCLog.Msg("[GC Log] Generating EntryPoints from Map Pawns...");
 		DiagnoseMapPawns(out var mapPawnEntryPoints);
 		if (verbose)
 		{
-			Log.Message("[GC Log][Verbose] " + allPawnsCounter.Count() + " Map Pawns marked during diagnosis");
+			RGCLog.Msg("[GC Log][Verbose] " + allPawnsCounter.Count() + " Map Pawns marked during diagnosis");
 		}
 		allPawnsCounter.Clear();
 		if (verbose)
@@ -85,14 +85,14 @@ public class WorldPawnCleaner
 				allFlagsCounter.Add((Flags)(1 << j), 0);
 			}
 		}
-		Log.Message("[GC Log] Collecting Pawns concerned by Used Tales...");
+		RGCLog.Msg("[GC Log] Collecting Pawns concerned by Used Tales...");
 		CleanserUtil.InitUsedTalePawns(out var concernedPawns);
-		Log.Message("[GC Log] Running diagnosis on WorldPawns...");
+		RGCLog.Msg("[GC Log] Running diagnosis on WorldPawns...");
 		foreach (Pawn item in reference)
 		{
 			if (item == null)
 			{
-				Log.Message("Encountered a null pawn.");
+				RGCLog.Msg("Encountered a null pawn.");
 				continue;
 			}
 			if (item.IsColonist)
@@ -149,14 +149,14 @@ public class WorldPawnCleaner
 			}
 			if (verbose)
 			{
-				Log.Message("[worldPawn] " + ((Entity)item).LabelShort + " [flag] " + markedFlagsString(item));
+				RGCLog.Msg("[worldPawn] " + ((Entity)item).LabelShort + " [flag] " + markedFlagsString(item));
 			}
 		}
 		if (verbose)
 		{
-			Log.Message("[GC Log][Verbose] " + allPawnsCounter.Count() + " World Pawns marked during diagnosis");
+			RGCLog.Msg("[GC Log][Verbose] " + allPawnsCounter.Count() + " World Pawns marked during diagnosis");
 		}
-		Log.Message("[GC Log] Expanding Relation networks through Map Pawn Entry Points...");
+		RGCLog.Msg("[GC Log] Expanding Relation networks through Map Pawn Entry Points...");
 		for (int num = mapPawnEntryPoints.Count - 1; num > -1; num--)
 		{
 			if (containsFlag(mapPawnEntryPoints[num], Flags.RelationLvl2))
@@ -173,7 +173,7 @@ public class WorldPawnCleaner
 				mapPawnEntryPoints.RemoveAt(num2);
 			}
 		}
-		Log.Message("[GC Log] Expanding Relation networks on marked World Pawns...");
+		RGCLog.Msg("[GC Log] Expanding Relation networks on marked World Pawns...");
 		for (int num3 = reference.Count - 1; num3 > -1; num3--)
 		{
 			if (containsFlag(reference[num3], Flags.RelationLvl2))
@@ -204,13 +204,13 @@ public class WorldPawnCleaner
 			{
 				num6 += item2.Value;
 			}
-			Log.Message("[GC Log][Verbose] " + allPawnsCounter.Count() + " World Pawns marked during Expanding");
+			RGCLog.Msg("[GC Log][Verbose] " + allPawnsCounter.Count() + " World Pawns marked during Expanding");
 			if (debug)
 			{
-				Log.Message("addFlag() called " + num6 + " times");
+				RGCLog.Msg("addFlag() called " + num6 + " times");
 			}
 		}
-		Log.Message("[GC Log] Excluding Pawns concerned by Used Tales...");
+		RGCLog.Msg("[GC Log] Excluding Pawns concerned by Used Tales...");
 		foreach (Pawn item3 in concernedPawns)
 		{
 			reference.Remove(item3);
@@ -227,8 +227,8 @@ public class WorldPawnCleaner
 			})
 			.Distinct()
 			.ToList();
-		Log.Message($"[GC Log] Excluding Quest Pawns: {reference.RemoveAll((Pawn p) => list.Contains((Thing)(object)p))}");
-		Log.Message("[GC Log] Disposing World Pawns...");
+		RGCLog.Msg($"[GC Log] Excluding Quest Pawns: {reference.RemoveAll((Pawn p) => list.Contains((Thing)(object)p))}");
+		RGCLog.Msg("[GC Log] Disposing World Pawns...");
 		num6 = reference.Count;
 		for (int num7 = reference.Count - 1; num7 > -1; num7--)
 		{
@@ -255,9 +255,9 @@ public class WorldPawnCleaner
 				array[4] = item4.Value.ToString();
 				text = string.Concat(array);
 			}
-			Log.Message(text);
+			RGCLog.Msg(text);
 		}
-		Log.Message("[GC Log] GC() completed with " + num6 + " World Pawns disposed");
+		RGCLog.Msg("[GC Log] GC() completed with " + num6 + " World Pawns disposed");
 		return num6;
 	}
 
@@ -345,7 +345,7 @@ public class WorldPawnCleaner
 			{
 				foreach (PawnRelationDef relation in PawnRelationUtility.GetRelations(p, item))
 				{
-					Log.Message("(Family) " + ((Entity)p).LabelShort + " <" + ((Def)relation).label + "> " + ((Entity)item).LabelShort);
+					RGCLog.Msg("(Family) " + ((Entity)p).LabelShort + " <" + ((Def)relation).label + "> " + ((Entity)item).LabelShort);
 				}
 			}
 		}
@@ -356,7 +356,7 @@ public class WorldPawnCleaner
 				addFlag(directRelation.otherPawn, flag);
 				if (verbose)
 				{
-					Log.Message("(Relation) " + ((Entity)p).LabelShort + " <" + ((Def)directRelation.def).label + "> " + ((Entity)directRelation.otherPawn).LabelShort);
+					RGCLog.Msg("(Relation) " + ((Entity)p).LabelShort + " <" + ((Def)directRelation.def).label + "> " + ((Entity)directRelation.otherPawn).LabelShort);
 				}
 			}
 		}
@@ -367,7 +367,7 @@ public class WorldPawnCleaner
 				addFlag(item2, flag);
 				if (verbose)
 				{
-					Log.Message("(Reflexed) <" + ((Entity)item2).LabelShort + "," + ((Entity)p).LabelShort + ">");
+					RGCLog.Msg("(Reflexed) <" + ((Entity)item2).LabelShort + "," + ((Entity)p).LabelShort + ">");
 				}
 			}
 		}
@@ -409,7 +409,7 @@ public class WorldPawnCleaner
 					list.Add(allPawn);
 					if (verbose)
 					{
-						Log.Message("[mapPawn] " + ((Entity)allPawn).LabelShort + " [flag] " + markedFlagsString(allPawn));
+						RGCLog.Msg("[mapPawn] " + ((Entity)allPawn).LabelShort + " [flag] " + markedFlagsString(allPawn));
 					}
 				}
 			}

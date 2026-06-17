@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using RimWorld;
+using RuntimeGC;
 using Verse;
 
 namespace Toolbox;
@@ -40,7 +41,7 @@ public static class LanguageDataCleaner
 				list[num3].defInjections = new List<DefInjectionPackage>();
 			}
 		}
-		Log.Message("[LanguageDataCleaner] Removed " + num + " LoadedLanguages and cleaned " + num2 + " DefInjectionPackages.\nRemoved Languages: " + stringBuilder.ToString());
+		RGCLog.Msg("[LanguageDataCleaner] Removed " + num + " LoadedLanguages and cleaned " + num2 + " DefInjectionPackages.\nRemoved Languages: " + stringBuilder.ToString());
 		if ((int)Current.ProgramState == 2)
 		{
 			Messages.Message((TranslatorFormattedStringExtensions.Translate("MsgLanguageDataCleaned", (num), (num2))), MessageTypeDefOf.PositiveEvent, false);
