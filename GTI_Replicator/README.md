@@ -1,3 +1,18 @@
+# GTI Resource Replicator — Personal Fork
+
+> ## ⚠️ FOR PERSONAL USE ONLY
+> This is a **private, personal fork** maintained by **WarezCrawler** for use in my own
+> RimWorld games. It is **not** intended for redistribution or public release and is **not**
+> an official or supported version of the original mod. All credit for the original work
+> belongs to its authors.
+>
+> **Upstream:** *Resource Replicator* by Comrade_Alexey, LeonusDH, ✬Rustic Fox✬ and
+> Chicken Plucker. If you want the real thing, get it from the original authors.
+
+---
+
+## Original mod README (preserved from upstream)
+
 # Resource-Replicator
 Life isn't easy enough? Featuring a machine that clones items for you!
 
