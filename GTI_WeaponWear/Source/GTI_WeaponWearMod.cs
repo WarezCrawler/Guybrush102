@@ -157,8 +157,10 @@ namespace GTI_WeaponWear
                 ref Settings.autoRepairEquipped,
                 "When on, undrafted pawns repair their own carried weapon in their spare time and keep "
                 + "it equipped throughout. No per-pawn setup and no work type needs to be enabled; it "
-                + "pauses while the pawn is drafted. You can always force a repair by selecting a pawn "
-                + "and right-clicking a repair bench, even when this is off.");
+                + "pauses while the pawn is drafted. If the weapon gets badly worn (below a quarter of "
+                + "the threshold), the repair becomes urgent and jumps ahead of regular work. You can "
+                + "always force a repair by selecting a pawn and right-clicking a repair bench, even "
+                + "when this is off.");
 
             // The threshold only matters while the feature is on; hide the slider otherwise.
             int athr = Mathf.RoundToInt(Settings.equippedRepairThreshold * 100f);

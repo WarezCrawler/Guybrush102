@@ -34,6 +34,14 @@ tie together (with diagrams) see [`XML_REFERENCE.md`](XML_REFERENCE.md).
   `GTI_RepairEquippedWeapon` (auto-repair of an equipped weapon). Resolved by RimWorld;
   referenced by the respective WorkGivers.
 
+### `GTI_GameComponent.cs`
+- **`GTI_GameComponent`** (`GameComponent`, auto-instantiated by RimWorld per game) —
+  `FinalizeInit()` (runs on new game AND after every load) clears the mod's per-game static
+  state: `JobGiver_RepairEquippedWeapon.ResetState()`, `GtiLog.ResetState()` and
+  `Patch_Thing_RepairInfo.ResetState()`. The first two key on per-game ids and store absolute
+  `TicksGame` values, so carrying them across games in one session would silently suppress
+  auto-repair / logging; the last holds a `Thing` reference that would pin the previous map.
+
 ---
 
 ## Wear subsystem
@@ -75,21 +83,25 @@ Core wear rules. Consts: `BaseChancePerUse = 0.10`, `MinHitPointsFromWear = 1` (
 ### `RepairUtil.cs` — `RepairUtil` (static)
 Helpers shared by both repair WorkGivers/JobDrivers.
 - `TryFindMaterials(pawn, near, needed, queue, counts)` — nearest-first reachable/unforbidden
-  material search, appending to the ingredient queue. Used by both WorkGivers.
+  material search, appending to the ingredient queue. For counted resources it fast-fails via
+  `map.resourceCounter.GetCount` (O(1), counts even forbidden/unreachable stacks) before sorting
+  any stacks, so "colony is simply out of steel" costs nothing. Used by both WorkGivers.
 - `TryFindMaterials(…, out missing)` — same, but reports the per-material shortfall when it
   fails. Used by both WorkGivers to build a `JobFailReason`.
 - `DescribeMaterials(mats)` — "4x cloth, 2x steel" for player-facing messages. Used by both
   WorkGivers.
-- `GatherStagedMaterials(Map, Building_WorkTable)` — sums loose resource items in the bench cells
-  (excludes the bench and any weapon/apparel). Used by both JobDrivers to seed `RepairProgress`.
 - `JumpToCollectNextIntoHandsForBill(Toil, TargetIndex)` — port of vanilla's hauling top-up
-  helper. Used by both JobDrivers during the haul phase.
+  helper. Used by the shared repair driver (`JobDriver_RepairBase`) during the haul phase.
 
 ### `Patch_RepairInfo.cs`
 - **`Patch_Thing_RepairInfo.Postfix`** — appends a `Repair needs: Nx Material (have M)` line to a
   damaged weapon/apparel's inspect panel (materials are otherwise never shown, since they're
   computed dynamically). Patches `Thing.GetInspectString`. Uses `WeaponRepairCost.Compute` and
-  `map.resourceCounter`.
+  `map.resourceCounter`. The built line is cached (one entry: same item + same `HitPoints`,
+  refreshed every ~30 real frames so the `(have M)` counts stay current even while paused)
+  because the inspect pane calls `GetInspectString` every frame.
+- **`Patch_Thing_RepairInfo.ResetState()`** — drops the cache (its `Thing` reference would pin
+  the old game's map). Called by `GTI_GameComponent` on every game start/load.
 
 ### `WorkGiver_RepairWeapon.cs` — `WorkGiver_RepairWeapon` (`WorkGiver_DoBill`)
 Generic bench-bill repair giver (Machining/Smithy/Tailoring/Fabrication via the repair recipes).
@@ -99,22 +111,40 @@ Generic bench-bill repair giver (Machining/Smithy/Tailoring/Fabrication via the 
   is unfundable, returning null would abort the scan and the bench would never reach the bills
   below it (the "repair-on-top stalls the workbench" bug). So an unfundable repair bill is
   temporarily `suspended` and `base.JobOnThing` is re-asked for the next doable bill, in a loop;
-  every bill touched is un-suspended in a `finally`. Passes normal bills through. Called by the
-  work scheduler.
+  every bill touched is un-suspended in a `finally`. An unfundable bill is also rested via
+  `bill.nextTickToSearchForIngredients` (+500–600 ticks, mirroring vanilla's private
+  `ReCheckFailedBillTicksRange`) so upcoming scans by every pawn skip it cheaply inside
+  `WorkGiver_DoBill` — vanilla's own cooldown never engages for repair bills because their only
+  recipe ingredient (the damaged item) is always found. Player-forced work bypasses the rest,
+  as vanilla does. Passes normal bills through. Called by the work scheduler.
 - `TryRepairBill(pawn, thing, job, bill)` — private; the per-repair-bill logic: tries the
   vanilla-chosen closest item (fast path), then enumerates the bill's other damaged items
   (closest-first) via `FindRepairCandidates`, issuing a `GTI_RepairWeapon` job for the first one it
   can fully fund. Returns null (and records a `JobFailReason` naming the nearest item's shortfall)
   when none can be funded.
 
-### `JobDriver_RepairWeapon.cs` — `JobDriver_RepairWeapon` (`JobDriver`)
-Runs the `GTI_RepairWeapon` (bench-bill) job. Const `TicksPerHitPoint = 25`.
+### `JobDriver_RepairBase.cs` — `JobDriver_RepairBase` (abstract `JobDriver`)
+Shared toil skeleton for BOTH repair jobs. Const `TicksPerHitPoint = 25`. Subclass hooks:
+`RepairedItem` (abstract — the thing being repaired), `AddExtraFailConditions`,
+`OnRepairStarted` / `OnRepairTick` (bill bookkeeping), `FinishToils`, `ProgressBarInd`.
 - `TryMakePreToilReservations(bool)` — reserves bench + ingredient queue. Called by the job system.
-- `MakeNewToils()` — toil sequence: reserve → haul weapon+materials to bench → repair toil →
-  finish bill iteration. Called by the job system.
+- `MakeNewToils()` — reserve → (skip if the queue is empty — a zero-cost repair has nothing to
+  haul) haul queued ingredients to bench → repair toil → subclass `FinishToils` → release.
 - `MakeRepairToil()` — incremental toil: each ~25 work-ticks, pay-before via
-  `RepairProgress.TryPayForNextPoint()` then `HitPoints++` until full. Uses
-  `RepairUtil.GatherStagedMaterials`. Used by `MakeNewToils`.
+  `RepairProgress.TryPayForNextPoint()` then `HitPoints++` until full. The consumption plan is
+  the item's **computed cost** (`WeaponRepairCost.Compute`), NOT whatever is staged in the bench
+  cells, and is (re)built lazily so a save/load mid-repair resumes cleanly, charging only what is
+  still owed. Aborts if the repaired item changes or is destroyed mid-toil.
+
+### `JobDriver_RepairWeapon.cs` — `JobDriver_RepairWeapon` (`JobDriver_RepairBase`)
+Runs the `GTI_RepairWeapon` (bench-bill) job.
+- `weapon` — the repaired item, **scribed by reference** (`ExposeData`) so a save/load mid-job
+  keeps pointing at the right thing (re-deriving it from the partially-consumed queue could
+  mistake a staged WoodLog for the item — the wood-is-a-weapon gotcha).
+- `MakeNewToils()` — on a fresh job, takes the item from the front of the just-built ingredient
+  queue, then defers to the base skeleton.
+- `OnRepairStarted`/`OnRepairTick`/`FinishToils` — the bill bookkeeping (`Notify_DoBillStarted`,
+  `Notify_PawnDidWork`, `Notify_IterationCompleted` + `RecordsUtility.Notify_BillDone`).
 
 ### `EquippedWeaponRepair.cs` — `EquippedWeaponRepair` (static)
 Shared logic for repairing a pawn's own equipped weapon (used by the JobGiver and the float-menu
@@ -129,17 +159,30 @@ provider).
   null (+ `missing`) if materials can't be found. Does NOT apply the HP threshold.
 
 ### `JobGiver_RepairEquippedWeapon.cs` — `JobGiver_RepairEquippedWeapon` (`ThinkNode_JobGiver`)
-Passive auto-repair — run from the **think tree** (inserted after the apparel optimizer via
-`Patches/EquippedWeaponRepair_ThinkTree.xml`), NOT a work giver, so it works regardless of
-Work-tab settings. Sits after `JobGiver_Work` (spare time only).
-- `TryGiveJob(Pawn)` — if `autoRepairEquipped` is on and threshold > 0, pawn is an undrafted player
-  colonist with Manipulation and the equipped weapon is below the threshold, uses
-  `EquippedWeaponRepair.FindBench/MakeJobAt`
-  (throttled per pawn via `nextScanTick`) to build the job. Null otherwise. Called by the think
-  tree each time the pawn seeks a job.
+Passive auto-repair — run from the **think tree**, NOT a work giver, so it works regardless of
+Work-tab settings. Injected **twice** via `Defs/ThinkTreeDefs/GTI_EquippedWeaponRepair.xml`,
+distinguished by the XML-set `urgent` field (vanilla's `JobGiver_Work.emergency` pattern):
+- **spare-time node** (`urgent=false`, hook `Humanlike_PostMain`) — after the main colonist
+  behavior core (needs, joy, `JobGiver_Work`), before idling; never preempts real work.
+- **urgent node** (`urgent=true`, hook `Humanlike_PreMain`) — before the main core but after the
+  emergency block; fires only below `UrgentFraction` (0.25) × the configured threshold, so
+  always-busy pawns still fix a badly worn weapon. Same ~3 h scan throttle as the spare-time
+  node (the throttle exists to limit performance impact), but on an independent key.
+
+Members:
+- `urgent` (XML field) / `UrgentFraction = 0.25`.
+- `TryGiveJob(Pawn)` — if `autoRepairEquipped` is on and (the possibly urgent-scaled) threshold
+  > 0, pawn is an undrafted player colonist with Manipulation and the equipped weapon is below
+  that threshold, uses `EquippedWeaponRepair.FindBench/MakeJobAt` (throttled per pawn via
+  `nextScanTick`; the urgent node uses a negated-id key so the two nodes throttle independently,
+  and far-future stale entries self-expire) to build the job. Null otherwise. Called by the
+  think tree each time the pawn seeks a job.
 - `NotifyMissingMaterials(pawn, weapon, missing, now)` — private; fires a light transient
   `Messages.Message` (`NeutralEvent`, non-historical) when a personal repair is blocked on
   material, throttled per pawn (`nextMessageTick`, ~1 day). Used by `TryGiveJob`.
+- `ResetState()` — clears the two per-pawn throttle dictionaries. Called by `GTI_GameComponent`
+  on every game start/load (thingIDNumbers and TicksGame both restart per game, so stale entries
+  from a previous game in the same session would silently block auto-repair).
 
 ### `FloatMenuOptionProvider_RepairEquippedWeapon.cs` — (`FloatMenuOptionProvider`)
 Right-click a repair bench → "Repair `<weapon>` now", forcing a repair regardless of threshold.
@@ -150,19 +193,21 @@ Manipulation-capable pawns.
   pawn's weapon is damaged, yields an enabled "Repair … now" option (`playerForced` job via
   `TryTakeOrderedJob`), or a greyed option naming the missing material / unreachable bench.
 
-### `JobDriver_RepairEquippedWeapon.cs` — `JobDriver_RepairEquippedWeapon` (`JobDriver`)
+### `JobDriver_RepairEquippedWeapon.cs` — `JobDriver_RepairEquippedWeapon` (`JobDriver_RepairBase`)
 Runs the `GTI_RepairEquippedWeapon` job. The weapon stays equipped — only materials are hauled.
-Const `TicksPerHitPoint = 25`; `Weapon` => `pawn.equipment.Primary`.
-- `TryMakePreToilReservations(bool)` — reserves bench + material queue. Called by the job system.
-- `MakeNewToils()` — reserve → haul materials to bench → repair toil. Fails on draft / weapon
-  lost. Called by the job system.
-- `MakeRepairToil()` — incremental toil ticking up the equipped weapon's HP, pay-before via
-  `RepairProgress` over `RepairUtil.GatherStagedMaterials`. Used by `MakeNewToils`.
+- `RepairedItem` => `pawn.equipment?.Primary` — re-derived from equipment, so no scribing needed.
+- `AddExtraFailConditions()` — fails on draft / weapon lost (the base repair toil additionally
+  aborts if the equipped item changes mid-repair).
 
 ### `RepairProgress.cs` — `RepairProgress`
-Pay-before material consumption so HP is never granted unpaid.
-- `RepairProgress(pawn, cells, toConsume, repairAmount)` — ctor; captures the consumption plan.
-  Created in `MakeRepairToil`.
+Pay-before material consumption so HP is never granted unpaid. The plan is the item's
+**computed repair cost** — anything else sitting in the bench cells (leftovers from an
+interrupted bill, surplus from an earlier repair) is never consumed.
+- `RepairProgress(pawn, cells, toConsume, repairAmount, repairedItem)` — ctor; captures the
+  consumption plan (a `Dictionary<ThingDef,int>` from `WeaponRepairCost.Compute`). Created in
+  `JobDriver_RepairBase.MakeRepairToil`.
+- `IsFor(Thing)` — whether the plan was built for this item (guards a resumed toil against the
+  repaired item changing underneath it).
 - `TryPayForNextPoint()` — consumes (rounded up) the materials owed up to the next HP; affordability
   checked first, returns false consuming nothing if short. Called each granted point by the toil.
 - `StagedItems()` — private; loose resources currently in the bench cells.

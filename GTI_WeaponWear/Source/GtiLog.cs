@@ -22,6 +22,14 @@ namespace GTI_WeaponWear
 
         private static readonly Dictionary<string, int> lastTickByKey = new Dictionary<string, int>();
 
+        // Forget all throttle timestamps. Called by GTI_GameComponent when a game is created
+        // or loaded: the stored values are absolute TicksGame of the PREVIOUS game, which can
+        // be far in the new game's future and would wrongly suppress lines for a long time.
+        public static void ResetState()
+        {
+            lastTickByKey.Clear();
+        }
+
         public static bool Enabled =>
             GTI_WeaponWearMod.Settings != null && GTI_WeaponWearMod.Settings.debugLogging;
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<!-- ============================================================== -->
+	<!-- Equipped-weapon auto-repair, injected via RimWorld's official   -->
+	<!-- Humanlike_PostMain insertion hook (a ThinkNode_SubtreesByTag in -->
+	<!-- the Humanlike think tree). PostMain is evaluated AFTER the main -->
+	<!-- colonist behavior core (needs, joy, JobGiver_Work) and before   -->
+	<!-- the idle joy/wander block, so the repair genuinely only uses    -->
+	<!-- spare time and never preempts real work.                        -->
+	<!--                                                                 -->
+	<!-- (Replaces the old PatchOperationInsert next to the apparel      -->
+	<!-- optimizer: that tagger lives in the *emergency/forced work*     -->
+	<!-- block, BEFORE the main work giver, so the repair was outranking -->
+	<!-- all regular work.)                                              -->
+	<!--                                                                 -->
+	<!-- Running from the think tree (not a WorkGiver) is intentional:   -->
+	<!-- like "drop worn clothes / equip better", it must work without   -->
+	<!-- the player enabling a work type, so combat pawns (who usually   -->
+	<!-- have crafting disabled) still repair their own weapon. The      -->
+	<!-- JobGiver itself gates on player colonists / undrafted / the mod -->
+	<!-- options, so reaching it for other humanlikes is harmless.       -->
+	<!-- ============================================================== -->
+
+	<ThinkTreeDef>
+		<defName>GTI_EquippedWeaponRepair</defName>
+		<insertTag>Humanlike_PostMain</insertTag>
+		<insertPriority>100</insertPriority>
+		<thinkRoot Class="GTI_WeaponWear.JobGiver_RepairEquippedWeapon" />
+	</ThinkTreeDef>
+
+	<!-- ============================================================== -->
+	<!-- Urgent variant: same JobGiver with urgent=true (the same        -->
+	<!-- XML-field pattern as vanilla JobGiver_Work's <emergency>),      -->
+	<!-- injected at Humanlike_PreMain — BEFORE the main behavior core   -->
+	<!-- (regular work, meals, joy) but after the emergency block        -->
+	<!-- (firefighting, emergency work, starving-food, apparel swaps).   -->
+	<!-- It only fires when the weapon falls below a quarter of the      -->
+	<!-- configured threshold, so pawns who are busy around the clock    -->
+	<!-- still get a badly worn weapon repaired.                         -->
+	<!-- ============================================================== -->
+
+	<ThinkTreeDef>
+		<defName>GTI_EquippedWeaponRepairUrgent</defName>
+		<insertTag>Humanlike_PreMain</insertTag>
+		<insertPriority>100</insertPriority>
+		<thinkRoot Class="GTI_WeaponWear.JobGiver_RepairEquippedWeapon">
+			<urgent>true</urgent>
+		</thinkRoot>
+	</ThinkTreeDef>
+
+</Defs>

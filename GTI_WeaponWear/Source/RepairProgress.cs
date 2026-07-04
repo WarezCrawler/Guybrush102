@@ -6,10 +6,16 @@ using Verse;
 
 namespace GTI_WeaponWear
 {
-    // Charges the staged material ingredients for an incremental repair. Payment LEADS the
-    // repair: before each hit point is granted, the materials owed up to that point (rounded
-    // up) must be available and are consumed first. This guarantees the player can never gain
-    // a hit point they haven't paid for, even if the job is interrupted.
+    // Charges the material cost of an incremental repair against the items staged in the
+    // bench's ingredient cells. Payment LEADS the repair: before each hit point is granted,
+    // the materials owed up to that point (rounded up) must be available and are consumed
+    // first. This guarantees the player can never gain a hit point they haven't paid for,
+    // even if the job is interrupted.
+    //
+    // The consumption plan is the item's COMPUTED repair cost (WeaponRepairCost), not the
+    // staged inventory: anything else sitting in the bench cells (leftover ingredients from
+    // an interrupted bill, surplus from an earlier repair) is never touched and is left for
+    // the haulers to clear away.
     //
     // Example: 4 steel over 53 HP -> a steel is consumed as each ~13-HP slice begins, with the
     // first taken before the first point is restored.
@@ -29,13 +35,20 @@ namespace GTI_WeaponWear
         private readonly List<Consume> table;
         private int pointsDone;
 
-        public RepairProgress(Pawn pawn, IEnumerable<IntVec3> ingredientCells, List<ThingDefCountClass> toConsume, int repairAmount, Thing repairedItem)
+        public RepairProgress(Pawn pawn, IEnumerable<IntVec3> ingredientCells, Dictionary<ThingDef, int> toConsume, int repairAmount, Thing repairedItem)
         {
             this.pawn = pawn;
             cells = ingredientCells.ToList();
             this.repairedItem = repairedItem;
             toRepair = Math.Max(1, repairAmount);
-            table = toConsume.Select(c => new Consume { def = c.thingDef, toConsume = c.count, consumed = 0 }).ToList();
+            table = toConsume.Select(kv => new Consume { def = kv.Key, toConsume = kv.Value, consumed = 0 }).ToList();
+        }
+
+        // Whether this plan was built for the given item (guards against the repaired item
+        // changing under a resumed toil, e.g. a pawn swapping weapons).
+        public bool IsFor(Thing item)
+        {
+            return item == repairedItem;
         }
 
         // Hit points actually granted (and paid for) so far. Used for the debug repair summary.

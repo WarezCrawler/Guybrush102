@@ -54,7 +54,7 @@ namespace GTI_WeaponWear
                     {
                         continue;
                     }
-                    if (!pawn.CanReserveAndReach(t, PathEndMode.InteractionCell, Danger.Some))
+                    if (!pawn.CanReserveAndReach(t, PathEndMode.InteractionCell, Danger.Deadly))
                     {
                         continue;
                     }

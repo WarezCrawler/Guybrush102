@@ -13,9 +13,9 @@ ModFiles/
 │   ├── RecipeDefs/GTI_RepairRecipes.xml              4 repair recipes
 │   ├── SpecialThingFilterDefs/GTI_RepairFilters.xml  4 bill-list filters
 │   ├── WorkGiverDefs/GTI_WorkGivers.xml              2 work givers
-│   └── JobDefs/GTI_Jobs.xml                          2 job defs
+│   ├── JobDefs/GTI_Jobs.xml                          2 job defs
+│   └── ThinkTreeDefs/GTI_EquippedWeaponRepair.xml    auto-repair think-tree injections (spare-time + urgent)
 └── Patches/
-    ├── EquippedWeaponRepair_ThinkTree.xml           inserts the auto-repair think node
     ├── Compat_RepairBench.xml                       reroute-all to the "Repair Workbench" mod
     └── Examples/RepairRouting_Example.xml(.xm_)     per-item routing template (disabled)
 ```
@@ -185,12 +185,24 @@ If you add a bench to a recipe's `recipeUsers`, also add it to the matching work
 
 No configuration to tweak here.
 
-### `Patches/EquippedWeaponRepair_ThinkTree.xml` — auto-repair hook
+### `Defs/ThinkTreeDefs/GTI_EquippedWeaponRepair.xml` — auto-repair hooks
 
-A `PatchOperationInsert` that drops `JobGiver_RepairEquippedWeapon` into the Humanlike think tree,
-right after the apparel optimizer (so it runs in spare time, no work type required). The bench it
-sends a pawn to comes from `RepairRouting.BenchesFor(weapon.def)`, so it follows the same routing as
-everything else.
+Two `ThinkTreeDef`s injecting `JobGiver_RepairEquippedWeapon` into the Humanlike think tree via
+RimWorld's official modder insertion hooks:
+
+- **`GTI_EquippedWeaponRepair`** (`insertTag Humanlike_PostMain`) — the spare-time node. PostMain
+  is evaluated after the main colonist behavior core (needs, joy, `JobGiver_Work`) and before the
+  idle block, so the repair runs in genuine spare time, with no work type required.
+- **`GTI_EquippedWeaponRepairUrgent`** (`insertTag Humanlike_PreMain`, `<urgent>true</urgent>` on
+  the node — the same XML-field pattern as vanilla `JobGiver_Work`'s `<emergency>`) — the urgent
+  node. PreMain is evaluated *before* the main core but after the emergency block, and the
+  JobGiver only fires there when the weapon is below a quarter of the configured threshold — so
+  pawns who never idle still get a badly worn weapon fixed, ahead of regular work.
+
+(These replaced an earlier `PatchOperationInsert` next to the apparel optimizer: that tagger lives
+in the emergency/forced work block *before* the main work giver, so the repair was outranking all
+regular work.) The bench a pawn is sent to comes from `RepairRouting.BenchesFor(weapon.def)`, so
+both nodes follow the same routing as everything else.
 
 ### `Patches/Examples/RepairRouting_Example.xm_` — the per-item routing template
 

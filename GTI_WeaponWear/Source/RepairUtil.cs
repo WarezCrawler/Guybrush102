@@ -37,6 +37,22 @@ namespace GTI_WeaponWear
             foreach (KeyValuePair<ThingDef, int> kv in needed)
             {
                 int remaining = kv.Value;
+
+                // Fast-fail via the map's resource counter: if the TOTAL spawned amount (an O(1)
+                // lookup that even counts forbidden/unreachable stacks) is below the need, no
+                // stack search can succeed — skip the sort + reachability checks entirely. Only
+                // valid for counted resources (GetCount reports 0 for everything else, which
+                // must NOT read as "none on map"); uncounted defs take the full search below.
+                if (kv.Key.CountAsResource)
+                {
+                    int onMap = pawn.Map.resourceCounter.GetCount(kv.Key);
+                    if (onMap < remaining)
+                    {
+                        missing.Add(new ThingDefCountClass(kv.Key, remaining - onMap));
+                        continue;
+                    }
+                }
+
                 List<Thing> stacks = pawn.Map.listerThings.ThingsOfDef(kv.Key)
                     .OrderBy(t => (t.Position - near).LengthHorizontalSquared)
                     .ToList();
@@ -86,29 +102,6 @@ namespace GTI_WeaponWear
                 : (done > 0 ? "partially repaired" : "made no progress repairing");
             GtiLog.Msg(pawn.LabelShort + " " + verb + " " + itemLabel + ": +" + done + " HP ("
                 + startPct + "% -> " + endPct + "%), consumed " + mats + ".");
-        }
-
-        // Sum the loose resource items currently staged in the bench's ingredient cells,
-        // grouped by def. Excludes the bench itself and the specific item being repaired
-        // (identified by reference, NOT by def — wood is itself a weapon def, so a def-based
-        // weapon/apparel filter would wrongly drop wood materials). Used by both repair
-        // JobDrivers to seed RepairProgress.
-        public static List<ThingDefCountClass> GatherStagedMaterials(Map map, Building_WorkTable table, Thing repairedItem)
-        {
-            Dictionary<ThingDef, int> counts = new Dictionary<ThingDef, int>();
-            foreach (IntVec3 cell in table.IngredientStackCells)
-            {
-                foreach (Thing t in map.thingGrid.ThingsListAt(cell))
-                {
-                    if (t == null || t == repairedItem || t.def.category != ThingCategory.Item)
-                    {
-                        continue;
-                    }
-                    counts.TryGetValue(t.def, out int c);
-                    counts[t.def] = c + t.stackCount;
-                }
-            }
-            return counts.Select(kv => new ThingDefCountClass(kv.Key, kv.Value)).ToList();
         }
 
         // Port of JobDriver_DoBill's private helper: top up the carried stack with more of the

@@ -167,13 +167,22 @@ repairs the weapon **back to full**.
   drop, swap, spare-weapon requirement, or re-equip. The same weapon (quality/material) is kept.
 - Cost and pay-before consumption are identical to bench repair (`WeaponRepairCost` +
   `RepairProgress`). Interrupting (e.g. a raid drafts the pawn) leaves it partially repaired.
-- **Not a work type.** It runs from the **think tree**, inserted right after vanilla's apparel
-  optimizer (`Patches/EquippedWeaponRepair_ThinkTree.xml`), exactly like the "drop worn clothes /
-  equip better" behaviour. This is deliberate: it must work **regardless of the Work tab**, since
-  the combat pawns that carry weapons usually have crafting disabled. The node sits *after*
-  `JobGiver_Work`, so it only uses **spare time** and never interrupts real work, and never runs
-  while drafted. The pawn still needs **Manipulation** and a reachable, usable repair bench
-  with the right material; the bench/material scan is throttled per pawn (~10 s).
+- **Not a work type.** It runs from the **think tree**, injected via RimWorld's official
+  `Humanlike_PostMain` insertion hook (`Defs/ThinkTreeDefs/GTI_EquippedWeaponRepair.xml`). This is
+  deliberate: it must work **regardless of the Work tab**, since the combat pawns that carry
+  weapons usually have crafting disabled. The PostMain hook is evaluated *after* the main colonist
+  behavior core (needs, joy, `JobGiver_Work`) and before idling, so it only uses **spare time**,
+  never interrupts real work, and never runs while drafted. The pawn still needs **Manipulation**
+  and a reachable, usable repair bench with the right material; the bench/material scan is
+  throttled per pawn (~3 in-game hours).
+- **Urgent repair for always-busy pawns.** A pawn with a fully booked schedule may never reach
+  the spare-time node, so a second injection of the same JobGiver (with `urgent=true`, hook
+  `Humanlike_PreMain`) sits *before* regular work: it fires only when the weapon has fallen below
+  **a quarter of the configured threshold** (e.g. threshold 50% → urgent below 12.5% HP). It
+  outranks regular work, meals and joy, but still yields to the emergency block (firefighting,
+  emergency work, food when actually starving). Uses the same ~3-in-game-hour scan throttle as
+  the spare-time node (the throttle limits performance impact), tracked independently so a
+  recent spare-time scan never delays an urgent one.
 - Master control is the **Auto-repair equipped weapons** on/off checkbox; the threshold slider
   (greyed out while off) sets the trigger level. There is no per-pawn Work-tab toggle.
 - **Manual override:** select a pawn and **right-click a repair bench** → **"Repair `<weapon>` now"**
@@ -266,7 +275,7 @@ GTI_WeaponWear/                    (dev repo — source of truth)
 └── ModFiles/                      (mod payload — NOT compiled)
     ├── About/About.xml
     ├── Defs/                      (recipes, work givers, jobs, filters)
-    ├── Patches/                   (think-tree insert, Repair Workbench compat, routing examples)
+    ├── Patches/                   (Repair Workbench compat, routing examples)
     ├── CHANGELOG.txt              (dated changelog — Steam Workshop copy source)
     └── DOCUMENTATION.md           (this file)
 ```

@@ -24,6 +24,14 @@ namespace GTI_WeaponWear
     // recipes at all.
     public class WorkGiver_RepairWeapon : WorkGiver_DoBill
     {
+        // How long an UNFUNDABLE repair bill rests before it is scanned again — the same range
+        // vanilla uses for bills whose ingredients are missing (WorkGiver_DoBill's private
+        // ReCheckFailedBillTicksRange, mirrored here). Vanilla's own cooldown never engages for
+        // repair bills: their only recipe ingredient (the damaged item itself) is always found,
+        // so without this every scan of every crafting pawn would repeat the whole fallback
+        // candidate enumeration + material search while materials are short.
+        private static readonly IntRange ReCheckFailedRepairTicksRange = new IntRange(500, 600);
+
         public override Job JobOnThing(Pawn pawn, Thing thing, bool forced = false)
         {
             // Our repair recipe carries no material ingredient, so vanilla always treats a repair
@@ -58,9 +66,16 @@ namespace GTI_WeaponWear
                         return repairJob;
                     }
 
-                    // This repair bill is unfundable. Suspend it (so vanilla skips it on the next
-                    // pass) and loop to evaluate the next bill in the stack. The Contains guard is
-                    // a belt-and-suspenders stop against an infinite loop.
+                    // This repair bill is unfundable. Rest it on vanilla's failed-ingredient
+                    // cooldown so upcoming scans (this pawn and every other) skip it cheaply
+                    // inside WorkGiver_DoBill until the cooldown expires — the player forcing
+                    // work still bypasses this, exactly as for a vanilla bill out of ingredients.
+                    bill.nextTickToSearchForIngredients =
+                        Find.TickManager.TicksGame + ReCheckFailedRepairTicksRange.RandomInRange;
+
+                    // Then suspend it (so vanilla skips it on the next pass of THIS scan) and loop
+                    // to evaluate the next bill in the stack. The Contains guard is a
+                    // belt-and-suspenders stop against an infinite loop.
                     if (suspended == null)
                     {
                         suspended = new List<Bill>();
