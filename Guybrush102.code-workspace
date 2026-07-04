@@ -14,6 +14,12 @@
 		},
 		{
 			"path": "GTI_Utilities"
+		},
+		{
+			"path": "GTI_MarineArmorMaterials"
+		},
+		{
+			"path": "GTI_runtimeGC"
 		}
 	],
 	"settings": {}
